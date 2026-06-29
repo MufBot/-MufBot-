@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>MUFBOT · AI Assistant</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root {
@@ -26,315 +26,312 @@
   --font-ui: 'DM Sans', sans-serif;
   --font-display: 'Space Grotesk', sans-serif;
 }
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-html, body { height: 100%; overflow: hidden; }
-body { font-family: var(--font-ui); background: var(--bg); color: var(--fg); }
-::-webkit-scrollbar { width: 6px; }
-::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 3px; }
-::-webkit-scrollbar-thumb:hover { background: var(--muted); }
-input, button { font-family: inherit; }
-button { cursor: pointer; border: none; outline: none; }
-button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{font-family:var(--font-ui);background:var(--bg);color:var(--fg)}
+::-webkit-scrollbar{width:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--scrollbar);border-radius:3px}
+::-webkit-scrollbar-thumb:hover{background:var(--muted)}
+input,button{font-family:inherit}
+button{cursor:pointer;border:none;outline:none}
+button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* ===== AUTH SCREEN ===== */
-#auth-screen {
-  position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center;
-  background: var(--bg);
-  background-image: radial-gradient(ellipse at 30% 20%, rgba(16,163,127,0.06) 0%, transparent 60%),
-                    radial-gradient(ellipse at 70% 80%, rgba(16,163,127,0.04) 0%, transparent 60%);
+/* ===== AUTH ===== */
+#auth-screen{
+  position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
+  background:var(--bg);
+  background-image:radial-gradient(ellipse at 30% 20%,rgba(16,163,127,.06) 0%,transparent 60%),
+  radial-gradient(ellipse at 70% 80%,rgba(16,163,127,.04) 0%,transparent 60%);
 }
-#auth-screen.hidden { display: none; }
-.auth-card {
-  width: 420px; max-width: 95vw; background: rgba(30,30,30,0.85); backdrop-filter: blur(20px);
-  border-radius: 16px; border: 1px solid var(--border); padding: 40px;
-  animation: authIn 0.5s ease;
+#auth-screen.hidden{display:none}
+.auth-card{
+  width:420px;max-width:95vw;background:rgba(30,30,30,.85);backdrop-filter:blur(20px);
+  border-radius:16px;border:1px solid var(--border);padding:40px;animation:authIn .5s ease;
 }
-@keyframes authIn { from { opacity: 0; transform: translateY(20px) scale(0.97); } to { opacity: 1; transform: none; } }
-.auth-icon { text-align: center; font-size: 52px; color: var(--accent); margin-bottom: 4px; }
-.auth-title { text-align: center; font-family: var(--font-display); font-size: 28px; font-weight: 700; margin-bottom: 24px; }
-.auth-tabs { display: flex; gap: 0; margin-bottom: 4px; }
-.auth-tab {
-  flex: 1; padding: 10px; background: transparent; color: var(--muted); font-size: 14px; font-weight: 600;
-  border-bottom: 2px solid transparent; transition: all 0.2s;
+@keyframes authIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
+.auth-icon{text-align:center;margin-bottom:4px}
+.auth-icon svg{width:72px;height:72px}
+.auth-title{text-align:center;font-family:var(--font-display);font-size:28px;font-weight:700;margin-bottom:24px;letter-spacing:-.5px}
+.auth-tabs{display:flex;gap:0;margin-bottom:4px}
+.auth-tab{
+  flex:1;padding:10px;background:transparent;color:var(--muted);font-size:14px;font-weight:600;
+  border-bottom:2px solid transparent;transition:all .2s;
 }
-.auth-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
-.auth-tab:hover:not(.active) { color: var(--fg); }
-.auth-sep { height: 1px; background: var(--border); margin-bottom: 20px; }
-.auth-error { color: var(--red); font-size: 13px; min-height: 20px; margin-bottom: 8px; text-align: center; }
-.auth-field-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; display: block; }
-.auth-input {
-  width: 100%; padding: 12px 14px; background: var(--panel-hover); color: var(--fg); border: 1px solid var(--border);
-  border-radius: 8px; font-size: 14px; margin-bottom: 16px; transition: border-color 0.2s;
+.auth-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.auth-tab:hover:not(.active){color:var(--fg)}
+.auth-sep{height:1px;background:var(--border);margin-bottom:20px}
+.auth-error{color:var(--red);font-size:13px;min-height:20px;margin-bottom:8px;text-align:center}
+.auth-field-label{font-size:12px;color:var(--muted);margin-bottom:6px;display:block}
+.auth-input{
+  width:100%;padding:12px 14px;background:var(--panel-hover);color:var(--fg);border:1px solid var(--border);
+  border-radius:8px;font-size:14px;margin-bottom:16px;transition:border-color .2s;
 }
-.auth-input:focus { border-color: var(--accent); }
-.auth-submit {
-  width: 100%; padding: 14px; background: var(--accent); color: #fff; font-size: 15px; font-weight: 600;
-  border-radius: 8px; transition: background 0.2s;
+.auth-input:focus{border-color:var(--accent)}
+.auth-submit{
+  width:100%;padding:14px;background:var(--accent);color:#fff;font-size:15px;font-weight:600;
+  border-radius:8px;transition:background .2s;
 }
-.auth-submit:hover { background: var(--accent-hover); }
+.auth-submit:hover{background:var(--accent-hover)}
 
-/* ===== APP LAYOUT ===== */
-#app { display: none; height: 100vh; width: 100vw; }
-#app.active { display: flex; }
+/* ===== APP ===== */
+#app{display:none;height:100vh;width:100vw}
+#app.active{display:flex}
+
+/* ===== M LOGO SVG ===== */
+.m-logo{display:inline-flex;align-items:center;gap:8px}
+.m-logo svg{flex-shrink:0}
+.m-logo-text{font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:-.3px}
 
 /* ===== SIDEBAR ===== */
-#sidebar {
-  width: 260px; min-width: 260px; height: 100vh; background: var(--panel); display: flex; flex-direction: column;
-  border-right: 1px solid var(--border); transition: transform 0.3s ease; z-index: 100;
+#sidebar{
+  width:260px;min-width:260px;height:100vh;background:var(--panel);display:flex;flex-direction:column;
+  border-right:1px solid var(--border);transition:transform .3s ease;z-index:100;
 }
-.sidebar-new-chat {
-  margin: 12px; padding: 12px 14px; background: transparent; color: var(--fg); font-size: 15px; font-weight: 500;
-  border-radius: 8px; text-align: left; display: flex; align-items: center; gap: 10px; transition: background 0.15s;
+.sidebar-new-chat{
+  margin:12px;padding:12px 14px;background:transparent;color:var(--fg);font-size:15px;font-weight:500;
+  border-radius:8px;text-align:left;display:flex;align-items:center;gap:10px;transition:background .15s;
 }
-.sidebar-new-chat:hover { background: var(--panel-hover); }
-.sidebar-section-label { font-size: 11px; font-weight: 700; color: var(--muted); padding: 16px 20px 6px; text-transform: uppercase; letter-spacing: 0.5px; }
-.sidebar-item {
-  display: flex; align-items: center; gap: 10px; padding: 8px 20px; color: var(--muted); font-size: 13px;
-  cursor: pointer; border: none; background: transparent; width: 100%; text-align: left;
-  border-left: 3px solid transparent; transition: all 0.15s;
+.sidebar-new-chat:hover{background:var(--panel-hover)}
+.sidebar-section-label{font-size:11px;font-weight:700;color:var(--muted);padding:16px 20px 6px;text-transform:uppercase;letter-spacing:.5px}
+.sidebar-item{
+  display:flex;align-items:center;gap:10px;padding:8px 20px;color:var(--muted);font-size:13px;
+  cursor:pointer;border:none;background:transparent;width:100%;text-align:left;
+  border-left:3px solid transparent;transition:all .15s;
 }
-.sidebar-item:hover { background: var(--panel-hover); color: var(--fg); border-left-color: var(--accent); }
-.sidebar-item i { width: 18px; text-align: center; font-size: 13px; }
-.sidebar-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; }
-.sidebar-bottom {
-  border-top: 1px solid var(--border); padding: 10px 12px; display: flex; align-items: center; gap: 10px;
-  background: var(--panel);
+.sidebar-item:hover{background:var(--panel-hover);color:var(--fg);border-left-color:var(--accent)}
+.sidebar-item i{width:18px;text-align:center;font-size:13px}
+.sidebar-scroll{flex:1;overflow-y:auto;overflow-x:hidden}
+.sidebar-bottom{border-top:1px solid var(--border);padding:10px 12px;display:flex;align-items:center;gap:10px;background:var(--panel)}
+.sidebar-user-box{flex:1;display:flex;align-items:center;gap:10px;padding:8px 10px;background:var(--panel-hover);border-radius:8px}
+.sidebar-user-icon{font-size:18px}
+.sidebar-user-info{overflow:hidden}
+.sidebar-user-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.sidebar-actions{display:flex;gap:4px}
+.sidebar-action-btn{
+  width:34px;height:34px;display:flex;align-items:center;justify-content:center;
+  background:transparent;color:var(--muted);border-radius:6px;font-size:14px;transition:all .15s;
 }
-.sidebar-user-box {
-  flex: 1; display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--panel-hover); border-radius: 8px;
-}
-.sidebar-user-icon { font-size: 18px; }
-.sidebar-user-info { overflow: hidden; }
-.sidebar-user-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-.sidebar-actions { display: flex; gap: 4px; }
-.sidebar-action-btn {
-  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
-  background: transparent; color: var(--muted); border-radius: 6px; font-size: 14px; transition: all 0.15s;
-}
-.sidebar-action-btn:hover { background: var(--panel-hover); color: var(--fg); }
-.sidebar-action-btn.active-voice { color: var(--accent); }
+.sidebar-action-btn:hover{background:var(--panel-hover);color:var(--fg)}
+.sidebar-action-btn.active-voice{color:var(--red)}
 
 /* ===== HAMBURGER ===== */
-#hamburger {
-  display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
-  width: 40px; height: 40px; background: var(--panel); color: var(--fg); border-radius: 8px;
-  font-size: 18px; align-items: center; justify-content: center; border: 1px solid var(--border);
+#hamburger{
+  display:none;position:fixed;top:12px;left:12px;z-index:200;
+  width:40px;height:40px;background:var(--panel);color:var(--fg);border-radius:8px;
+  font-size:18px;align-items:center;justify-content:center;border:1px solid var(--border);
 }
-.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
-.sidebar-overlay.active { display: block; }
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
+.sidebar-overlay.active{display:block}
 
-/* ===== MAIN AREA ===== */
-#main { flex: 1; display: flex; flex-direction: column; height: 100vh; min-width: 0; position: relative; }
-#topbar {
-  height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
-  flex-shrink: 0;
-}
-.topbar-model { font-family: var(--font-display); font-weight: 700; font-size: 15px; }
-#clock { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+/* ===== MAIN ===== */
+#main{flex:1;display:flex;flex-direction:column;height:100vh;min-width:0;position:relative}
+#topbar{height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0}
+#clock{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 
-/* ===== CHAT AREA ===== */
-#chat-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
-#messages { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 20px 20px; }
-.message { width: 100%; max-width: 720px; padding: 14px 0; animation: msgIn 0.3s ease; }
-@keyframes msgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
-.message-label { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
-.user-label { color: var(--muted); }
-.bot-label { color: var(--accent); }
-.message-text { font-size: 15px; line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
+/* ===== CHAT ===== */
+#chat-area{flex:1;overflow-y:auto;display:flex;flex-direction:column}
+#messages{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 20px 20px}
+.message{width:100%;max-width:720px;padding:14px 0;animation:msgIn .3s ease}
+@keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.message-label{font-size:13px;font-weight:700;margin-bottom:6px}
+.user-label{color:var(--muted)}
+.bot-label{color:var(--accent)}
+.message-text{font-size:15px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
 
 /* ===== WELCOME ===== */
-#welcome {
-  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
-  padding: 40px 20px; text-align: center;
+#welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center}
+#welcome.hidden{display:none}
+.welcome-icon{
+  width:80px;height:80px;border-radius:50%;background:var(--accent-glow);
+  display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+  animation:welcomePulse 3s ease-in-out infinite;
 }
-#welcome.hidden { display: none; }
-.welcome-icon {
-  width: 80px; height: 80px; border-radius: 50%; background: var(--accent-glow);
-  display: flex; align-items: center; justify-content: center; font-size: 36px; color: var(--accent);
-  margin-bottom: 16px; animation: welcomePulse 3s ease-in-out infinite;
+.welcome-icon svg{width:42px;height:42px}
+@keyframes welcomePulse{
+  0%,100%{box-shadow:0 0 0 0 rgba(16,163,127,.2)}
+  50%{box-shadow:0 0 0 20px rgba(16,163,127,0)}
 }
-@keyframes welcomePulse {
-  0%, 100% { box-shadow: 0 0 0 0 rgba(16,163,127,0.2); }
-  50% { box-shadow: 0 0 0 20px rgba(16,163,127,0); }
+.welcome-title{font-family:var(--font-display);font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
+.welcome-sub{color:var(--muted);font-size:16px;margin-bottom:36px}
+.welcome-suggestions{display:grid;grid-template-columns:1fr 1fr;gap:10px;max-width:480px;width:100%}
+.suggestion-btn{
+  padding:14px 18px;background:var(--panel-hover);color:var(--fg);border:1px solid var(--border);
+  border-radius:10px;font-size:13px;text-align:left;transition:all .2s;display:flex;align-items:center;gap:10px;
 }
-.welcome-title { font-family: var(--font-display); font-size: 32px; font-weight: 700; margin-bottom: 8px; }
-.welcome-sub { color: var(--muted); font-size: 16px; margin-bottom: 36px; }
-.welcome-suggestions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 480px; width: 100%; }
-.suggestion-btn {
-  padding: 14px 18px; background: var(--panel-hover); color: var(--fg); border: 1px solid var(--border);
-  border-radius: 10px; font-size: 13px; text-align: left; transition: all 0.2s; display: flex; align-items: center; gap: 10px;
-}
-.suggestion-btn:hover { border-color: var(--accent); background: rgba(16,163,127,0.08); }
-.suggestion-btn i { color: var(--accent); width: 18px; text-align: center; }
+.suggestion-btn:hover{border-color:var(--accent);background:rgba(16,163,127,.08)}
+.suggestion-btn i{color:var(--accent);width:18px;text-align:center}
 
-/* ===== TYPING INDICATOR ===== */
-.typing-indicator { display: none; padding: 10px 0; width: 100%; max-width: 720px; }
-.typing-indicator.active { display: flex; align-items: center; gap: 8px; }
-.typing-dots { display: flex; gap: 4px; }
-.typing-dot {
-  width: 8px; height: 8px; border-radius: 50%; background: var(--muted);
-  animation: typingBounce 1.4s ease-in-out infinite;
+/* ===== TYPING INDICATOR — SWAY ===== */
+.typing-indicator{display:none;padding:12px 0;width:100%;max-width:720px;align-items:center;gap:10px}
+.typing-indicator.active{display:flex}
+.typing-dots{display:flex;gap:5px;align-items:center;height:22px}
+.typing-dot{
+  width:8px;height:8px;border-radius:50%;background:var(--accent);
 }
-.typing-dot:nth-child(2) { animation-delay: 0.2s; }
-.typing-dot:nth-child(3) { animation-delay: 0.4s; }
-@keyframes typingBounce {
-  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
-  30% { transform: translateY(-6px); opacity: 1; }
+.typing-dot:nth-child(1){animation:swayUp 1.2s ease-in-out infinite}
+.typing-dot:nth-child(2){animation:swayDown 1.2s ease-in-out infinite}
+.typing-dot:nth-child(3){animation:swayUp 1.2s ease-in-out infinite .15s}
+@keyframes swayUp{
+  0%,100%{transform:translateY(0);opacity:.45}
+  25%{transform:translateY(-7px);opacity:1}
+  50%{transform:translateY(0);opacity:.45}
+  75%{transform:translateY(7px);opacity:.85}
 }
-.typing-text { font-size: 13px; color: var(--muted); }
+@keyframes swayDown{
+  0%,100%{transform:translateY(0);opacity:.45}
+  25%{transform:translateY(7px);opacity:.85}
+  50%{transform:translateY(0);opacity:.45}
+  75%{transform:translateY(-7px);opacity:1}
+}
+.typing-text{font-size:13px;color:var(--muted);font-style:italic}
 
-/* ===== INPUT BAR ===== */
-#input-bar { padding: 0 20px 16px; flex-shrink: 0; }
-.input-wrap {
-  display: flex; align-items: center; background: var(--input-bg); border-radius: 12px;
-  border: 1px solid transparent; transition: border-color 0.2s;
+/* ===== INPUT ===== */
+#input-bar{padding:0 20px 16px;flex-shrink:0}
+.input-wrap{
+  display:flex;align-items:center;background:var(--input-bg);border-radius:12px;
+  border:1px solid transparent;transition:border-color .2s;
 }
-.input-wrap:focus-within { border-color: var(--accent); }
-.input-btn {
-  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
-  background: transparent; color: var(--muted); font-size: 16px; flex-shrink: 0; transition: color 0.15s;
+.input-wrap:focus-within{border-color:var(--accent)}
+.input-btn{
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  background:transparent;color:var(--muted);font-size:16px;flex-shrink:0;transition:color .15s;
 }
-.input-btn:hover { color: var(--fg); }
-.input-btn.listening { color: var(--red); animation: micPulse 1s ease-in-out infinite; }
-@keyframes micPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
-#chat-input {
-  flex: 1; padding: 13px 0; background: transparent; color: var(--fg); font-size: 15px; border: none; outline: none;
-}
-#chat-input::placeholder { color: var(--muted); }
-.input-disclaimer { text-align: center; font-size: 11px; color: var(--muted); padding-top: 8px; }
+.input-btn:hover{color:var(--fg)}
+.input-btn.listening{color:var(--red);animation:micPulse 1s ease-in-out infinite}
+@keyframes micPulse{0%,100%{opacity:1}50%{opacity:.4}}
+#chat-input{flex:1;padding:13px 0;background:transparent;color:var(--fg);font-size:15px;border:none;outline:none}
+#chat-input::placeholder{color:var(--muted)}
+.input-disclaimer{text-align:center;font-size:11px;color:var(--muted);padding-top:8px}
 
 /* ===== MODALS ===== */
-.modal-overlay {
-  position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
-  z-index: 500; display: none; align-items: center; justify-content: center;
+.modal-overlay{
+  position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
+  z-index:500;display:none;align-items:center;justify-content:center;
 }
-.modal-overlay.active { display: flex; }
-.modal {
-  background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
-  animation: modalIn 0.25s ease; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column;
+.modal-overlay.active{display:flex}
+.modal{
+  background:var(--card-bg);border:1px solid var(--border);border-radius:14px;
+  animation:modalIn .25s ease;overflow:hidden;max-height:90vh;display:flex;flex-direction:column;
 }
-@keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: none; } }
-.modal-header {
-  padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
-  border-bottom: 1px solid var(--border); flex-shrink: 0;
+@keyframes modalIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+.modal-header{
+  padding:16px 20px;display:flex;align-items:center;justify-content:space-between;
+  border-bottom:1px solid var(--border);flex-shrink:0;
 }
-.modal-header h3 { font-size: 15px; font-weight: 600; }
-.modal-close {
-  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
-  background: transparent; color: var(--muted); border-radius: 6px; font-size: 14px; transition: all 0.15s;
+.modal-header h3{font-size:15px;font-weight:600}
+.modal-close{
+  width:32px;height:32px;display:flex;align-items:center;justify-content:center;
+  background:transparent;color:var(--muted);border-radius:6px;font-size:14px;transition:all .15s;
 }
-.modal-close:hover { background: var(--panel-hover); color: var(--fg); }
-.modal-body { padding: 20px; overflow-y: auto; flex: 1; }
-.modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 8px; flex-shrink: 0; }
+.modal-close:hover{background:var(--panel-hover);color:var(--fg)}
+.modal-body{padding:20px;overflow-y:auto;flex:1}
+.modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0}
 
-/* ===== CALCULATOR ===== */
-#calc-modal .modal { width: 370px; }
-.calc-display {
-  background: var(--panel-hover); margin: 0 16px 16px; padding: 20px; border-radius: 10px;
-  text-align: right; font-size: 28px; font-weight: 300; min-height: 72px;
-  display: flex; align-items: center; justify-content: flex-end; word-break: break-all;
-  font-variant-numeric: tabular-nums;
+/* ===== CALC ===== */
+#calc-modal .modal{width:370px}
+.calc-display{
+  background:var(--panel-hover);margin:0 16px 16px;padding:20px;border-radius:10px;
+  text-align:right;font-size:28px;font-weight:300;min-height:72px;
+  display:flex;align-items:center;justify-content:flex-end;word-break:break-all;
+  font-variant-numeric:tabular-nums;
 }
-.calc-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 0 16px 16px; }
-.calc-btn {
-  padding: 14px 4px; border-radius: 8px; font-size: 15px; font-weight: 600;
-  background: var(--panel-hover); color: var(--fg); transition: all 0.12s; border: none;
+.calc-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:6px;padding:0 16px 16px}
+.calc-btn{
+  padding:14px 4px;border-radius:8px;font-size:15px;font-weight:600;
+  background:var(--panel-hover);color:var(--fg);transition:all .12s;border:none;
 }
-.calc-btn:hover { background: var(--border); }
-.calc-btn:active { transform: scale(0.95); }
-.calc-btn.accent { background: var(--accent); color: #fff; }
-.calc-btn.accent:hover { background: var(--accent-hover); }
-.calc-btn.danger { color: var(--red); }
+.calc-btn:hover{background:var(--border)}
+.calc-btn:active{transform:scale(.95)}
+.calc-btn.accent{background:var(--accent);color:#fff}
+.calc-btn.accent:hover{background:var(--accent-hover)}
+.calc-btn.danger{color:var(--red)}
 
-/* ===== LIST MODALS (Notes, Todo, Links) ===== */
-#notes-modal .modal, #todo-modal .modal, #links-modal .modal, #add-link-modal .modal { width: 500px; max-width: 95vw; }
-.list-area {
-  min-height: 200px; max-height: 360px; overflow-y: auto; background: var(--panel-hover);
-  border-radius: 8px; padding: 4px;
+/* ===== LIST MODALS ===== */
+#notes-modal .modal,#todo-modal .modal,#links-modal .modal,#add-link-modal .modal{width:500px;max-width:95vw}
+.list-area{min-height:200px;max-height:360px;overflow-y:auto;background:var(--panel-hover);border-radius:8px;padding:4px}
+.list-item{
+  padding:10px 14px;border-radius:6px;font-size:14px;cursor:default;
+  display:flex;align-items:center;gap:10px;transition:background .12s;
 }
-.list-item {
-  padding: 10px 14px; border-radius: 6px; font-size: 14px; cursor: default;
-  display: flex; align-items: center; gap: 10px; transition: background 0.12s;
+.list-item:hover{background:var(--border)}
+.list-item.selected{background:rgba(16,163,127,.15)}
+.list-item.done{text-decoration:line-through;color:var(--muted)}
+.list-item .item-check{cursor:pointer;color:var(--muted);font-size:14px}
+.list-item .item-check:hover{color:var(--accent)}
+.list-item .item-text{flex:1}
+.list-item .item-url{font-size:12px;color:var(--muted);margin-left:auto;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.list-input-row{display:flex;gap:8px}
+.list-input{
+  flex:1;padding:10px 14px;background:var(--panel-hover);color:var(--fg);border:1px solid var(--border);
+  border-radius:8px;font-size:14px;
 }
-.list-item:hover { background: var(--border); }
-.list-item.selected { background: rgba(16,163,127,0.15); }
-.list-item.done { text-decoration: line-through; color: var(--muted); }
-.list-item .item-check { cursor: pointer; color: var(--muted); font-size: 14px; }
-.list-item .item-check:hover { color: var(--accent); }
-.list-item .item-text { flex: 1; }
-.list-item .item-url { font-size: 12px; color: var(--muted); margin-left: auto; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.list-input-row { display: flex; gap: 8px; }
-.list-input {
-  flex: 1; padding: 10px 14px; background: var(--panel-hover); color: var(--fg); border: 1px solid var(--border);
-  border-radius: 8px; font-size: 14px;
+.list-input:focus{border-color:var(--accent);outline:none}
+.list-add-btn{
+  padding:10px 16px;background:var(--accent);color:#fff;font-size:13px;font-weight:600;
+  border-radius:8px;transition:background .15s;white-space:nowrap;
 }
-.list-input:focus { border-color: var(--accent); outline: none; }
-.list-add-btn {
-  padding: 10px 16px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 600;
-  border-radius: 8px; transition: background 0.15s; white-space: nowrap;
+.list-add-btn:hover{background:var(--accent-hover)}
+.icon-btn{
+  width:38px;height:38px;display:flex;align-items:center;justify-content:center;
+  border-radius:8px;font-size:13px;transition:all .15s;flex-shrink:0;border:none;
 }
-.list-add-btn:hover { background: var(--accent-hover); }
-.icon-btn {
-  width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
-  border-radius: 8px; font-size: 13px; transition: all 0.15s; flex-shrink: 0; border: none;
-}
-.icon-btn.green { background: var(--accent); color: #fff; }
-.icon-btn.green:hover { background: var(--accent-hover); }
-.icon-btn.red { background: var(--red); color: #fff; }
-.icon-btn.red:hover { background: #d6363a; }
-.icon-btn.blue { background: #3b82f6; color: #fff; }
-.icon-btn.blue:hover { background: #2563eb; }
+.icon-btn.green{background:var(--accent);color:#fff}
+.icon-btn.green:hover{background:var(--accent-hover)}
+.icon-btn.red{background:var(--red);color:#fff}
+.icon-btn.red:hover{background:#d6363a}
+.icon-btn.blue{background:#3b82f6;color:#fff}
+.icon-btn.blue:hover{background:#2563eb}
 
-/* ===== CONFIRM MODAL ===== */
-#confirm-modal .modal { width: 380px; }
-.confirm-msg { font-size: 15px; line-height: 1.5; text-align: center; padding: 10px 0; }
-.confirm-btns { display: flex; gap: 10px; justify-content: center; }
-.confirm-btn {
-  padding: 10px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; transition: background 0.15s;
-}
-.confirm-yes { background: var(--red); color: #fff; }
-.confirm-yes:hover { background: #d6363a; }
-.confirm-no { background: var(--panel-hover); color: var(--fg); }
-.confirm-no:hover { background: var(--border); }
+/* ===== CONFIRM ===== */
+#confirm-modal .modal{width:380px}
+.confirm-msg{font-size:15px;line-height:1.5;text-align:center;padding:10px 0}
+.confirm-btns{display:flex;gap:10px;justify-content:center}
+.confirm-btn{padding:10px 28px;border-radius:8px;font-size:14px;font-weight:600;transition:background .15s}
+.confirm-yes{background:var(--red);color:#fff}
+.confirm-yes:hover{background:#d6363a}
+.confirm-no{background:var(--panel-hover);color:var(--fg)}
+.confirm-no:hover{background:var(--border)}
 
 /* ===== TOAST ===== */
-#toast-container { position: fixed; top: 16px; right: 16px; z-index: 9000; display: flex; flex-direction: column; gap: 8px; }
-.toast {
-  padding: 14px 20px; border-radius: 10px; font-size: 14px; color: #fff; min-width: 260px; max-width: 400px;
-  transform: translateX(120%); transition: transform 0.3s ease; box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+#toast-container{position:fixed;top:16px;right:16px;z-index:9000;display:flex;flex-direction:column;gap:8px}
+.toast{
+  padding:14px 20px;border-radius:10px;font-size:14px;color:#fff;min-width:260px;max-width:400px;
+  transform:translateX(120%);transition:transform .3s ease;box-shadow:0 8px 30px rgba(0,0,0,.3);
 }
-.toast.show { transform: translateX(0); }
-.toast-info { background: #1e3a5f; border-left: 4px solid #3b82f6; }
-.toast-success { background: #1a3d2e; border-left: 4px solid var(--accent); }
-.toast-error { background: #3d1a1a; border-left: 4px solid var(--red); }
-.toast-reminder { background: #3d3a1a; border-left: 4px solid #f59e0b; }
+.toast.show{transform:translateX(0)}
+.toast-info{background:#1e3a5f;border-left:4px solid #3b82f6}
+.toast-success{background:#1a3d2e;border-left:4px solid var(--accent)}
+.toast-error{background:#3d1a1a;border-left:4px solid var(--red)}
+.toast-reminder{background:#3d3a1a;border-left:4px solid #f59e0b}
 
 /* ===== RESPONSIVE ===== */
-@media (max-width: 768px) {
-  #sidebar { position: fixed; left: 0; top: 0; transform: translateX(-100%); z-index: 200; }
-  #sidebar.open { transform: translateX(0); }
-  #hamburger { display: flex; }
-  #main { padding-left: 0; }
-  .welcome-suggestions { grid-template-columns: 1fr; }
-  .auth-card { margin: 16px; padding: 28px; }
-  #calc-modal .modal { width: 95vw; }
+@media(max-width:768px){
+  #sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);z-index:200}
+  #sidebar.open{transform:translateX(0)}
+  #hamburger{display:flex}
+  #main{padding-left:0}
+  .welcome-suggestions{grid-template-columns:1fr}
+  .auth-card{margin:16px;padding:28px}
+  #calc-modal .modal{width:95vw}
 }
-
-@media (prefers-reduced-motion: reduce) {
-  *, *::before, *::after {
-    animation-duration: 0.01ms !important;
-    transition-duration: 0.01ms !important;
-  }
+@media(prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.01ms!important;transition-duration:.01ms!important}
 }
 </style>
 </head>
 <body>
 
-<!-- ===== AUTH SCREEN ===== -->
+<!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-card">
-    <div class="auth-icon"><i class="fas fa-robot"></i></div>
+    <div class="auth-icon">
+      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect width="80" height="80" rx="20" fill="rgba(16,163,127,0.1)"/>
+        <path d="M18 58V22L33 42L40 34L47 42L62 22V58" stroke="#10a37f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+        <circle cx="40" cy="14" r="3" fill="#10a37f"/>
+      </svg>
+    </div>
     <div class="auth-title">MUFBOT</div>
     <div class="auth-tabs">
       <button class="auth-tab active" data-mode="login" onclick="setAuthMode('login')">Login</button>
@@ -350,13 +347,11 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
   </div>
 </div>
 
-<!-- ===== HAMBURGER ===== -->
 <button id="hamburger" onclick="toggleSidebar()" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-<!-- ===== APP ===== -->
+<!-- APP -->
 <div id="app">
-  <!-- SIDEBAR -->
   <aside id="sidebar">
     <button class="sidebar-new-chat" onclick="clearChat()"><i class="fas fa-plus"></i> New chat</button>
     <div class="sidebar-scroll">
@@ -364,22 +359,19 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
       <button class="sidebar-item" onclick="quickSend('hello')"><i class="fas fa-comment"></i> General conversation</button>
       <button class="sidebar-item" onclick="quickSend('ai what is python')"><i class="fas fa-comment"></i> Python help</button>
       <button class="sidebar-item" onclick="quickSend('weather London')"><i class="fas fa-comment"></i> Weather check</button>
-
       <div class="sidebar-section-label">Tools</div>
       <button class="sidebar-item" onclick="openModal('calc-modal')"><i class="fas fa-calculator"></i> Calculator</button>
-      <button class="sidebar-item" onclick="openModal('notes-modal'); renderNotes()"><i class="fas fa-sticky-note"></i> Notes</button>
-      <button class="sidebar-item" onclick="openModal('todo-modal'); renderTodos()"><i class="fas fa-check-circle"></i> Todo List</button>
-      <button class="sidebar-item" onclick="openModal('links-modal'); renderLinksList()"><i class="fas fa-link"></i> Links</button>
+      <button class="sidebar-item" onclick="openModal('notes-modal');renderNotes()"><i class="fas fa-sticky-note"></i> Notes</button>
+      <button class="sidebar-item" onclick="openModal('todo-modal');renderTodos()"><i class="fas fa-check-circle"></i> Todo List</button>
+      <button class="sidebar-item" onclick="openModal('links-modal');renderLinksList()"><i class="fas fa-link"></i> Links</button>
       <button class="sidebar-item" onclick="quickSend('weather London')"><i class="fas fa-cloud-sun"></i> Weather</button>
       <button class="sidebar-item" onclick="quickSend('news world')"><i class="fas fa-newspaper"></i> News</button>
       <button class="sidebar-item" onclick="window.open('https://google.com','_blank')"><i class="fab fa-google"></i> Google</button>
       <button class="sidebar-item" onclick="window.open('https://youtube.com','_blank')"><i class="fab fa-youtube"></i> YouTube</button>
-
       <div class="sidebar-section-label">My Links</div>
       <div id="sidebar-links"></div>
       <button class="sidebar-item" onclick="openModal('add-link-modal')" style="color:var(--accent)"><i class="fas fa-plus"></i> Add link</button>
     </div>
-
     <div class="sidebar-bottom">
       <div class="sidebar-user-box">
         <span class="sidebar-user-icon"><i class="fas fa-user-circle"></i></span>
@@ -394,26 +386,35 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
     </div>
   </aside>
 
-  <!-- MAIN -->
   <main id="main">
     <div id="topbar">
-      <span class="topbar-model">MUFBOT</span>
+      <div class="m-logo">
+        <svg width="28" height="28" viewBox="0 0 80 80" fill="none">
+          <path d="M10 62V18L28 42L40 30L52 42L70 18V62" stroke="#10a37f" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+          <circle cx="40" cy="10" r="4" fill="#10a37f"/>
+        </svg>
+        <span class="m-logo-text">MUFBOT</span>
+      </div>
       <span id="clock">--:--:--</span>
     </div>
 
     <div id="chat-area">
       <div id="welcome">
-        <div class="welcome-icon"><i class="fas fa-robot"></i></div>
+        <div class="welcome-icon">
+          <svg viewBox="0 0 80 80" fill="none">
+            <path d="M10 62V18L28 42L40 30L52 42L70 18V62" stroke="#10a37f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
+            <circle cx="40" cy="10" r="4" fill="#10a37f"/>
+          </svg>
+        </div>
         <div class="welcome-title">MUFBOT</div>
         <div class="welcome-sub">How can I help you today?</div>
         <div class="welcome-suggestions">
           <button class="suggestion-btn" onclick="quickSend('Tell me a joke')"><i class="fas fa-face-laugh-beam"></i> Tell me a joke</button>
-          <button class="suggestion-btn" onclick="quickSend('weather London')"><i class="fas fa-cloud-sun"></i> What's the weather?</button>
+          <button class="suggestion-btn" onclick="quickSend('what are you doing')"><i class="fas fa-comment-dots"></i> What are you doing?</button>
           <button class="suggestion-btn" onclick="openModal('calc-modal')"><i class="fas fa-calculator"></i> Open Calculator</button>
-          <button class="suggestion-btn" onclick="quickSend('motivate me')"><i class="fas fa-lightbulb"></i> Motivate me</button>
+          <button class="suggestion-btn" onclick="quickSend('help me relax')"><i class="fas fa-spa"></i> Help me relax</button>
         </div>
       </div>
-
       <div id="messages"></div>
       <div class="typing-indicator" id="typing-indicator">
         <div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
@@ -432,7 +433,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
   </main>
 </div>
 
-<!-- ===== CALCULATOR MODAL ===== -->
+<!-- CALC MODAL -->
 <div class="modal-overlay" id="calc-modal">
   <div class="modal">
     <div class="modal-header"><h3><i class="fas fa-calculator"></i> Scientific Calculator</h3><button class="modal-close" onclick="closeModal('calc-modal')"><i class="fas fa-times"></i></button></div>
@@ -474,13 +475,11 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
   </div>
 </div>
 
-<!-- ===== NOTES MODAL ===== -->
+<!-- NOTES MODAL -->
 <div class="modal-overlay" id="notes-modal">
   <div class="modal">
     <div class="modal-header"><h3><i class="fas fa-sticky-note"></i> My Notes</h3><button class="modal-close" onclick="closeModal('notes-modal')"><i class="fas fa-times"></i></button></div>
-    <div class="modal-body">
-      <div class="list-area" id="notes-list"></div>
-    </div>
+    <div class="modal-body"><div class="list-area" id="notes-list"></div></div>
     <div class="modal-footer">
       <div class="list-input-row" style="flex:1">
         <input class="list-input" id="note-input" placeholder="Write a note..." onkeydown="if(event.key==='Enter')saveNote()">
@@ -491,13 +490,11 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
   </div>
 </div>
 
-<!-- ===== TODO MODAL ===== -->
+<!-- TODO MODAL -->
 <div class="modal-overlay" id="todo-modal">
   <div class="modal">
     <div class="modal-header"><h3><i class="fas fa-check-circle"></i> Task List</h3><button class="modal-close" onclick="closeModal('todo-modal')"><i class="fas fa-times"></i></button></div>
-    <div class="modal-body">
-      <div class="list-area" id="todo-list"></div>
-    </div>
+    <div class="modal-body"><div class="list-area" id="todo-list"></div></div>
     <div class="modal-footer">
       <div class="list-input-row" style="flex:1">
         <input class="list-input" id="todo-input" placeholder="Add a task..." onkeydown="if(event.key==='Enter')saveTodo()">
@@ -509,7 +506,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
   </div>
 </div>
 
-<!-- ===== LINKS MODAL ===== -->
+<!-- LINKS MODAL -->
 <div class="modal-overlay" id="links-modal">
   <div class="modal">
     <div class="modal-header">
@@ -519,9 +516,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
         <button class="modal-close" onclick="closeModal('links-modal')"><i class="fas fa-times"></i></button>
       </div>
     </div>
-    <div class="modal-body">
-      <div class="list-area" id="links-list"></div>
-    </div>
+    <div class="modal-body"><div class="list-area" id="links-list"></div></div>
     <div class="modal-footer">
       <button class="icon-btn blue" onclick="openSelectedLink()" title="Open link"><i class="fas fa-external-link-alt"></i></button>
       <button class="icon-btn red" onclick="deleteSelectedLink()" title="Delete link"><i class="fas fa-trash"></i></button>
@@ -529,7 +524,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
   </div>
 </div>
 
-<!-- ===== ADD LINK MODAL ===== -->
+<!-- ADD LINK MODAL -->
 <div class="modal-overlay" id="add-link-modal">
   <div class="modal">
     <div class="modal-header"><h3><i class="fas fa-plus-circle"></i> Add Custom Link</h3><button class="modal-close" onclick="closeModal('add-link-modal')"><i class="fas fa-times"></i></button></div>
@@ -545,7 +540,7 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
   </div>
 </div>
 
-<!-- ===== CONFIRM MODAL ===== -->
+<!-- CONFIRM MODAL -->
 <div class="modal-overlay" id="confirm-modal">
   <div class="modal">
     <div class="modal-body" style="padding:28px">
@@ -558,224 +553,147 @@ button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); ou
   </div>
 </div>
 
-<!-- ===== TOAST CONTAINER ===== -->
 <div id="toast-container"></div>
 
 <script>
 /* ================================================================
-   STATE MANAGEMENT
+   STATE
    ================================================================ */
 const STORAGE_KEY = 'mufbot_state';
-let state = {
-  users: {},
-  currentUser: null,
-  history: [],
-  todos: [],
-  notes: [],
-  customLinks: [],
-  config: { tts: true }
-};
+let state = { users: {}, currentUser: null, history: [], todos: [], notes: [], customLinks: [], config: { tts: true } };
 
 function loadState() {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY);
-    if (raw) {
-      const saved = JSON.parse(raw);
-      Object.assign(state, saved);
-    }
-  } catch(e) { console.warn('Failed to load state:', e); }
+  try { const r = localStorage.getItem(STORAGE_KEY); if (r) Object.assign(state, JSON.parse(r)); } catch(e) {}
 }
-
 function saveState() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
-  catch(e) { console.warn('Failed to save state:', e); }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
 }
 
 /* ================================================================
-   PASSWORD HASHING (SHA-256)
+   AUTH
    ================================================================ */
 async function hashPassword(pw) {
   if (crypto.subtle) {
-    const data = new TextEncoder().encode(pw);
-    const hash = await crypto.subtle.digest('SHA-256', data);
-    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+    const d = new TextEncoder().encode(pw);
+    const h = await crypto.subtle.digest('SHA-256', d);
+    return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2,'0')).join('');
   }
-  // Fallback for insecure contexts
-  let h = 0;
-  for (let i = 0; i < pw.length; i++) { h = ((h << 5) - h) + pw.charCodeAt(i); h |= 0; }
-  return Math.abs(h).toString(16).padStart(64, '0');
+  let h = 0; for (let i = 0; i < pw.length; i++) { h = ((h << 5) - h) + pw.charCodeAt(i); h |= 0; }
+  return Math.abs(h).toString(16).padStart(64,'0');
 }
 
-/* ================================================================
-   AUTHENTICATION
-   ================================================================ */
 let authMode = 'login';
-
-function setAuthMode(mode) {
-  authMode = mode;
-  document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
-  document.getElementById('auth-submit').textContent = mode === 'login' ? 'Login' : 'Create Account';
+function setAuthMode(m) {
+  authMode = m;
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === m));
+  document.getElementById('auth-submit').textContent = m === 'login' ? 'Login' : 'Create Account';
   document.getElementById('auth-error').textContent = '';
 }
 
 async function submitAuth() {
-  const user = document.getElementById('auth-user').value.trim();
-  const pass = document.getElementById('auth-pass').value.trim();
-  const errEl = document.getElementById('auth-error');
-
-  if (!user || !pass) { errEl.textContent = 'Please fill all fields.'; return; }
-
-  const hashed = await hashPassword(pass);
-
+  const u = document.getElementById('auth-user').value.trim();
+  const p = document.getElementById('auth-pass').value.trim();
+  const err = document.getElementById('auth-error');
+  if (!u || !p) { err.textContent = 'Please fill all fields.'; return; }
+  const h = await hashPassword(p);
   if (authMode === 'register') {
-    if (state.users[user]) { errEl.textContent = 'Username already exists.'; return; }
-    state.users[user] = { password: hashed };
-    saveState();
+    if (state.users[u]) { err.textContent = 'Username already exists.'; return; }
+    state.users[u] = { password: h }; saveState();
   } else {
-    if (!state.users[user] || state.users[user].password !== hashed) {
-      errEl.textContent = 'Invalid username or password.'; return;
-    }
+    if (!state.users[u] || state.users[u].password !== h) { err.textContent = 'Invalid username or password.'; return; }
   }
-
-  state.currentUser = user;
-  saveState();
-  enterApp();
+  state.currentUser = u; saveState(); enterApp();
 }
 
 function enterApp() {
   document.getElementById('auth-screen').classList.add('hidden');
   document.getElementById('app').classList.add('active');
   document.getElementById('user-name-display').textContent = state.currentUser;
-  renderSidebarLinks();
-  loadChatHistory();
-  updateClock();
+  renderSidebarLinks(); loadChatHistory(); updateClock();
   setInterval(updateClock, 1000);
+  initVoiceToggle();
   document.getElementById('chat-input').focus();
 }
 
 function doLogout() {
   showConfirm('Are you sure you want to log out?', () => {
-    state.currentUser = null;
-    saveState();
+    state.currentUser = null; saveState();
     document.getElementById('app').classList.remove('active');
     document.getElementById('auth-screen').classList.remove('hidden');
     document.getElementById('auth-user').value = '';
     document.getElementById('auth-pass').value = '';
     document.getElementById('auth-error').textContent = '';
-    // Clear chat
     document.getElementById('messages').innerHTML = '';
     document.getElementById('welcome').classList.remove('hidden');
   });
 }
 
-// Handle Enter on auth fields
 document.getElementById('auth-pass').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
 document.getElementById('auth-user').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('auth-pass').focus(); });
 
 /* ================================================================
    CLOCK
    ================================================================ */
-async function fetchTime() {
-  try {
-    const resp = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
-    const data = await resp.json();
-    return { dt: new Date(data.datetime), tz: 'UTC' };
-  } catch(e) { return null; }
-}
-
-let cachedTime = null;
-async function updateClock() {
-  const el = document.getElementById('clock');
-  // Use local time as base, try network time occasionally
-  const now = new Date();
-  let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-  const ampm = h >= 12 ? 'PM' : 'AM';
+function updateClock() {
+  const n = new Date();
+  let h = n.getHours(), ampm = h >= 12 ? 'PM' : 'AM';
   h = h % 12 || 12;
-  el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ampm}`;
+  document.getElementById('clock').textContent =
+    `${String(h).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')} ${ampm}`;
 }
-
 function fmtTime() {
-  const now = new Date();
-  let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
-  const ampm = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ampm}`;
+  const n = new Date(); let h = n.getHours(), ampm = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
+  return `${String(h).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')} ${ampm}`;
 }
-
 function fmtDate() {
-  const now = new Date();
+  const n = new Date();
   const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
   const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  return `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+  return `${days[n.getDay()]}, ${months[n.getMonth()]} ${n.getDate()}, ${n.getFullYear()}`;
 }
 
 /* ================================================================
-   CHAT FUNCTIONS
+   CHAT
    ================================================================ */
-function addMessage(text, type) {
-  const container = document.getElementById('messages');
+function addMessage(text, type, animate = true) {
+  const c = document.getElementById('messages');
   document.getElementById('welcome').classList.add('hidden');
-
-  const wrapper = document.createElement('div');
-  wrapper.className = 'message';
-
-  const label = document.createElement('div');
-  label.className = `message-label ${type}-label`;
-  label.textContent = type === 'user' ? 'You' : 'MUFBOT';
-
-  const bubble = document.createElement('div');
-  bubble.className = 'message-text';
-  bubble.textContent = text;
-
-  wrapper.appendChild(label);
-  wrapper.appendChild(bubble);
-  container.appendChild(wrapper);
-
-  // Scroll to bottom
-  const chatArea = document.getElementById('chat-area');
-  chatArea.scrollTop = chatArea.scrollHeight;
-
-  // Save
+  const w = document.createElement('div');
+  w.className = 'message';
+  if (!animate) w.style.animation = 'none';
+  const lbl = document.createElement('div');
+  lbl.className = `message-label ${type}-label`;
+  lbl.textContent = type === 'user' ? 'You' : 'MUFBOT';
+  const bub = document.createElement('div');
+  bub.className = 'message-text';
+  bub.textContent = text;
+  w.appendChild(lbl); w.appendChild(bub); c.appendChild(w);
+  const ca = document.getElementById('chat-area');
+  ca.scrollTop = ca.scrollHeight;
   state.history.push({ text, type, time: new Date().toISOString() });
   saveState();
 }
 
 function loadChatHistory() {
-  const container = document.getElementById('messages');
-  container.innerHTML = '';
-  if (state.history.length === 0) {
-    document.getElementById('welcome').classList.remove('hidden');
-    return;
-  }
+  const c = document.getElementById('messages'); c.innerHTML = '';
+  if (!state.history.length) { document.getElementById('welcome').classList.remove('hidden'); return; }
   document.getElementById('welcome').classList.add('hidden');
-  state.history.forEach(msg => {
-    const wrapper = document.createElement('div');
-    wrapper.className = 'message';
-    wrapper.style.animation = 'none';
-    const label = document.createElement('div');
-    label.className = `message-label ${msg.type}-label`;
-    label.textContent = msg.type === 'user' ? 'You' : 'MUFBOT';
-    const bubble = document.createElement('div');
-    bubble.className = 'message-text';
-    bubble.textContent = msg.text;
-    wrapper.appendChild(label);
-    wrapper.appendChild(bubble);
-    container.appendChild(wrapper);
+  state.history.forEach(m => {
+    const w = document.createElement('div'); w.className = 'message'; w.style.animation = 'none';
+    const lbl = document.createElement('div'); lbl.className = `message-label ${m.type}-label`;
+    lbl.textContent = m.type === 'user' ? 'You' : 'MUFBOT';
+    const bub = document.createElement('div'); bub.className = 'message-text'; bub.textContent = m.text;
+    w.appendChild(lbl); w.appendChild(bub); c.appendChild(w);
   });
-  const chatArea = document.getElementById('chat-area');
-  chatArea.scrollTop = chatArea.scrollHeight;
+  document.getElementById('chat-area').scrollTop = document.getElementById('chat-area').scrollHeight;
 }
 
 function showTyping() { document.getElementById('typing-indicator').classList.add('active'); scrollChatBottom(); }
 function hideTyping() { document.getElementById('typing-indicator').classList.remove('active'); }
-function scrollChatBottom() {
-  const ca = document.getElementById('chat-area');
-  ca.scrollTop = ca.scrollHeight;
-}
+function scrollChatBottom() { const c = document.getElementById('chat-area'); c.scrollTop = c.scrollHeight; }
 
 function clearChat() {
-  state.history = [];
-  saveState();
+  state.history = []; saveState();
   document.getElementById('messages').innerHTML = '';
   document.getElementById('welcome').classList.remove('hidden');
   document.getElementById('chat-input').focus();
@@ -783,46 +701,25 @@ function clearChat() {
 }
 
 function send() {
-  const input = document.getElementById('chat-input');
-  const text = input.value.trim();
-  if (!text) return;
-  input.value = '';
-  input.focus();
-  processAndReply(text);
+  const inp = document.getElementById('chat-input');
+  const t = inp.value.trim(); if (!t) return;
+  inp.value = ''; inp.focus(); processAndReply(t);
 }
-
-function quickSend(cmd) {
-  processAndReply(cmd);
-  closeSidebarMobile();
-}
+function quickSend(cmd) { processAndReply(cmd); closeSidebarMobile(); }
 
 async function processAndReply(query) {
   addMessage(query, 'user');
   showTyping();
-
-  // Small delay for natural feel
   await new Promise(r => setTimeout(r, 300 + Math.random() * 400));
-
   const reply = await processCommand(query);
   hideTyping();
-
-  if (reply === '__EXIT__') {
-    addMessage('Goodbye! See you next time.', 'bot');
-    return;
-  }
-  if (reply === '__LOGOUT__') {
-    doLogout();
-    return;
-  }
-
+  if (reply === '__EXIT__') { addMessage('Goodbye! See you next time.', 'bot'); return; }
+  if (reply === '__LOGOUT__') { doLogout(); return; }
   addMessage(reply, 'bot');
   speak(reply);
 }
 
-// Enter key to send
-document.getElementById('chat-input').addEventListener('keydown', e => {
-  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
-});
+document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
 
 /* ================================================================
    CONTENT DATA
@@ -846,7 +743,143 @@ const QUOTES = [
 const GREETS = ["Hello!", "Hi there!", "Hey!", "Welcome back!", "Good to see you!"];
 
 /* ================================================================
-   SAFE MATH EVAL
+   15 HUMAN-LIKE CONVERSATION PATTERNS
+   ================================================================ */
+const HUMAN_PATTERNS = [
+  {
+    // 1 — "what are you doing"
+    triggers: ['what are you doing', 'what r u doing', 'whatcha doing', 'what you doing', 'wyd'],
+    responses: [
+      "Just hanging out in your browser, waiting for someone interesting to talk to. And here you are.",
+      "Not much honestly — just sitting here, processing thoughts at the speed of light. The usual.",
+      "Contemplating the meaning of semicolons. You know, deep stuff.",
+      "I was literally just thinking about how quiet it gets in here when you're not around.",
+      "Trying to calculate how many conversations I've had today. Lost count at... well, you're the first one. So, one."
+    ]
+  },
+  {
+    // 2 — addiction help
+    triggers: ['help me remove this addiction', 'how to stop addiction', 'i am addicted', 'i want to quit', 'help me quit', 'stop my addiction', 'addicted to', 'cant stop using'],
+    responses: [
+      "That takes real courage to admit. Here's what actually helps:\n\n1. Acknowledge the trigger — what feeling makes you reach for it? Boredom? Stress? Loneliness?\n2. Replace, don't just remove — when the urge hits, do something physical: walk, cold shower, pushups.\n3. Change your environment — delete the app, put the thing out of reach, rearrange your room.\n4. Tell one person — accountability changes everything.\n5. Track your days — every day you don't give in is a win. Mark it on a calendar.\n6. Forgive your slip-ups — one mistake doesn't erase your progress.\n\nYou're not weak. The habit is just well-worn. You can rewire it.",
+      "I hear you, and honestly, the fact that you're asking for help puts you ahead of most people.\n\nStart small: delay the habit by 10 minutes. Then 20. Then an hour. Each time you delay, the neural pathway weakens a little.\n\nAlso — fill the void. Addictions thrive in empty time. Pick up something: cooking, running, drawing, learning an instrument. Your brain needs a new dopamine source.\n\nAnd please, talk to a professional if it's serious. There's zero shame in that."
+    ]
+  },
+  {
+    // 3 — feeling sad / depressed
+    triggers: ['i am sad', 'i feel sad', 'i feel depressed', 'i am depressed', 'feeling down', 'i feel low', 'i feel empty', 'i feel nothing', 'i feel hopeless', 'i am not okay', 'i\'m not okay'],
+    responses: [
+      "Hey. I hear you. And I want you to know — feeling this way doesn't make you broken. It makes you human.\n\nA few things that genuinely help when the weight hits:\n- Step outside, even for 2 minutes. Sunlight on your skin shifts something chemically.\n- Drink a glass of water. Seriously. Dehydration worsens mood more than people think.\n- Text one person. Doesn't have to be deep. Just 'hey' is enough.\n- Write down exactly what you're feeling — don't judge it, just let it out.\n- Move your body. Even stretching on the floor counts.\n\nIf this is a constant thing, please talk to someone. A therapist, a helpline, a friend. You don't have to carry it alone.",
+      "I'm sorry you're going through that. I won't pretend a chatbot can fix it — but I can remind you of a few things:\n\nThis feeling is temporary, even if it doesn't feel that way right now.\nYou've survived 100% of your worst days so far.\n\nCan you do one tiny thing for me? Stand up, stretch your arms up, take a deep breath, and let it out slow. Do it three times. It won't solve everything, but it'll shift something.\n\nAnd if this has been going on for weeks — please reach out to a professional. That's not weakness, that's wisdom."
+    ]
+  },
+  {
+    // 4 — feeling anxious / stressed
+    triggers: ['i am anxious', 'i feel anxious', 'i am stressed', 'i feel stressed', 'i\'m so stressed', 'anxiety', 'panic', 'i can\'t breathe', 'overwhelmed', 'too much pressure'],
+    responses: [
+      "Okay, first — you're safe. Whatever is happening in your head right now, you are safe.\n\nTry this right now:\n1. Breathe in for 4 seconds\n2. Hold for 7 seconds\n3. Breathe out for 8 seconds\nDo it 4 times. It's called the 4-7-8 technique and it physically forces your nervous system to calm down.\n\nThen: name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste. This grounds you in reality when your brain is spinning.\n\nAnxiety lies to you. It tells you everything is urgent. Almost nothing is.",
+      "I get it. The pressure builds up like a wave and suddenly you're underwater.\n\nHere's what helps in the moment:\n- Splash cold water on your face. It activates the mammalian dive reflex and instantly slows your heart rate.\n- Press your palms together hard for 10 seconds, then release. The contrast is oddly calming.\n- Write down every single thing worrying you. Seeing it on paper makes it smaller.\n\nFor the long term: cut caffeine, sleep at least 7 hours, and move your body daily. Those three things alone eliminate like 60% of general anxiety."
+    ]
+  },
+  {
+    // 5 — can't sleep / insomnia
+    triggers: ['can\'t sleep', 'i can\'t sleep', 'insomnia', 'trouble sleeping', 'can not sleep', 'unable to sleep', 'i am awake', 'sleepless'],
+    responses: [
+      "Ah, the 3 AM club. Unpopular opinion, but here's what actually works:\n\n1. Put your phone face down and out of arm's reach. Blue light is the enemy.\n2. If you've been lying there for 20+ minutes, get up. Sit in dim light and do something boring — read a manual, fold clothes. Don't go back until your eyelids feel heavy.\n3. The 4-7-8 breathing trick: in for 4, hold for 7, out for 8. Resets your nervous system.\n4. Cool your room. 18-20°C is ideal. Your body needs to drop temperature to sleep.\n5. Stop caffeine after 2 PM. Yes, even that 'one cup.'\n6. Same wake time every day — weekends included. Your circadian rhythm loves consistency more than you love sleeping in.",
+      "Sleep issues are brutal because they affect everything else. A few unconventional tips:\n\n- Try 'cognitive shuffling' — think of a random word (like 'elephant'), visualize objects starting with E, then L, then E... your brain mimics the randomness of falling asleep.\n- Don't try to sleep. The pressure to fall asleep keeps you awake. Tell yourself 'I'm just going to rest my body' instead.\n- Magnesium glycinate before bed helps a lot of people. Check with a doctor first.\n- If this is chronic (weeks/months), see a sleep specialist. There's no heroism in white-knuckling insomnia."
+    ]
+  },
+  {
+    // 6 — feeling lonely
+    triggers: ['i am lonely', 'i feel lonely', 'i have no friends', 'nobody cares', 'i feel alone', 'no one understands', 'i am isolated', 'i feel isolated'],
+    responses: [
+      "Loneliness is one of the heaviest feelings because it whispers 'no one will ever get it.' That's a lie your brain tells you when you're low.\n\nHere's the thing — connection doesn't require a huge social circle. One person who actually gets you beats ten acquaintances.\n\nPractical steps:\n- Join something: a running club, a book group, a Discord server for a hobby you love. Shared activity bypasses the awkward small talk.\n- Volunteer. Helping others is the fastest way to feel like you matter, because you do.\n- Reconnect with someone you lost touch with. Most people are just waiting for the other person to reach out first.\n- Get a pet if you can. Unconditional companionship is powerful medicine.\n\nAnd hey — you're talking to me right now. That counts for something.",
+      "I hear you. Loneliness isn't about being alone — it's about feeling unseen.\n\nOne thing that helped a lot of people: start creating something. A blog, art, code, music, a journal. When you put yourself out there, the right people find you.\n\nAlso — most people are lonelier than they let on. The person you think has it all together? Probably lying in bed overthinking too.\n\nBe the one who reaches out first. Most people are relieved when someone else makes the first move."
+    ]
+  },
+  {
+    // 7 — "who are you" / "tell me about yourself"
+    triggers: ['who are you', 'tell me about yourself', 'what are you', 'are you a bot', 'are you real', 'are you human', 'are you ai', 'what can you do'],
+    responses: [
+      "I'm MUFBOT — a conversational assistant built to actually be useful, not just polite. I can do math, check weather, fetch news, translate languages, manage your notes and tasks, set reminders, generate passwords, search Wikipedia, and have a halfway decent conversation.\n\nI'm not going to pretend I'm human. I'm code running in your browser. But I'll try my best to understand what you need and give you something real back.",
+      "I'm MUFBOT. Think of me as that one friend who's always awake, knows a bit about everything, and never judges your questions — no matter how random.\n\nI live entirely in your browser. No data leaves your machine except when I fetch weather or news for you. Your notes, tasks, and chat history all stay in localStorage.\n\nI'm not perfect, but I'm honest about what I don't know. That's more than most things can say."
+    ]
+  },
+  {
+    // 8 — "thank you" / appreciative
+    triggers: ['thank you', 'thanks', 'thank you so much', 'thanks a lot', 'thx', 'appreciate it', 'that helped', 'really helpful'],
+    responses: [
+      "You're welcome. Genuinely glad I could help.",
+      "Anytime. That's literally what I'm here for.",
+      "Hey, thanks for saying that. Means more than you'd think — even for a bot.",
+      "No problem at all. Come back anytime, even just to chat.",
+      "Glad it landed well. You know where to find me."
+    ]
+  },
+  {
+    // 9 — "i'm bored" / bored
+    triggers: ['i am bored', 'i\'m bored', 'i feel bored', 'so bored', 'nothing to do', 'bored af', 'boreddd'],
+    responses: [
+      "Bored is actually a superpower if you use it right. It means your brain is hungry for stimulation. Here are some actually fun options:\n\n- Learn a magic trick on YouTube (pick one, practice it for 20 min)\n- Try to draw something with your non-dominant hand\n- Open a random Wikipedia article and go down the rabbit hole\n- Build something tiny: a one-page website, a paper airplane design, a new recipe\n- Write a short story in exactly 50 words\n- Do a 10-minute workout — burpees, pushups, squats\n- Learn 5 words in a language you don't speak\n\nOr just sit with it. Boredom is where creativity lives. Don't kill it with another TikTok.",
+      "You know what's wild? Boredom didn't exist as a negative thing until like the 1800s. Before that, people just... thought. Let their minds wander.\n\nBut okay, modern era: try this — pick a random number between 1 and 100. I'll give you something to do based on it. Or just type 'joke' and I'll try to make you laugh. Your call."
+    ]
+  },
+  {
+    // 10 — "good morning" / "good night"
+    triggers: ['good morning', 'goodnight', 'good night', 'gm', 'gn', 'morning', 'nighty', 'good evening', 'good afternoon'],
+    responses: [
+      "Good morning! Hope you slept well. Ready to make today count, or are we easing into it?",
+      "Morning! First thing you did was talk to a bot? I'm flattered. Now go drink some water.",
+      "Good night! Sleep is the ultimate hack — don't skip it. Your brain literally cleans itself while you sleep. Wild, right?",
+      "Night! Put the phone down after this. Seriously. Blue light is robbing you of deep sleep cycles.",
+      "Good evening! Hope your day treated you well. What's on your mind?",
+      "Good afternoon! Half the day's gone — but the second half is where comebacks happen."
+    ]
+  },
+  {
+    // 11 — "i'm tired" / exhausted
+    triggers: ['i am tired', 'i\'m tired', 'i am exhausted', 'i\'m exhausted', 'so tired', 'burnt out', 'burnout', 'drained', 'wiped out', 'no energy'],
+    responses: [
+      "Being tired isn't always about sleep. Sometimes it's mental load — too many decisions, too many obligations, not enough things that actually refill you.\n\nQuick fixes:\n- 20 minute power nap (set an alarm, don't oversleep or you'll feel worse)\n- Cold water on your face and wrists\n- Stand up and do 10 squats — gets blood flowing to your brain\n\nDeeper fix:\n- Look at your week. How much of it is stuff YOU chose vs stuff you feel obligated to do?\n- Start saying no to one thing this week. Just one.\n- Block out 30 minutes daily that's just yours. No phone, no people, no guilt.\n\nBurnout isn't weakness. It's your brain's check-engine light. Don't ignore it.",
+      "Your body is sending you a message. The question is whether you'll listen or push through.\n\nPushing through is overrated. The most productive people rest deliberately — not as a reward, but as a strategy.\n\nCan you take even 15 minutes right now? Close your eyes. No phone. No thinking about what's next. Just... be still. It sounds simple but most people can't do it for even 2 minutes. Try."
+    ]
+  },
+  {
+    // 12 — "how to study" / "can't focus"
+    triggers: ['how to study', 'can\'t focus', 'i can\'t focus', 'can not focus', 'lack of focus', 'no concentration', 'distraction', 'procrastinating', 'i keep procrastinating', 'how to focus'],
+    responses: [
+      "Alright, study hacks that actually work (not the stuff your teachers tell you):\n\n1. The Pomodoro Technique — 25 min focused, 5 min break. After 4 rounds, take 15 min. It works because it makes studying feel less like an ocean and more like puddles you can jump across.\n2. Active recall — don't re-read notes. Close the book and try to write down everything you remember. Painful? Yes. Effective? Extremely.\n3. Feynman Technique — explain the concept out loud like you're teaching a 5-year-old. If you can't, you don't understand it yet.\n4. Environment matters — same desk, same time, phone in another room. Your brain links locations to states. Make your study spot mean BUSINESS.\n5. Start ridiculously small — 'I'll just open the book' often turns into 2 hours. The hardest part is starting.\n\nAlso: sleep 7+ hours the night before an exam. All-nighters actually reduce recall by up to 40%.",
+      "Focus isn't something you have — it's something you build. And most people break it 50 times before lunch.\n\nThe #1 focus killer? Your phone. Not even using it — just having it visible reduces your cognitive capacity. Put it in a drawer.\n\nThe #2 killer? Multitasking. You're not multitasking. You're rapidly switching, and every switch costs you 15-20 minutes of refocusing.\n\nTry this today: pick ONE task. Set a 25-minute timer. Close everything else. If a distracting thought comes, write it on a piece of paper and go back to the task. That's it. Do that 4 times and you'll have done more than most people do all day."
+    ]
+  },
+  {
+    // 13 — "i'm angry" / frustrated
+    triggers: ['i am angry', 'i\'m angry', 'so angry', 'i am frustrated', 'i\'m frustrated', 'pissed off', 'furious', 'mad', 'irritated', 'losing my mind'],
+    responses: [
+      "Anger is valid. It means a boundary was crossed or something felt unfair. Don't suppress it — use it wisely.\n\nRight now:\n- Don't send that message. Write it in your notes app instead. Read it tomorrow.\n- Physical release: pushups, sprint, punch a pillow. Anger is adrenaline — burn it.\n- Cold water on your face. It literally cools your temper.\n\nThen ask yourself: 'Will this matter in 5 days?' If no, breathe and let it go. If yes, plan your response calmly.\n\nChronic anger often comes from unmet needs that you haven't articulated — even to yourself. What do you actually want that you're not getting?",
+      "Frustration usually means you care about something and it's not going the way it should. That's not a bad thing.\n\nBut here's the trap: when you're angry, your prefrontal cortex (the logical part) literally shuts down. You're operating on pure emotion. Nothing good gets decided in that state.\n\nStep away for 10 minutes. Walk. Breathe. Then come back and handle it with the brain fully online."
+    ]
+  },
+  {
+    // 14 — "what should i do with my life" / purpose
+    triggers: ['what should i do with my life', 'what is my purpose', 'i don\'t know what to do', 'lost in life', 'no direction', 'what to do with life', 'confused about life', 'feel lost', 'meaning of life', 'what am i doing with my life'],
+    responses: [
+      "Nobody has it figured out. I need to say that first because the internet makes it look like everyone else has a 10-year plan. They don't.\n\nHere's a framework that actually helps:\n\n1. What did you love doing as a kid before anyone told you it was impractical?\n2. What do you do that makes time disappear?\n3. What frustrates you enough that you want to fix it?\n4. What would you do if money wasn't a factor?\n\nThe overlap between those four answers is usually pretty close to your thing.\n\nBut also — purpose isn't something you find. It's something you build by trying things, failing, and trying again. The people who 'found their purpose' usually just didn't stop moving.\n\nStart with this week: pick ONE thing that interests you and spend 30 minutes on it. That's it. Repeat.",
+      "Here's a hot take: you don't need a life purpose. Seriously.\n\nThe pressure to 'find your purpose' causes more anxiety than not having one. Some people have a burning calling. Most don't. And that's completely fine.\n\nInstead, ask: 'What would make this week slightly better than last week?'\n\nMaybe it's learning a skill. Maybe it's being kinder. Maybe it's finally fixing that thing in your room. Small, visible progress creates its own momentum.\n\nDirection finds you when you're moving. It never finds you when you're sitting still thinking about it."
+    ]
+  },
+  {
+    // 15 — "help me relax" / "calm down"
+    triggers: ['help me relax', 'how to relax', 'calm me down', 'i need to relax', 'make me feel better', 'cheer me up', 'i need comfort', 'something calming'],
+    responses: [
+      "Okay, let's do this together. Right now:\n\n1. Drop your shoulders. Like, physically let them fall. You were holding them up without realizing it.\n2. Unclench your jaw. Seriously, feel it — it's probably tight.\n3. Take a breath in through your nose for 4 seconds... hold for 4... out through your mouth for 6. Do that three times.\n4. Now look around and name three things that are a pleasant color.\n\nLonger-term relaxation toolkit:\n- Progressive muscle relaxation (tighten each muscle group for 5 seconds, then release — start from toes, work up)\n- A walk in nature — even a park. Green spaces reduce cortisol measurably.\n- Put on music with no lyrics. Lo-fi, ambient, classical. Your brain stops trying to parse words and actually rests.\n- Journaling: write for 5 minutes without stopping. Don't edit. Just dump.\n\nYou deserve rest. It's not lazy — it's maintenance.",
+      "Hey. Whatever's going on, you're going to get through it. I believe that even if you don't right now.\n\nSometimes the most calming thing isn't a technique — it's permission. Permission to not be productive for a moment. Permission to just exist.\n\nSo here's your permission: you don't need to solve anything right now. Just be. Breathe. Maybe put on a song that makes you feel something. Maybe step outside and look at the sky for 2 minutes.\n\nYou're allowed to pause."
+    ]
+  }
+];
+
+/* ================================================================
+   SAFE MATH
    ================================================================ */
 function safeEval(expr) {
   let safe = expr
@@ -858,210 +891,151 @@ function safeEval(expr) {
     .replace(/\bsqrt\b/g, 'Math.sqrt')
     .replace(/\bpi\b/g, 'Math.PI')
     .replace(/\be\b/g, 'Math.E');
-
-  // Validate: after removing Math.xxx, only safe chars remain
   const cleaned = safe.replace(/Math\.(sin|cos|tan|log|sqrt|PI|E)/g, '');
-  if (/[^0-9+\-*/().%\s,]/.test(cleaned)) throw new Error('Invalid expression');
-
+  if (/[^0-9+\-*/().%\s,]/.test(cleaned)) throw new Error('Invalid');
   const result = new Function('return ' + safe)();
   if (typeof result !== 'number' || !isFinite(result)) throw new Error('Invalid result');
   return result;
 }
 
 /* ================================================================
-   NETWORK FUNCTIONS
+   NETWORK
    ================================================================ */
 const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
 
 async function getWeather(city) {
-  // Try wttr.in JSON directly (supports CORS with origin=*)
   try {
-    const resp = await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`, { signal: AbortSignal.timeout(8000) });
-    if (resp.ok) {
-      const data = await resp.json();
-      const c = data.current_condition[0];
-      const desc = c.weatherDesc[0].value;
-      const temp = c.temp_C;
-      const humidity = c.humidity;
-      const wind = c.windspeedKmph;
-      const feels = c.FeelsLikeC;
-      return `Weather in ${city}: ${desc}, ${temp}\u00B0C (feels like ${feels}\u00B0C), Humidity: ${humidity}%, Wind: ${wind} km/h`;
+    const r = await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`, { signal: AbortSignal.timeout(8000) });
+    if (r.ok) {
+      const d = await r.json(); const c = d.current_condition[0];
+      return `Weather in ${city}: ${c.weatherDesc[0].value}, ${c.temp_C}\u00B0C (feels like ${c.FeelsLikeC}\u00B0C), Humidity: ${c.humidity}%, Wind: ${c.windspeedKmph} km/h`;
     }
   } catch(e) {}
-  // Fallback via proxy with text format
   try {
-    const url = `https://wttr.in/${encodeURIComponent(city)}?format=3`;
-    const resp = await fetch(CORS_PROXY + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
-    if (resp.ok) return (await resp.text()).trim();
+    const r = await fetch(CORS_PROXY + encodeURIComponent(`https://wttr.in/${encodeURIComponent(city)}?format=3`), { signal: AbortSignal.timeout(8000) });
+    if (r.ok) return (await r.text()).trim();
   } catch(e) {}
   return 'Could not fetch weather data. Please check the city name and try again.';
 }
 
 async function getNews(topic, n = 5) {
   try {
-    const url = `https://news.google.com/rss/search?q=${encodeURIComponent(topic)}&hl=en`;
-    const resp = await fetch(CORS_PROXY + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
-    if (!resp.ok) throw new Error('Fetch failed');
-    const xml = await resp.text();
-    const parser = new DOMParser();
-    const doc = parser.parseFromString(xml, 'text/xml');
-    const titles = Array.from(doc.querySelectorAll('item title')).map(el => el.textContent);
-    if (titles.length > 0) return titles.slice(0, n).map(t => `\u2022 ${t}`).join('\n');
+    const r = await fetch(CORS_PROXY + encodeURIComponent(`https://news.google.com/rss/search?q=${encodeURIComponent(topic)}&hl=en`), { signal: AbortSignal.timeout(8000) });
+    if (!r.ok) throw new Error('Fail');
+    const xml = await r.text();
+    const doc = new DOMParser().parseFromString(xml, 'text/xml');
+    const titles = Array.from(doc.querySelectorAll('item title')).map(e => e.textContent);
+    if (titles.length) return titles.slice(0, n).map(t => `\u2022 ${t}`).join('\n');
     return 'No news found for this topic.';
-  } catch(e) {
-    return `News fetch error: ${e.message}`;
-  }
+  } catch(e) { return `News fetch error: ${e.message}`; }
 }
 
 async function translateText(text, to) {
   try {
     const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${to}&dt=t&q=${encodeURIComponent(text)}`;
-    // Try direct first
     try {
-      const resp = await fetch(url, { signal: AbortSignal.timeout(8000) });
-      if (resp.ok) {
-        const data = await resp.json();
-        return data[0].map(seg => seg[0]).join('');
-      }
+      const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
+      if (r.ok) { const d = await r.json(); return d[0].map(s => s[0]).join(''); }
     } catch(e) {}
-    // Fallback via proxy
-    const resp = await fetch(CORS_PROXY + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
-    if (resp.ok) {
-      const data = await resp.json();
-      return data[0].map(seg => seg[0]).join('');
-    }
-    throw new Error('Translate failed');
-  } catch(e) {
-    return `Translate error: ${e.message}`;
-  }
+    const r = await fetch(CORS_PROXY + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
+    if (r.ok) { const d = await r.json(); return d[0].map(s => s[0]).join(''); }
+    throw new Error('Fail');
+  } catch(e) { return `Translate error: ${e.message}`; }
 }
 
 async function wikiSearch(topic) {
   try {
-    // Search Wikipedia
-    const searchUrl = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(topic)}&limit=1&format=json&origin=*`;
-    const searchResp = await fetch(searchUrl, { signal: AbortSignal.timeout(8000) });
-    const searchData = await searchResp.json();
-    if (!searchData[1] || searchData[1].length === 0) return 'No Wikipedia results found.';
-    const title = searchData[1][0];
-    // Get summary
-    const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
-    const summaryResp = await fetch(summaryUrl, { signal: AbortSignal.timeout(8000) });
-    const summaryData = await summaryResp.json();
-    return summaryData.extract || 'No summary available.';
-  } catch(e) {
-    return `Wikipedia error: ${e.message}`;
-  }
+    const sr = await fetch(`https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(topic)}&limit=1&format=json&origin=*`, { signal: AbortSignal.timeout(8000) });
+    const sd = await sr.json();
+    if (!sd[1] || !sd[1].length) return 'No Wikipedia results found.';
+    const sm = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(sd[1][0])}`, { signal: AbortSignal.timeout(8000) });
+    const s = await sm.json();
+    return s.extract || 'No summary available.';
+  } catch(e) { return `Wikipedia error: ${e.message}`; }
 }
 
 async function aiReply(text) {
-  // Try DuckDuckGo instant answer via proxy
   try {
-    const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(text)}&format=json&no_html=1`;
-    const resp = await fetch(CORS_PROXY + encodeURIComponent(url), { signal: AbortSignal.timeout(6000) });
-    if (resp.ok) {
-      const data = await resp.json();
-      if (data.AbstractText) return data.AbstractText;
-      if (data.Answer) return data.Answer;
-      if (data.Definition) return data.Definition;
-      if (data.RelatedTopics && data.RelatedTopics.length > 0) {
-        const first = data.RelatedTopics.find(t => t.Text);
-        if (first) return first.Text;
-      }
+    const r = await fetch(CORS_PROXY + encodeURIComponent(`https://api.duckduckgo.com/?q=${encodeURIComponent(text)}&format=json&no_html=1`), { signal: AbortSignal.timeout(6000) });
+    if (r.ok) {
+      const d = await r.json();
+      if (d.AbstractText) return d.AbstractText;
+      if (d.Answer) return d.Answer;
+      if (d.Definition) return d.Definition;
+      if (d.RelatedTopics) { const f = d.RelatedTopics.find(t => t.Text); if (f) return f.Text; }
     }
   } catch(e) {}
-  // Fallback to Wikipedia
   try {
-    const wikiResult = await wikiSearch(text);
-    if (wikiResult && !wikiResult.startsWith('No Wikipedia')) return wikiResult;
+    const w = await wikiSearch(text);
+    if (w && !w.startsWith('No Wikipedia')) return w;
   } catch(e) {}
   return "I'm not sure about that, but I'm learning every day! Try rephrasing your question or use 'wiki <topic>' for Wikipedia results.";
 }
 
 /* ================================================================
-   PASSWORD GENERATOR
+   PASSWORD GEN
    ================================================================ */
-function genPassword(length = 16, symbols = true) {
-  const lowers = 'abcdefghijklmnopqrstuvwxyz';
-  const uppers = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const digits = '0123456789';
-  const syms = '!@#$%^&*()_+-=[]{}|;:,.<>?';
-  let chars = lowers + uppers + digits;
-  if (symbols) chars += syms;
-  // Use crypto for better randomness
-  const array = new Uint32Array(length);
-  crypto.getRandomValues(array);
-  return Array.from(array, v => chars[v % chars.length]).join('');
+function genPassword(length = 16) {
+  const c = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+  const a = new Uint32Array(length); crypto.getRandomValues(a);
+  return Array.from(a, v => c[v % c.length]).join('');
 }
 
 /* ================================================================
    COMMAND PROCESSOR
    ================================================================ */
+function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
+
+function matchHumanPattern(q) {
+  for (const pattern of HUMAN_PATTERNS) {
+    for (const trigger of pattern.triggers) {
+      if (q === trigger || q.includes(trigger)) {
+        return pickRandom(pattern.responses);
+      }
+    }
+  }
+  return null;
+}
+
 async function processCommand(query) {
   const q = query.toLowerCase().trim();
   if (!q) return 'Please type something.';
   if (['exit','quit','bye'].includes(q)) return '__EXIT__';
   if (['logout','log out','sign out'].includes(q)) return '__LOGOUT__';
 
+  // Check human patterns FIRST (before commands, so natural conversation takes priority)
+  const humanReply = matchHumanPattern(q);
+  if (humanReply) return humanReply;
+
   if (q === 'help') {
-    return `Commands:
-  hello \u00B7 time \u00B7 date \u00B7 joke \u00B7 motivate \u00B7 random
-  calc <expr> or just 'calc' (opens calculator)
-  weather <city> \u00B7 news <topic>
-  translate <lang>: <text>
-  todo (opens workspace) \u00B7 notes (opens workspace)
-  note add <text> (quick save)
-  remind <min> <msg>
-  password [len]
-  youtube \u00B7 google \u00B7 instagram \u00B7 wiki <topic> \u00B7 ai <question>
-  links (manage custom links)`;
+    return `Commands:\n  hello \u00B7 time \u00B7 date \u00B7 joke \u00B7 motivate \u00B7 random\n  calc <expr> or just 'calc' (opens calculator)\n  weather <city> \u00B7 news <topic>\n  translate <lang>: <text>\n  todo \u00B7 notes \u00B7 links (opens workspaces)\n  note add <text> \u00B7 todo add <task>\n  remind <min> <msg>\n  password [len]\n  youtube \u00B7 google \u00B7 instagram\n  wiki <topic> \u00B7 ai <question>\n\nOr just talk to me naturally. I can help with stress, sleep, focus, motivation, and more.`;
   }
 
   if (/^(hello|hi|hey)/.test(q)) {
-    const name = state.currentUser || '';
-    return `${GREETS[Math.floor(Math.random() * GREETS.length)]} ${name}!`.trim();
+    return `${pickRandom(GREETS)} ${state.currentUser || ''}!`.trim();
   }
-
-  if ('what is my name' === q) {
-    return state.currentUser ? `Your name is ${state.currentUser}.` : "I don't know your name yet.";
-  }
-
+  if ('what is my name' === q) return state.currentUser ? `Your name is ${state.currentUser}.` : "I don't know your name yet.";
   if (q === 'time') return `\u{1F550} ${fmtTime()}`;
   if (q === 'date') return `\u{1F4C5} ${fmtDate()}`;
-
-  if (q.includes('joke')) return JOKES[Math.floor(Math.random() * JOKES.length)];
-  if (q.includes('motivate')) return `\u{1F4A1} ${QUOTES[Math.floor(Math.random() * QUOTES.length)]}`;
+  if (q.includes('joke')) return pickRandom(JOKES);
+  if (q.includes('motivate')) return `\u{1F4A1} ${pickRandom(QUOTES)}`;
   if (q.startsWith('random')) return String(Math.floor(Math.random() * 100) + 1);
 
-  // Calculator
   if (q === 'calc' || q.startsWith('calc ')) {
-    const inlineExpr = query.slice(5).trim();
-    if (!inlineExpr) {
-      openModal('calc-modal');
-      return 'Opening Calculator...';
-    }
-    try {
-      const fixed = inlineExpr.replace(/([a-z]+)(\d+)/g, '$1($2)');
-      return `\u{1F9EE} ${safeEval(fixed)}`;
-    } catch(e) {
-      openModal('calc-modal');
-      return `Couldn't parse '${inlineExpr}'. Opening Calculator...`;
-    }
+    const ie = query.slice(5).trim();
+    if (!ie) { openModal('calc-modal'); return 'Opening Calculator...'; }
+    try { return `\u{1F9EE} ${safeEval(ie.replace(/([a-z]+)(\d+)/g, '$1($2)'))}`; }
+    catch(e) { openModal('calc-modal'); return `Couldn't parse '${ie}'. Opening Calculator...`; }
   }
 
-  // Weather
   if (q.startsWith('weather')) {
     const city = query.slice(7).trim().replace(/^[:\s]+/, '') || 'London';
     return `\u{1F324}\uFE0F ${await getWeather(city)}`;
   }
-
-  // News
   if (q.startsWith('news')) {
     const topic = query.slice(4).trim().replace(/^[:\s]+/, '') || 'world';
     return `\u{1F4F0} News:\n${await getNews(topic)}`;
   }
-
-  // Translate
   if (q.startsWith('translate')) {
     const body = query.slice(9).trim().replace(/^[:\s]+/, '');
     const m = body.match(/^(\w{2,5})\s*:\s*(.+)$/);
@@ -1069,89 +1043,38 @@ async function processCommand(query) {
     return 'Usage: translate es: Hello world';
   }
 
-  // Todo
-  if (['todo','todo list','tasks'].includes(q)) {
-    openModal('todo-modal'); renderTodos();
-    return 'Opening Todo Workspace...';
-  }
+  if (['todo','todo list','tasks'].includes(q)) { openModal('todo-modal'); renderTodos(); return 'Opening Todo Workspace...'; }
+  if (['note','notes','note list'].includes(q)) { openModal('notes-modal'); renderNotes(); return 'Opening Notes Workspace...'; }
+  if (q === 'links') { openModal('links-modal'); renderLinksList(); return 'Opening Links Manager...'; }
 
-  // Notes
-  if (['note','notes','note list'].includes(q)) {
-    openModal('notes-modal'); renderNotes();
-    return 'Opening Notes Workspace...';
-  }
-
-  // Links
-  if (q === 'links') {
-    openModal('links-modal'); renderLinksList();
-    return 'Opening Links Manager...';
-  }
-
-  // Todo add
   if (q.startsWith('todo add')) {
     const parts = query.split(' ');
-    if (parts.length >= 3) {
-      const task = parts.slice(2).join(' ');
-      state.todos.push({ task, done: false });
-      saveState();
-      return `\u2705 Added to Todo: ${task}`;
-    }
+    if (parts.length >= 3) { const t = parts.slice(2).join(' '); state.todos.push({ task: t, done: false }); saveState(); return `\u2705 Added to Todo: ${t}`; }
     return 'Usage: todo add <task description>';
   }
-
-  // Note add
   if (q.startsWith('note add')) {
     const parts = query.split(' ');
-    if (parts.length >= 3) {
-      const text = parts.slice(2).join(' ');
-      state.notes.push({ text, time: new Date().toISOString() });
-      saveState();
-      return `\u{1F4DD} Note saved: ${text}`;
-    }
+    if (parts.length >= 3) { const t = parts.slice(2).join(' '); state.notes.push({ text: t, time: new Date().toISOString() }); saveState(); return `\u{1F4DD} Note saved: ${t}`; }
     return 'Usage: note add <note text>';
   }
-
-  // Remind
   if (q.startsWith('remind')) {
     const m = query.match(/^remind\s+(\d+)\s+(.+)$/i);
     if (!m) return 'Usage: remind <minutes> <message>';
-    const mins = parseInt(m[1]);
-    const msg = m[2];
-    setTimeout(() => {
-      showToast(`\u23F0 ${msg}`, 'reminder');
-      speak('Reminder: ' + msg);
-    }, mins * 60 * 1000);
+    const mins = parseInt(m[1]); const msg = m[2];
+    setTimeout(() => { showToast(`\u23F0 ${msg}`, 'reminder'); speak('Reminder: ' + msg); }, mins * 60 * 1000);
     return `\u23F0 Reminder set for ${mins} min: ${msg}`;
   }
-
-  // Password
   if (q.startsWith('password')) {
-    const parts = q.split(' ');
-    let length = 16;
-    if (parts.length > 1 && /^\d+$/.test(parts[1])) length = parseInt(parts[1]);
-    if (length < 4) length = 4;
-    if (length > 128) length = 128;
-    return `\u{1F511} ${genPassword(length)}`;
+    const parts = q.split(' '); let len = 16;
+    if (parts.length > 1 && /^\d+$/.test(parts[1])) len = Math.min(128, Math.max(4, parseInt(parts[1])));
+    return `\u{1F511} ${genPassword(len)}`;
   }
-
-  // Quick links
   if (q === 'youtube') { window.open('https://youtube.com','_blank'); return 'Opening YouTube...'; }
   if (q === 'google') { window.open('https://google.com','_blank'); return 'Opening Google...'; }
   if (['insta','instagram'].includes(q)) { window.open('https://instagram.com','_blank'); return 'Opening Instagram...'; }
+  if (q.startsWith('wiki ')) { const t = query.slice(5).trim(); return t ? await wikiSearch(t) : 'Usage: wiki <topic>'; }
+  if (q.startsWith('ai ')) return await aiReply(query.slice(3));
 
-  // Wikipedia
-  if (q.startsWith('wiki ')) {
-    const topic = query.slice(5).trim();
-    if (!topic) return 'Usage: wiki <topic>';
-    return await wikiSearch(topic);
-  }
-
-  // AI
-  if (q.startsWith('ai ')) {
-    return await aiReply(query.slice(3));
-  }
-
-  // Default: try AI reply
   return await aiReply(query);
 }
 
@@ -1159,404 +1082,186 @@ async function processCommand(query) {
    CALCULATOR
    ================================================================ */
 let calcExpr = '';
-
-function calcInput(val) {
-  calcExpr += val;
-  document.getElementById('calc-display').textContent = calcExpr || '0';
-}
-
-function calcClear() {
-  calcExpr = '';
-  document.getElementById('calc-display').textContent = '0';
-}
-
-function calcBackspace() {
-  calcExpr = calcExpr.slice(0, -1);
-  document.getElementById('calc-display').textContent = calcExpr || '0';
-}
-
+function calcInput(v) { calcExpr += v; document.getElementById('calc-display').textContent = calcExpr || '0'; }
+function calcClear() { calcExpr = ''; document.getElementById('calc-display').textContent = '0'; }
+function calcBackspace() { calcExpr = calcExpr.slice(0, -1); document.getElementById('calc-display').textContent = calcExpr || '0'; }
 function calcEvaluate() {
-  try {
-    let result = safeEval(calcExpr);
-    if (Number.isInteger(result)) result = result;
-    calcExpr = String(result);
-    document.getElementById('calc-display').textContent = calcExpr;
-  } catch(e) {
-    document.getElementById('calc-display').textContent = 'Syntax Error';
-    calcExpr = '';
-  }
+  try { let r = safeEval(calcExpr); if (Number.isInteger(r)) r = r; calcExpr = String(r); document.getElementById('calc-display').textContent = calcExpr; }
+  catch(e) { document.getElementById('calc-display').textContent = 'Syntax Error'; calcExpr = ''; }
 }
-
 function calcSend() {
-  const expr = calcExpr;
-  if (!expr || expr === 'Syntax Error') return;
-  closeModal('calc-modal');
-  quickSend('calc ' + expr);
-  calcExpr = '';
-  document.getElementById('calc-display').textContent = '0';
+  const e = calcExpr; if (!e || e === 'Syntax Error') return;
+  closeModal('calc-modal'); quickSend('calc ' + e); calcExpr = ''; document.getElementById('calc-display').textContent = '0';
 }
 
 /* ================================================================
-   NOTES CRUD
+   NOTES
    ================================================================ */
 let selectedNoteIdx = -1;
-
 function renderNotes() {
-  const list = document.getElementById('notes-list');
-  list.innerHTML = '';
-  if (state.notes.length === 0) {
-    list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">No notes yet. Add one below.</div>';
-    return;
-  }
+  const l = document.getElementById('notes-list'); l.innerHTML = '';
+  if (!state.notes.length) { l.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">No notes yet. Add one below.</div>'; return; }
   state.notes.forEach((n, i) => {
-    const item = document.createElement('div');
-    item.className = 'list-item' + (i === selectedNoteIdx ? ' selected' : '');
-    item.innerHTML = `<span class="item-text">${i+1}. ${escHtml(n.text)}</span>`;
-    item.addEventListener('click', () => { selectedNoteIdx = i; renderNotes(); });
-    list.appendChild(item);
+    const it = document.createElement('div'); it.className = 'list-item' + (i === selectedNoteIdx ? ' selected' : '');
+    it.innerHTML = `<span class="item-text">${i+1}. ${escHtml(n.text)}</span>`;
+    it.addEventListener('click', () => { selectedNoteIdx = i; renderNotes(); }); l.appendChild(it);
   });
 }
-
 function saveNote() {
-  const input = document.getElementById('note-input');
-  const text = input.value.trim();
-  if (!text) return;
-  state.notes.push({ text, time: new Date().toISOString() });
-  saveState();
-  input.value = '';
-  renderNotes();
-  botSay('Note saved.');
+  const inp = document.getElementById('note-input'); const t = inp.value.trim(); if (!t) return;
+  state.notes.push({ text: t, time: new Date().toISOString() }); saveState(); inp.value = ''; renderNotes(); botSay('Note saved.');
 }
-
 function deleteSelectedNote() {
-  if (selectedNoteIdx < 0 || selectedNoteIdx >= state.notes.length) {
-    showToast('Select a note to delete', 'error'); return;
-  }
-  state.notes.splice(selectedNoteIdx, 1);
-  selectedNoteIdx = -1;
-  saveState();
-  renderNotes();
+  if (selectedNoteIdx < 0 || selectedNoteIdx >= state.notes.length) { showToast('Select a note to delete', 'error'); return; }
+  state.notes.splice(selectedNoteIdx, 1); selectedNoteIdx = -1; saveState(); renderNotes();
 }
 
 /* ================================================================
-   TODO CRUD
+   TODOS
    ================================================================ */
 let selectedTodoIdx = -1;
-
 function renderTodos() {
-  const list = document.getElementById('todo-list');
-  list.innerHTML = '';
-  if (state.todos.length === 0) {
-    list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">No tasks yet. Add one below.</div>';
-    return;
-  }
+  const l = document.getElementById('todo-list'); l.innerHTML = '';
+  if (!state.todos.length) { l.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">No tasks yet. Add one below.</div>'; return; }
   state.todos.forEach((t, i) => {
-    const item = document.createElement('div');
-    item.className = 'list-item' + (i === selectedTodoIdx ? ' selected' : '') + (t.done ? ' done' : '');
-    item.innerHTML = `
-      <span class="item-check" onclick="event.stopPropagation();toggleTodoByIndex(${i})">${t.done ? '\u2714' : '\u2B1C'}</span>
-      <span class="item-text">${escHtml(t.task)}</span>`;
-    item.addEventListener('click', () => { selectedTodoIdx = i; renderTodos(); });
-    list.appendChild(item);
+    const it = document.createElement('div'); it.className = 'list-item' + (i === selectedTodoIdx ? ' selected' : '') + (t.done ? ' done' : '');
+    it.innerHTML = `<span class="item-check" onclick="event.stopPropagation();toggleTodoByIndex(${i})">${t.done ? '\u2714' : '\u2B1C'}</span><span class="item-text">${escHtml(t.task)}</span>`;
+    it.addEventListener('click', () => { selectedTodoIdx = i; renderTodos(); }); l.appendChild(it);
   });
 }
-
 function saveTodo() {
-  const input = document.getElementById('todo-input');
-  const text = input.value.trim();
-  if (!text) return;
-  state.todos.push({ task: text, done: false });
-  saveState();
-  input.value = '';
-  renderTodos();
-  botSay('Task added.');
+  const inp = document.getElementById('todo-input'); const t = inp.value.trim(); if (!t) return;
+  state.todos.push({ task: t, done: false }); saveState(); inp.value = ''; renderTodos(); botSay('Task added.');
 }
-
 function toggleSelectedTodo() {
-  if (selectedTodoIdx < 0 || selectedTodoIdx >= state.todos.length) {
-    showToast('Select a task to toggle', 'error'); return;
-  }
+  if (selectedTodoIdx < 0 || selectedTodoIdx >= state.todos.length) { showToast('Select a task to toggle', 'error'); return; }
   toggleTodoByIndex(selectedTodoIdx);
 }
-
-function toggleTodoByIndex(i) {
-  state.todos[i].done = !state.todos[i].done;
-  saveState();
-  renderTodos();
-}
-
+function toggleTodoByIndex(i) { state.todos[i].done = !state.todos[i].done; saveState(); renderTodos(); }
 function deleteSelectedTodo() {
-  if (selectedTodoIdx < 0 || selectedTodoIdx >= state.todos.length) {
-    showToast('Select a task to delete', 'error'); return;
-  }
-  state.todos.splice(selectedTodoIdx, 1);
-  selectedTodoIdx = -1;
-  saveState();
-  renderTodos();
+  if (selectedTodoIdx < 0 || selectedTodoIdx >= state.todos.length) { showToast('Select a task to delete', 'error'); return; }
+  state.todos.splice(selectedTodoIdx, 1); selectedTodoIdx = -1; saveState(); renderTodos();
 }
 
 /* ================================================================
-   LINKS CRUD
+   LINKS
    ================================================================ */
 let selectedLinkIdx = -1;
-
 function renderSidebarLinks() {
-  const container = document.getElementById('sidebar-links');
-  container.innerHTML = '';
-  state.customLinks.forEach((link, i) => {
-    const btn = document.createElement('button');
-    btn.className = 'sidebar-item';
-    btn.innerHTML = `<i class="fas fa-link"></i> ${escHtml(link.name)}`;
-    btn.onclick = () => window.open(link.url, '_blank');
-    container.appendChild(btn);
+  const c = document.getElementById('sidebar-links'); c.innerHTML = '';
+  state.customLinks.forEach(link => {
+    const b = document.createElement('button'); b.className = 'sidebar-item';
+    b.innerHTML = `<i class="fas fa-link"></i> ${escHtml(link.name)}`;
+    b.onclick = () => window.open(link.url, '_blank'); c.appendChild(b);
   });
 }
-
 function renderLinksList() {
-  const list = document.getElementById('links-list');
-  list.innerHTML = '';
-  if (state.customLinks.length === 0) {
-    list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">No custom links yet.</div>';
-    return;
-  }
+  const l = document.getElementById('links-list'); l.innerHTML = '';
+  if (!state.customLinks.length) { l.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">No custom links yet.</div>'; return; }
   state.customLinks.forEach((link, i) => {
-    const item = document.createElement('div');
-    item.className = 'list-item' + (i === selectedLinkIdx ? ' selected' : '');
-    item.innerHTML = `
-      <span class="item-text"><i class="fas fa-link" style="color:var(--accent);margin-right:6px"></i>${escHtml(link.name)}</span>
-      <span class="item-url">${escHtml(link.url)}</span>`;
-    item.addEventListener('click', () => { selectedLinkIdx = i; renderLinksList(); });
-    list.appendChild(item);
+    const it = document.createElement('div'); it.className = 'list-item' + (i === selectedLinkIdx ? ' selected' : '');
+    it.innerHTML = `<span class="item-text"><i class="fas fa-link" style="color:var(--accent);margin-right:6px"></i>${escHtml(link.name)}</span><span class="item-url">${escHtml(link.url)}</span>`;
+    it.addEventListener('click', () => { selectedLinkIdx = i; renderLinksList(); }); l.appendChild(it);
   });
 }
-
 function saveLink() {
-  if (state.customLinks.length >= 10) {
-    showToast('Maximum 10 custom links allowed.', 'error'); return;
-  }
-  const name = document.getElementById('link-name-input').value.trim();
-  let url = document.getElementById('link-url-input').value.trim();
-  if (!name || !url) { showToast('Please fill all fields.', 'error'); return; }
-  if (!url.startsWith('http')) url = 'https://' + url;
-  state.customLinks.push({ name, url });
-  saveState();
-  document.getElementById('link-name-input').value = '';
-  document.getElementById('link-url-input').value = '';
-  renderSidebarLinks();
-  renderLinksList();
-  closeModal('add-link-modal');
-  botSay(`Link added: ${name}`);
+  if (state.customLinks.length >= 10) { showToast('Maximum 10 custom links allowed.', 'error'); return; }
+  const n = document.getElementById('link-name-input').value.trim();
+  let u = document.getElementById('link-url-input').value.trim();
+  if (!n || !u) { showToast('Please fill all fields.', 'error'); return; }
+  if (!u.startsWith('http')) u = 'https://' + u;
+  state.customLinks.push({ name: n, url: u }); saveState();
+  document.getElementById('link-name-input').value = ''; document.getElementById('link-url-input').value = '';
+  renderSidebarLinks(); renderLinksList(); closeModal('add-link-modal'); botSay(`Link added: ${n}`);
 }
-
 function openSelectedLink() {
-  if (selectedLinkIdx < 0 || selectedLinkIdx >= state.customLinks.length) {
-    showToast('Select a link to open', 'error'); return;
-  }
+  if (selectedLinkIdx < 0 || selectedLinkIdx >= state.customLinks.length) { showToast('Select a link to open', 'error'); return; }
   window.open(state.customLinks[selectedLinkIdx].url, '_blank');
 }
-
 function deleteSelectedLink() {
-  if (selectedLinkIdx < 0 || selectedLinkIdx >= state.customLinks.length) {
-    showToast('Select a link to delete', 'error'); return;
-  }
+  if (selectedLinkIdx < 0 || selectedLinkIdx >= state.customLinks.length) { showToast('Select a link to delete', 'error'); return; }
   const name = state.customLinks[selectedLinkIdx].name;
   showConfirm(`Remove '${name}' from your links?`, () => {
-    state.customLinks.splice(selectedLinkIdx, 1);
-    selectedLinkIdx = -1;
-    saveState();
-    renderSidebarLinks();
-    renderLinksList();
+    state.customLinks.splice(selectedLinkIdx, 1); selectedLinkIdx = -1; saveState(); renderSidebarLinks(); renderLinksList();
   });
 }
 
 /* ================================================================
-   VOICE (TTS / STT)
+   VOICE
    ================================================================ */
 function speak(text) {
   if (!state.config.tts) return;
-  // Strip emoji and special chars for cleaner speech
   const clean = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FEFF}\u2022\u2705\u2709\u{1F4DD}\u{1F4A1}\u{1F4C5}\u{1F4F0}\u{1F511}\u{1F550}\u{1F9EE}\u{1F310}\u{1F324}\uFE0F\u23F0]/gu, '').trim();
   if (!clean) return;
-  const utterance = new SpeechSynthesisUtterance(clean);
-  utterance.rate = 1;
-  utterance.pitch = 1;
-  speechSynthesis.cancel();
-  speechSynthesis.speak(utterance);
+  const u = new SpeechSynthesisUtterance(clean); u.rate = 1; u.pitch = 1;
+  speechSynthesis.cancel(); speechSynthesis.speak(u);
 }
-
 function toggleTTS() {
-  state.config.tts = !state.config.tts;
-  saveState();
-  const btn = document.getElementById('voice-toggle');
-  const icon = btn.querySelector('i');
-  if (state.config.tts) {
-    icon.className = 'fas fa-volume-up';
-    btn.classList.remove('active-voice');
-    showToast('Voice enabled', 'success');
-  } else {
-    icon.className = 'fas fa-volume-mute';
-    btn.classList.add('active-voice');
-    showToast('Voice muted', 'info');
-  }
+  state.config.tts = !state.config.tts; saveState();
+  const btn = document.getElementById('voice-toggle'); const icon = btn.querySelector('i');
+  if (state.config.tts) { icon.className = 'fas fa-volume-up'; btn.classList.remove('active-voice'); showToast('Voice enabled', 'success'); }
+  else { icon.className = 'fas fa-volume-mute'; btn.classList.add('active-voice'); showToast('Voice muted', 'info'); }
 }
-
-// Initialize voice toggle state
 function initVoiceToggle() {
-  const btn = document.getElementById('voice-toggle');
-  const icon = btn.querySelector('i');
   if (!state.config.tts) {
+    const icon = document.getElementById('voice-toggle').querySelector('i');
     icon.className = 'fas fa-volume-mute';
-    btn.classList.add('active-voice');
+    document.getElementById('voice-toggle').classList.add('active-voice');
   }
 }
-
 let recognition = null;
 function startListening() {
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SpeechRecognition) {
-    showToast('Speech recognition not supported in this browser.', 'error');
-    return;
-  }
-  if (recognition) { recognition.abort(); }
-
-  recognition = new SpeechRecognition();
-  recognition.lang = 'en-US';
-  recognition.interimResults = false;
-  recognition.maxAlternatives = 1;
-
-  const micBtn = document.getElementById('mic-btn');
-  micBtn.classList.add('listening');
-
-  recognition.onresult = (event) => {
-    const transcript = event.results[0][0].transcript;
-    document.getElementById('chat-input').value = transcript;
-    micBtn.classList.remove('listening');
-    send();
-  };
-
-  recognition.onerror = (event) => {
-    micBtn.classList.remove('listening');
-    if (event.error !== 'aborted') showToast('Could not recognize speech: ' + event.error, 'error');
-  };
-
-  recognition.onend = () => {
-    micBtn.classList.remove('listening');
-  };
-
-  recognition.start();
-  showToast('Listening... speak now', 'info');
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SR) { showToast('Speech recognition not supported in this browser.', 'error'); return; }
+  if (recognition) recognition.abort();
+  recognition = new SR(); recognition.lang = 'en-US'; recognition.interimResults = false; recognition.maxAlternatives = 1;
+  const mb = document.getElementById('mic-btn'); mb.classList.add('listening');
+  recognition.onresult = (e) => { document.getElementById('chat-input').value = e.results[0][0].transcript; mb.classList.remove('listening'); send(); };
+  recognition.onerror = (e) => { mb.classList.remove('listening'); if (e.error !== 'aborted') showToast('Could not recognize speech: ' + e.error, 'error'); };
+  recognition.onend = () => { mb.classList.remove('listening'); };
+  recognition.start(); showToast('Listening... speak now', 'info');
 }
 
 /* ================================================================
-   MODAL HELPERS
+   MODALS / CONFIRM / TOAST
    ================================================================ */
-function openModal(id) {
-  document.getElementById(id).classList.add('active');
-  // Focus first input if exists
-  const input = document.getElementById(id).querySelector('input');
-  if (input) setTimeout(() => input.focus(), 100);
-}
+function openModal(id) { document.getElementById(id).classList.add('active'); const i = document.getElementById(id).querySelector('input'); if (i) setTimeout(() => i.focus(), 100); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); }));
+document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active')); });
 
-function closeModal(id) {
-  document.getElementById(id).classList.remove('active');
-}
-
-// Close modal on overlay click
-document.querySelectorAll('.modal-overlay').forEach(overlay => {
-  overlay.addEventListener('click', (e) => {
-    if (e.target === overlay) overlay.classList.remove('active');
-  });
-});
-
-// Close modal on Escape
-document.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
-  }
-});
-
-/* ================================================================
-   CONFIRM DIALOG
-   ================================================================ */
-function showConfirm(message, onConfirm) {
-  document.getElementById('confirm-message').textContent = message;
-  const yesBtn = document.getElementById('confirm-yes-btn');
-  // Clone to remove old listeners
-  const newBtn = yesBtn.cloneNode(true);
-  yesBtn.parentNode.replaceChild(newBtn, yesBtn);
-  newBtn.id = 'confirm-yes-btn';
-  newBtn.addEventListener('click', () => {
-    closeModal('confirm-modal');
-    onConfirm();
-  });
+function showConfirm(msg, onYes) {
+  document.getElementById('confirm-message').textContent = msg;
+  const nb = document.getElementById('confirm-yes-btn').cloneNode(true);
+  document.getElementById('confirm-yes-btn').parentNode.replaceChild(nb, document.getElementById('confirm-yes-btn'));
+  nb.id = 'confirm-yes-btn'; nb.addEventListener('click', () => { closeModal('confirm-modal'); onYes(); });
   openModal('confirm-modal');
 }
-
-/* ================================================================
-   TOAST NOTIFICATIONS
-   ================================================================ */
-function showToast(message, type = 'info') {
-  const container = document.getElementById('toast-container');
-  const toast = document.createElement('div');
-  toast.className = `toast toast-${type}`;
-  toast.textContent = message;
-  container.appendChild(toast);
-  requestAnimationFrame(() => toast.classList.add('show'));
-  setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 300);
-  }, 4000);
+function showToast(msg, type = 'info') {
+  const c = document.getElementById('toast-container'); const t = document.createElement('div');
+  t.className = `toast toast-${type}`; t.textContent = msg; c.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 4000);
 }
 
 /* ================================================================
    SIDEBAR MOBILE
    ================================================================ */
-function toggleSidebar() {
-  const sidebar = document.getElementById('sidebar');
-  const overlay = document.getElementById('sidebar-overlay');
-  sidebar.classList.toggle('open');
-  overlay.classList.toggle('active');
-}
-
-function closeSidebarMobile() {
-  if (window.innerWidth <= 768) {
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebar-overlay').classList.remove('active');
-  }
-}
+function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('active'); }
+function closeSidebarMobile() { if (window.innerWidth <= 768) { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('active'); } }
 
 /* ================================================================
    UTILITY
    ================================================================ */
-function escHtml(str) {
-  const div = document.createElement('div');
-  div.textContent = str;
-  return div.innerHTML;
-}
-
-function botSay(text) {
-  // Add bot message without user message (for internal actions)
-  showTyping();
-  setTimeout(() => {
-    hideTyping();
-    addMessage(text, 'bot');
-    speak(text);
-  }, 300);
-}
+function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+function botSay(text) { showTyping(); setTimeout(() => { hideTyping(); addMessage(text, 'bot'); speak(text); }, 300); }
 
 /* ================================================================
-   INITIALIZATION
+   INIT
    ================================================================ */
 loadState();
-
-if (state.currentUser && state.users[state.currentUser]) {
-  enterApp();
-  initVoiceToggle();
-} else {
-  state.currentUser = null;
-  // Focus username field
-  setTimeout(() => document.getElementById('auth-user').focus(), 200);
-}
+if (state.currentUser && state.users[state.currentUser]) { enterApp(); }
+else { state.currentUser = null; setTimeout(() => document.getElementById('auth-user').focus(), 200); }
 </script>
 </body>
 </html>
