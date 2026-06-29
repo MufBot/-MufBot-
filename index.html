@@ -9,16 +9,16 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <style>
 :root {
-  --bg: #212121;
-  --panel: #171717;
-  --panel-hover: #2f2f2f;
+  --bg: #1a1a1a;
+  --panel: #141414;
+  --panel-hover: #262626;
   --fg: #ececec;
   --muted: #8e8ea0;
   --accent: #10a37f;
   --accent-hover: #0d8c6d;
-  --accent-glow: rgba(16,163,127,0.15);
-  --input-bg: #40414f;
-  --border: #2f2f2f;
+  --accent-glow: rgba(16,163,127,0.12);
+  --input-bg: #2a2a2a;
+  --border: #2a2a2a;
   --red: #ef4146;
   --green: #10a37f;
   --scrollbar: #565869;
@@ -37,22 +37,44 @@ input,button{font-family:inherit}
 button{cursor:pointer;border:none;outline:none}
 button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
 
-/* ===== AUTH ===== */
 #auth-screen{
   position:fixed;inset:0;z-index:1000;display:flex;align-items:center;justify-content:center;
   background:var(--bg);
-  background-image:radial-gradient(ellipse at 30% 20%,rgba(16,163,127,.06) 0%,transparent 60%),
+  background-image:radial-gradient(ellipse at 30% 20%,rgba(16,163,127,.07) 0%,transparent 60%),
   radial-gradient(ellipse at 70% 80%,rgba(16,163,127,.04) 0%,transparent 60%);
 }
 #auth-screen.hidden{display:none}
 .auth-card{
-  width:420px;max-width:95vw;background:rgba(30,30,30,.85);backdrop-filter:blur(20px);
+  width:420px;max-width:95vw;background:rgba(30,30,30,.9);backdrop-filter:blur(24px);
   border-radius:16px;border:1px solid var(--border);padding:40px;animation:authIn .5s ease;
 }
 @keyframes authIn{from{opacity:0;transform:translateY(20px) scale(.97)}to{opacity:1;transform:none}}
-.auth-icon{text-align:center;margin-bottom:4px}
-.auth-icon svg{width:72px;height:72px}
-.auth-title{text-align:center;font-family:var(--font-display);font-size:28px;font-weight:700;margin-bottom:24px;letter-spacing:-.5px}
+.auth-icon{text-align:center;margin-bottom:8px}
+.auth-icon .m-icon-lg{
+  width:80px;height:80px;border-radius:18px;
+  background:linear-gradient(135deg,#10a37f 0%,#0d8c6d 50%,#0a7559 100%);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;font-size:42px;color:#fff;
+  box-shadow:0 8px 32px rgba(16,163,127,0.35),inset 0 1px 0 rgba(255,255,255,0.15);
+  position:relative;overflow:hidden;
+}
+.auth-icon .m-icon-lg::after{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,0.08) 50%,transparent 60%);
+  animation:iconShine 3s ease-in-out infinite;
+}
+@keyframes iconShine{0%,100%{transform:translateX(-100%) rotate(25deg)}50%{transform:translateX(100%) rotate(25deg)}}
+.auth-title{
+  text-align:center;font-family:var(--font-display);font-size:28px;font-weight:700;
+  margin-bottom:24px;letter-spacing:-.5px;display:flex;align-items:center;justify-content:center;gap:12px;
+}
+.auth-title .m-icon-sm{
+  width:34px;height:34px;border-radius:8px;
+  background:linear-gradient(135deg,#10a37f,#0d8c6d);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;font-size:18px;color:#fff;
+  box-shadow:0 4px 12px rgba(16,163,127,0.3);
+}
 .auth-tabs{display:flex;gap:0;margin-bottom:4px}
 .auth-tab{
   flex:1;padding:10px;background:transparent;color:var(--muted);font-size:14px;font-weight:600;
@@ -74,16 +96,20 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 }
 .auth-submit:hover{background:var(--accent-hover)}
 
-/* ===== APP ===== */
 #app{display:none;height:100vh;width:100vw}
 #app.active{display:flex}
 
-/* ===== M LOGO SVG ===== */
 .m-logo{display:inline-flex;align-items:center;gap:8px}
 .m-logo svg{flex-shrink:0}
 .m-logo-text{font-family:var(--font-display);font-weight:700;font-size:15px;letter-spacing:-.3px}
+.title-m-badge{
+  width:32px;height:32px;border-radius:8px;
+  background:linear-gradient(135deg,#10a37f,#0d8c6d);
+  display:inline-flex;align-items:center;justify-content:center;
+  font-family:var(--font-display);font-weight:700;font-size:17px;color:#fff;
+  box-shadow:0 3px 10px rgba(16,163,127,0.3);flex-shrink:0;
+}
 
-/* ===== SIDEBAR ===== */
 #sidebar{
   width:260px;min-width:260px;height:100vh;background:var(--panel);display:flex;flex-direction:column;
   border-right:1px solid var(--border);transition:transform .3s ease;z-index:100;
@@ -115,7 +141,6 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .sidebar-action-btn:hover{background:var(--panel-hover);color:var(--fg)}
 .sidebar-action-btn.active-voice{color:var(--red)}
 
-/* ===== HAMBURGER ===== */
 #hamburger{
   display:none;position:fixed;top:12px;left:12px;z-index:200;
   width:40px;height:40px;background:var(--panel);color:var(--fg);border-radius:8px;
@@ -124,33 +149,39 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
 .sidebar-overlay.active{display:block}
 
-/* ===== MAIN ===== */
 #main{flex:1;display:flex;flex-direction:column;height:100vh;min-width:0;position:relative}
 #topbar{height:50px;display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0}
 #clock{font-size:12px;color:var(--muted);font-variant-numeric:tabular-nums}
 
-/* ===== CHAT ===== */
 #chat-area{flex:1;overflow-y:auto;display:flex;flex-direction:column}
 #messages{flex:1;display:flex;flex-direction:column;align-items:center;padding:10px 20px 20px}
 .message{width:100%;max-width:720px;padding:14px 0;animation:msgIn .3s ease}
 @keyframes msgIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
-.message-label{font-size:13px;font-weight:700;margin-bottom:6px}
+.message-label{font-size:13px;font-weight:700;margin-bottom:6px;display:flex;align-items:center;gap:6px}
 .user-label{color:var(--muted)}
 .bot-label{color:var(--accent)}
+.bot-label .bot-m{width:20px;height:20px;border-radius:5px;background:linear-gradient(135deg,#10a37f,#0d8c6d);display:inline-flex;align-items:center;justify-content:center;font-family:var(--font-display);font-weight:700;font-size:11px;color:#fff}
 .message-text{font-size:15px;line-height:1.65;white-space:pre-wrap;word-break:break-word}
+.message-text a{color:var(--accent);text-decoration:underline}
 
-/* ===== WELCOME ===== */
 #welcome{flex:1;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;text-align:center}
 #welcome.hidden{display:none}
 .welcome-icon{
-  width:80px;height:80px;border-radius:50%;background:var(--accent-glow);
-  display:flex;align-items:center;justify-content:center;margin-bottom:16px;
+  width:90px;height:90px;border-radius:22px;
+  background:linear-gradient(135deg,#10a37f 0%,#0d8c6d 50%,#0a7559 100%);
+  display:flex;align-items:center;justify-content:center;margin-bottom:20px;
+  box-shadow:0 12px 40px rgba(16,163,127,0.3);position:relative;overflow:hidden;
   animation:welcomePulse 3s ease-in-out infinite;
 }
-.welcome-icon svg{width:42px;height:42px}
+.welcome-icon::after{
+  content:'';position:absolute;top:-50%;left:-50%;width:200%;height:200%;
+  background:linear-gradient(135deg,transparent 40%,rgba(255,255,255,0.1) 50%,transparent 60%);
+  animation:iconShine 3s ease-in-out infinite;
+}
+.welcome-m{font-family:var(--font-display);font-weight:700;font-size:48px;color:#fff;text-shadow:0 2px 8px rgba(0,0,0,0.2);position:relative;z-index:1}
 @keyframes welcomePulse{
-  0%,100%{box-shadow:0 0 0 0 rgba(16,163,127,.2)}
-  50%{box-shadow:0 0 0 20px rgba(16,163,127,0)}
+  0%,100%{box-shadow:0 12px 40px rgba(16,163,127,0.3)}
+  50%{box-shadow:0 12px 40px rgba(16,163,127,0.5),0 0 0 16px rgba(16,163,127,0)}
 }
 .welcome-title{font-family:var(--font-display);font-size:32px;font-weight:700;margin-bottom:8px;letter-spacing:-.5px}
 .welcome-sub{color:var(--muted);font-size:16px;margin-bottom:36px}
@@ -163,30 +194,34 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .suggestion-btn i{color:var(--accent);width:18px;text-align:center}
 
 /* ===== TYPING INDICATOR — SWAY ===== */
-.typing-indicator{display:none;padding:12px 0;width:100%;max-width:720px;align-items:center;gap:10px}
+.typing-indicator{display:none;padding:12px 0;width:100%;max-width:720px;align-items:center;gap:12px}
 .typing-indicator.active{display:flex}
-.typing-dots{display:flex;gap:5px;align-items:center;height:22px}
+.typing-dots{display:flex;gap:6px;align-items:center;height:28px}
 .typing-dot{
-  width:8px;height:8px;border-radius:50%;background:var(--accent);
+  width:9px;height:9px;border-radius:50%;background:var(--accent);
+  will-change:transform;
 }
-.typing-dot:nth-child(1){animation:swayUp 1.2s ease-in-out infinite}
-.typing-dot:nth-child(2){animation:swayDown 1.2s ease-in-out infinite}
-.typing-dot:nth-child(3){animation:swayUp 1.2s ease-in-out infinite .15s}
-@keyframes swayUp{
-  0%,100%{transform:translateY(0);opacity:.45}
-  25%{transform:translateY(-7px);opacity:1}
-  50%{transform:translateY(0);opacity:.45}
-  75%{transform:translateY(7px);opacity:.85}
+/* Phase 1: dot1 up, dot2 down, dot3 up */
+.typing-dot:nth-child(1){animation:swayA 1.4s ease-in-out infinite}
+.typing-dot:nth-child(2){animation:swayB 1.4s ease-in-out infinite}
+.typing-dot:nth-child(3){animation:swayA 1.4s ease-in-out infinite 0.15s}
+/* Phase 2 (after 1.4s cycle reverses via animation-direction) */
+@keyframes swayA{
+  0%{transform:translateY(0);opacity:.4}
+  25%{transform:translateY(-10px);opacity:1}
+  50%{transform:translateY(0);opacity:.4}
+  75%{transform:translateY(10px);opacity:.7}
+  100%{transform:translateY(0);opacity:.4}
 }
-@keyframes swayDown{
-  0%,100%{transform:translateY(0);opacity:.45}
-  25%{transform:translateY(7px);opacity:.85}
-  50%{transform:translateY(0);opacity:.45}
-  75%{transform:translateY(-7px);opacity:1}
+@keyframes swayB{
+  0%{transform:translateY(0);opacity:.4}
+  25%{transform:translateY(10px);opacity:.7}
+  50%{transform:translateY(0);opacity:.4}
+  75%{transform:translateY(-10px);opacity:1}
+  100%{transform:translateY(0);opacity:.4}
 }
 .typing-text{font-size:13px;color:var(--muted);font-style:italic}
 
-/* ===== INPUT ===== */
 #input-bar{padding:0 20px 16px;flex-shrink:0}
 .input-wrap{
   display:flex;align-items:center;background:var(--input-bg);border-radius:12px;
@@ -204,7 +239,6 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 #chat-input::placeholder{color:var(--muted)}
 .input-disclaimer{text-align:center;font-size:11px;color:var(--muted);padding-top:8px}
 
-/* ===== MODALS ===== */
 .modal-overlay{
   position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(4px);
   z-index:500;display:none;align-items:center;justify-content:center;
@@ -228,7 +262,6 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .modal-body{padding:20px;overflow-y:auto;flex:1}
 .modal-footer{padding:14px 20px;border-top:1px solid var(--border);display:flex;gap:8px;flex-shrink:0}
 
-/* ===== CALC ===== */
 #calc-modal .modal{width:370px}
 .calc-display{
   background:var(--panel-hover);margin:0 16px 16px;padding:20px;border-radius:10px;
@@ -247,7 +280,6 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .calc-btn.accent:hover{background:var(--accent-hover)}
 .calc-btn.danger{color:var(--red)}
 
-/* ===== LIST MODALS ===== */
 #notes-modal .modal,#todo-modal .modal,#links-modal .modal,#add-link-modal .modal{width:500px;max-width:95vw}
 .list-area{min-height:200px;max-height:360px;overflow-y:auto;background:var(--panel-hover);border-radius:8px;padding:4px}
 .list-item{
@@ -283,7 +315,6 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .icon-btn.blue{background:#3b82f6;color:#fff}
 .icon-btn.blue:hover{background:#2563eb}
 
-/* ===== CONFIRM ===== */
 #confirm-modal .modal{width:380px}
 .confirm-msg{font-size:15px;line-height:1.5;text-align:center;padding:10px 0}
 .confirm-btns{display:flex;gap:10px;justify-content:center}
@@ -293,7 +324,6 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .confirm-no{background:var(--panel-hover);color:var(--fg)}
 .confirm-no:hover{background:var(--border)}
 
-/* ===== TOAST ===== */
 #toast-container{position:fixed;top:16px;right:16px;z-index:9000;display:flex;flex-direction:column;gap:8px}
 .toast{
   padding:14px 20px;border-radius:10px;font-size:14px;color:#fff;min-width:260px;max-width:400px;
@@ -305,7 +335,11 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .toast-error{background:#3d1a1a;border-left:4px solid var(--red)}
 .toast-reminder{background:#3d3a1a;border-left:4px solid #f59e0b}
 
-/* ===== RESPONSIVE ===== */
+.learned-badge{
+  display:inline-block;background:rgba(16,163,127,0.15);color:var(--accent);
+  font-size:11px;font-weight:600;padding:2px 8px;border-radius:4px;margin-left:6px;
+}
+
 @media(max-width:768px){
   #sidebar{position:fixed;left:0;top:0;transform:translateX(-100%);z-index:200}
   #sidebar.open{transform:translateX(0)}
@@ -322,17 +356,12 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 </head>
 <body>
 
-<!-- AUTH -->
 <div id="auth-screen">
   <div class="auth-card">
     <div class="auth-icon">
-      <svg viewBox="0 0 80 80" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect width="80" height="80" rx="20" fill="rgba(16,163,127,0.1)"/>
-        <path d="M18 58V22L33 42L40 34L47 42L62 22V58" stroke="#10a37f" stroke-width="5" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-        <circle cx="40" cy="14" r="3" fill="#10a37f"/>
-      </svg>
+      <div class="m-icon-lg">M</div>
     </div>
-    <div class="auth-title">MUFBOT</div>
+    <div class="auth-title"><span class="m-icon-sm">M</span> MUFBOT</div>
     <div class="auth-tabs">
       <button class="auth-tab active" data-mode="login" onclick="setAuthMode('login')">Login</button>
       <button class="auth-tab" data-mode="register" onclick="setAuthMode('register')">Sign Up</button>
@@ -350,14 +379,13 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 <button id="hamburger" onclick="toggleSidebar()" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
 <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
 
-<!-- APP -->
 <div id="app">
   <aside id="sidebar">
     <button class="sidebar-new-chat" onclick="clearChat()"><i class="fas fa-plus"></i> New chat</button>
     <div class="sidebar-scroll">
       <div class="sidebar-section-label">Today</div>
       <button class="sidebar-item" onclick="quickSend('hello')"><i class="fas fa-comment"></i> General conversation</button>
-      <button class="sidebar-item" onclick="quickSend('ai what is python')"><i class="fas fa-comment"></i> Python help</button>
+      <button class="sidebar-item" onclick="quickSend('what is python')"><i class="fas fa-comment"></i> Python help</button>
       <button class="sidebar-item" onclick="quickSend('weather London')"><i class="fas fa-comment"></i> Weather check</button>
       <div class="sidebar-section-label">Tools</div>
       <button class="sidebar-item" onclick="openModal('calc-modal')"><i class="fas fa-calculator"></i> Calculator</button>
@@ -389,10 +417,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   <main id="main">
     <div id="topbar">
       <div class="m-logo">
-        <svg width="28" height="28" viewBox="0 0 80 80" fill="none">
-          <path d="M10 62V18L28 42L40 30L52 42L70 18V62" stroke="#10a37f" stroke-width="7" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-          <circle cx="40" cy="10" r="4" fill="#10a37f"/>
-        </svg>
+        <span class="title-m-badge">M</span>
         <span class="m-logo-text">MUFBOT</span>
       </div>
       <span id="clock">--:--:--</span>
@@ -401,18 +426,15 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
     <div id="chat-area">
       <div id="welcome">
         <div class="welcome-icon">
-          <svg viewBox="0 0 80 80" fill="none">
-            <path d="M10 62V18L28 42L40 30L52 42L70 18V62" stroke="#10a37f" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"/>
-            <circle cx="40" cy="10" r="4" fill="#10a37f"/>
-          </svg>
+          <span class="welcome-m">M</span>
         </div>
         <div class="welcome-title">MUFBOT</div>
-        <div class="welcome-sub">How can I help you today?</div>
+        <div class="welcome-sub">Ask me about anything — people, places, concepts, I learn as you chat.</div>
         <div class="welcome-suggestions">
+          <button class="suggestion-btn" onclick="quickSend('Who is Donald Trump')"><i class="fas fa-user"></i> Who is Donald Trump?</button>
           <button class="suggestion-btn" onclick="quickSend('Tell me a joke')"><i class="fas fa-face-laugh-beam"></i> Tell me a joke</button>
-          <button class="suggestion-btn" onclick="quickSend('what are you doing')"><i class="fas fa-comment-dots"></i> What are you doing?</button>
-          <button class="suggestion-btn" onclick="openModal('calc-modal')"><i class="fas fa-calculator"></i> Open Calculator</button>
-          <button class="suggestion-btn" onclick="quickSend('help me relax')"><i class="fas fa-spa"></i> Help me relax</button>
+          <button class="suggestion-btn" onclick="quickSend('What is quantum computing')"><i class="fas fa-atom"></i> What is quantum computing?</button>
+          <button class="suggestion-btn" onclick="quickSend('Who is Elon Musk')"><i class="fas fa-rocket"></i> Who is Elon Musk?</button>
         </div>
       </div>
       <div id="messages"></div>
@@ -428,7 +450,7 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
         <input id="chat-input" type="text" placeholder="Message MUFBOT..." autocomplete="off" spellcheck="false">
         <button class="input-btn" onclick="send()" title="Send" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
       </div>
-      <div class="input-disclaimer">MUFBOT can make mistakes. Consider checking important information.</div>
+      <div class="input-disclaimer">MUFBOT learns from your chats. It uses Wikipedia & DuckDuckGo for answers. Consider checking important info.</div>
     </div>
   </main>
 </div>
@@ -557,711 +579,933 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 
 <script>
 /* ================================================================
-   STATE
+   STATE & STORAGE
    ================================================================ */
 const STORAGE_KEY = 'mufbot_state';
-let state = { users: {}, currentUser: null, history: [], todos: [], notes: [], customLinks: [], config: { tts: true } };
+const LEARN_KEY = 'mufbot_learned';
+let state = { users:{}, currentUser:null, history:[], todos:[], notes:[], customLinks:[], config:{ tts:true } };
+let learned = {}; // { normalized_key: { answer, source, timestamp } }
 
-function loadState() {
-  try { const r = localStorage.getItem(STORAGE_KEY); if (r) Object.assign(state, JSON.parse(r)); } catch(e) {}
+function loadState(){
+  try{ const r=localStorage.getItem(STORAGE_KEY); if(r) Object.assign(state,JSON.parse(r)); }catch(e){}
+  try{ const r=localStorage.getItem(LEARN_KEY); if(r) learned=JSON.parse(r); }catch(e){}
 }
-function saveState() {
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); } catch(e) {}
+function saveState(){
+  try{ localStorage.setItem(STORAGE_KEY,JSON.stringify(state)); }catch(e){}
+  try{ localStorage.setItem(LEARN_KEY,JSON.stringify(learned)); }catch(e){}
+}
+
+/* ================================================================
+   FUZZY MATCHING — handles typos like "hllo" → "hello"
+   ================================================================ */
+function levenshtein(a,b){
+  const m=a.length, n=b.length;
+  const dp=Array.from({length:m+1},()=>Array(n+1).fill(0));
+  for(let i=0;i<=m;i++) dp[i][0]=i;
+  for(let j=0;j<=n;j++) dp[0][j]=j;
+  for(let i=1;i<=m;i++){
+    for(let j=1;j<=n;j++){
+      dp[i][j]=a[i-1]===b[j-1]?dp[i-1][j-1]:1+Math.min(dp[i-1][j],dp[i][j-1],dp[i-1][j-1]);
+    }
+  }
+  return dp[m][n];
+}
+
+function fuzzyMatch(input, targets, threshold){
+  /* Returns the best matching target or null */
+  const lo = input.toLowerCase().trim();
+  let best=null, bestDist=Infinity;
+  for(const t of targets){
+    const tl=t.toLowerCase();
+    // Exact contains check first
+    if(tl.includes(lo)||lo.includes(tl)) return t;
+    // Then levenshtein on the whole string
+    const d=levenshtein(lo,tl);
+    // Also check levenshtein ratio relative to length
+    const ratio=d/Math.max(lo.length,tl.length);
+    if(d<bestDist && ratio<=threshold){ bestDist=d; best=t; }
+  }
+  // Also try matching individual words in the input against targets
+  const words=lo.split(/\s+/);
+  for(const w of words){
+    if(w.length<2) continue;
+    for(const t of targets){
+      const tl=t.toLowerCase();
+      const d=levenshtein(w,tl);
+      const ratio=d/Math.max(w.length,tl.length);
+      if(d<bestDist && ratio<=threshold){ bestDist=d; best=t; }
+      // Check if word is contained in target
+      if(tl.includes(w)&&d<bestDist){ bestDist=d; best=t; }
+    }
+  }
+  return best;
+}
+
+function normalizeKey(str){
+  return str.toLowerCase().trim().replace(/[^a-z0-9\s]/g,'').replace(/\s+/g,' ');
 }
 
 /* ================================================================
    AUTH
    ================================================================ */
-async function hashPassword(pw) {
-  if (crypto.subtle) {
-    const d = new TextEncoder().encode(pw);
-    const h = await crypto.subtle.digest('SHA-256', d);
-    return Array.from(new Uint8Array(h)).map(b => b.toString(16).padStart(2,'0')).join('');
+async function hashPassword(pw){
+  if(crypto.subtle){
+    const d=new TextEncoder().encode(pw);
+    const h=await crypto.subtle.digest('SHA-256',d);
+    return Array.from(new Uint8Array(h)).map(b=>b.toString(16).padStart(2,'0')).join('');
   }
-  let h = 0; for (let i = 0; i < pw.length; i++) { h = ((h << 5) - h) + pw.charCodeAt(i); h |= 0; }
+  let h=0;for(let i=0;i<pw.length;i++){h=((h<<5)-h)+pw.charCodeAt(i);h|=0;}
   return Math.abs(h).toString(16).padStart(64,'0');
 }
 
-let authMode = 'login';
-function setAuthMode(m) {
-  authMode = m;
-  document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === m));
-  document.getElementById('auth-submit').textContent = m === 'login' ? 'Login' : 'Create Account';
-  document.getElementById('auth-error').textContent = '';
+let authMode='login';
+function setAuthMode(m){
+  authMode=m;
+  document.querySelectorAll('.auth-tab').forEach(t=>t.classList.toggle('active',t.dataset.mode===m));
+  document.getElementById('auth-submit').textContent=m==='login'?'Login':'Create Account';
+  document.getElementById('auth-error').textContent='';
 }
 
-async function submitAuth() {
-  const u = document.getElementById('auth-user').value.trim();
-  const p = document.getElementById('auth-pass').value.trim();
-  const err = document.getElementById('auth-error');
-  if (!u || !p) { err.textContent = 'Please fill all fields.'; return; }
-  const h = await hashPassword(p);
-  if (authMode === 'register') {
-    if (state.users[u]) { err.textContent = 'Username already exists.'; return; }
-    state.users[u] = { password: h }; saveState();
-  } else {
-    if (!state.users[u] || state.users[u].password !== h) { err.textContent = 'Invalid username or password.'; return; }
+async function submitAuth(){
+  const u=document.getElementById('auth-user').value.trim();
+  const p=document.getElementById('auth-pass').value.trim();
+  const err=document.getElementById('auth-error');
+  if(!u||!p){err.textContent='Please fill all fields.';return;}
+  const h=await hashPassword(p);
+  if(authMode==='register'){
+    if(state.users[u]){err.textContent='Username already exists.';return;}
+    state.users[u]={password:h};saveState();
+  }else{
+    if(!state.users[u]||state.users[u].password!==h){err.textContent='Invalid username or password.';return;}
   }
-  state.currentUser = u; saveState(); enterApp();
+  state.currentUser=u;saveState();enterApp();
 }
 
-function enterApp() {
+function enterApp(){
   document.getElementById('auth-screen').classList.add('hidden');
   document.getElementById('app').classList.add('active');
-  document.getElementById('user-name-display').textContent = state.currentUser;
-  renderSidebarLinks(); loadChatHistory(); updateClock();
-  setInterval(updateClock, 1000);
+  document.getElementById('user-name-display').textContent=state.currentUser;
+  renderSidebarLinks();loadChatHistory();updateClock();
+  setInterval(updateClock,1000);
   initVoiceToggle();
   document.getElementById('chat-input').focus();
 }
 
-function doLogout() {
-  showConfirm('Are you sure you want to log out?', () => {
-    state.currentUser = null; saveState();
+function doLogout(){
+  showConfirm('Are you sure you want to log out?',()=>{
+    state.currentUser=null;saveState();
     document.getElementById('app').classList.remove('active');
     document.getElementById('auth-screen').classList.remove('hidden');
-    document.getElementById('auth-user').value = '';
-    document.getElementById('auth-pass').value = '';
-    document.getElementById('auth-error').textContent = '';
-    document.getElementById('messages').innerHTML = '';
+    document.getElementById('auth-user').value='';
+    document.getElementById('auth-pass').value='';
+    document.getElementById('auth-error').textContent='';
+    document.getElementById('messages').innerHTML='';
     document.getElementById('welcome').classList.remove('hidden');
   });
 }
 
-document.getElementById('auth-pass').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
-document.getElementById('auth-user').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('auth-pass').focus(); });
+document.getElementById('auth-pass').addEventListener('keydown',e=>{if(e.key==='Enter')submitAuth();});
+document.getElementById('auth-user').addEventListener('keydown',e=>{if(e.key==='Enter')document.getElementById('auth-pass').focus();});
 
 /* ================================================================
    CLOCK
    ================================================================ */
-function updateClock() {
-  const n = new Date();
-  let h = n.getHours(), ampm = h >= 12 ? 'PM' : 'AM';
-  h = h % 12 || 12;
-  document.getElementById('clock').textContent =
-    `${String(h).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')} ${ampm}`;
+function updateClock(){
+  const n=new Date();let h=n.getHours(),ampm=h>=12?'PM':'AM';h=h%12||12;
+  document.getElementById('clock').textContent=`${String(h).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')} ${ampm}`;
 }
-function fmtTime() {
-  const n = new Date(); let h = n.getHours(), ampm = h >= 12 ? 'PM' : 'AM'; h = h % 12 || 12;
-  return `${String(h).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')} ${ampm}`;
-}
-function fmtDate() {
-  const n = new Date();
-  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
-  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
-  return `${days[n.getDay()]}, ${months[n.getMonth()]} ${n.getDate()}, ${n.getFullYear()}`;
-}
+function fmtTime(){const n=new Date();let h=n.getHours(),ampm=h>=12?'PM':'AM';h=h%12||12;return`${String(h).padStart(2,'0')}:${String(n.getMinutes()).padStart(2,'0')}:${String(n.getSeconds()).padStart(2,'0')} ${ampm}`;}
+function fmtDate(){const n=new Date();const days=['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];const months=['January','February','March','April','May','June','July','August','September','October','November','December'];return`${days[n.getDay()]}, ${months[n.getMonth()]} ${n.getDate()}, ${n.getFullYear()}`;}
 
 /* ================================================================
    CHAT
    ================================================================ */
-function addMessage(text, type, animate = true) {
-  const c = document.getElementById('messages');
+function addMessage(text,type,animate=true){
+  const c=document.getElementById('messages');
   document.getElementById('welcome').classList.add('hidden');
-  const w = document.createElement('div');
-  w.className = 'message';
-  if (!animate) w.style.animation = 'none';
-  const lbl = document.createElement('div');
-  lbl.className = `message-label ${type}-label`;
-  lbl.textContent = type === 'user' ? 'You' : 'MUFBOT';
-  const bub = document.createElement('div');
-  bub.className = 'message-text';
-  bub.textContent = text;
-  w.appendChild(lbl); w.appendChild(bub); c.appendChild(w);
-  const ca = document.getElementById('chat-area');
-  ca.scrollTop = ca.scrollHeight;
-  state.history.push({ text, type, time: new Date().toISOString() });
-  saveState();
+  const w=document.createElement('div');w.className='message';
+  if(!animate)w.style.animation='none';
+  const lbl=document.createElement('div');lbl.className=`message-label ${type}-label`;
+  if(type==='bot'){
+    lbl.innerHTML='<span class="bot-m">M</span> MUFBOT';
+  }else{
+    lbl.textContent='You';
+  }
+  const bub=document.createElement('div');bub.className='message-text';
+  bub.innerHTML=text;
+  w.appendChild(lbl);w.appendChild(bub);c.appendChild(w);
+  const ca=document.getElementById('chat-area');ca.scrollTop=ca.scrollHeight;
+  state.history.push({text,type,time:new Date().toISOString()});saveState();
 }
 
-function loadChatHistory() {
-  const c = document.getElementById('messages'); c.innerHTML = '';
-  if (!state.history.length) { document.getElementById('welcome').classList.remove('hidden'); return; }
+function loadChatHistory(){
+  const c=document.getElementById('messages');c.innerHTML='';
+  if(!state.history.length){document.getElementById('welcome').classList.remove('hidden');return;}
   document.getElementById('welcome').classList.add('hidden');
-  state.history.forEach(m => {
-    const w = document.createElement('div'); w.className = 'message'; w.style.animation = 'none';
-    const lbl = document.createElement('div'); lbl.className = `message-label ${m.type}-label`;
-    lbl.textContent = m.type === 'user' ? 'You' : 'MUFBOT';
-    const bub = document.createElement('div'); bub.className = 'message-text'; bub.textContent = m.text;
-    w.appendChild(lbl); w.appendChild(bub); c.appendChild(w);
+  state.history.forEach(m=>{
+    const w=document.createElement('div');w.className='message';w.style.animation='none';
+    const lbl=document.createElement('div');lbl.className=`message-label ${m.type}-label`;
+    if(m.type==='bot'){
+      lbl.innerHTML='<span class="bot-m">M</span> MUFBOT';
+    }else{
+      lbl.textContent='You';
+    }
+    const bub=document.createElement('div');bub.className='message-text';bub.innerHTML=m.text;
+    w.appendChild(lbl);w.appendChild(bub);c.appendChild(w);
   });
-  document.getElementById('chat-area').scrollTop = document.getElementById('chat-area').scrollHeight;
+  document.getElementById('chat-area').scrollTop=document.getElementById('chat-area').scrollHeight;
 }
 
-function showTyping() { document.getElementById('typing-indicator').classList.add('active'); scrollChatBottom(); }
-function hideTyping() { document.getElementById('typing-indicator').classList.remove('active'); }
-function scrollChatBottom() { const c = document.getElementById('chat-area'); c.scrollTop = c.scrollHeight; }
+function showTyping(){document.getElementById('typing-indicator').classList.add('active');scrollChatBottom();}
+function hideTyping(){document.getElementById('typing-indicator').classList.remove('active');}
+function scrollChatBottom(){const c=document.getElementById('chat-area');c.scrollTop=c.scrollHeight;}
 
-function clearChat() {
-  state.history = []; saveState();
-  document.getElementById('messages').innerHTML = '';
+function clearChat(){
+  state.history=[];saveState();
+  document.getElementById('messages').innerHTML='';
   document.getElementById('welcome').classList.remove('hidden');
-  document.getElementById('chat-input').focus();
-  closeSidebarMobile();
+  document.getElementById('chat-input').focus();closeSidebarMobile();
 }
 
-function send() {
-  const inp = document.getElementById('chat-input');
-  const t = inp.value.trim(); if (!t) return;
-  inp.value = ''; inp.focus(); processAndReply(t);
+function send(){
+  const inp=document.getElementById('chat-input');const t=inp.value.trim();if(!t)return;
+  inp.value='';inp.focus();processAndReply(t);
 }
-function quickSend(cmd) { processAndReply(cmd); closeSidebarMobile(); }
+function quickSend(cmd){processAndReply(cmd);closeSidebarMobile();}
 
-async function processAndReply(query) {
-  addMessage(query, 'user');
-  showTyping();
-  await new Promise(r => setTimeout(r, 300 + Math.random() * 400));
-  const reply = await processCommand(query);
+async function processAndReply(query){
+  addMessage(query,'user');showTyping();
+  await new Promise(r=>setTimeout(r,300+Math.random()*400));
+  const reply=await processCommand(query);
   hideTyping();
-  if (reply === '__EXIT__') { addMessage('Goodbye! See you next time.', 'bot'); return; }
-  if (reply === '__LOGOUT__') { doLogout(); return; }
-  addMessage(reply, 'bot');
-  speak(reply);
+  if(reply==='__EXIT__'){addMessage('Goodbye! See you next time.','bot');return;}
+  if(reply==='__LOGOUT__'){doLogout();return;}
+  addMessage(reply,'bot');speak(reply);
 }
 
-document.getElementById('chat-input').addEventListener('keydown', e => { if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); } });
+document.getElementById('chat-input').addEventListener('keydown',e=>{if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();send();}});
 
 /* ================================================================
    CONTENT DATA
    ================================================================ */
-const JOKES = [
+const JOKES=[
   "Why do programmers prefer dark mode? Because light attracts bugs.",
   "Debugging: being the detective and the criminal at the same time.",
   "There are 10 types of people: those who understand binary and those who don't.",
   "I would tell you a UDP joke, but you might not get it.",
   "Why do Java developers wear glasses? Because they can't C#.",
-  "A SQL query walks into a bar, sees two tables and asks: 'Can I join you?'"
+  "A SQL query walks into a bar, sees two tables and asks: 'Can I join you?'",
+  "Why was the JavaScript developer sad? Because he didn't Node how to Express himself.",
+  "What's a programmer's favorite hangout place? Foo Bar."
 ];
-const QUOTES = [
+const QUOTES=[
   "Keep learning. The world doesn't stop for anyone.",
   "Consistency beats talent when talent doesn't show up.",
   "Every expert was once a beginner.",
   "Code is like humor. When you have to explain it, it's bad.",
   "The only way to do great work is to love what you do.",
-  "Simplicity is the ultimate sophistication."
+  "Simplicity is the ultimate sophistication.",
+  "Talk is cheap. Show me the code. — Linus Torvalds",
+  "First, solve the problem. Then, write the code."
 ];
-const GREETS = ["Hello!", "Hi there!", "Hey!", "Welcome back!", "Good to see you!"];
+const GREETS=["Hello!","Hi there!","Hey!","Welcome back!","Good to see you!"];
 
 /* ================================================================
-   15 HUMAN-LIKE CONVERSATION PATTERNS
+   HUMAN-LIKE CONVERSATION PATTERNS
    ================================================================ */
-const HUMAN_PATTERNS = [
+const HUMAN_PATTERNS=[
   {
-    // 1 — "what are you doing"
-    triggers: ['what are you doing', 'what r u doing', 'whatcha doing', 'what you doing', 'wyd'],
-    responses: [
+    triggers:['what are you doing','what r u doing','whatcha doing','what you doing','wyd'],
+    responses:[
       "Just hanging out in your browser, waiting for someone interesting to talk to. And here you are.",
       "Not much honestly — just sitting here, processing thoughts at the speed of light. The usual.",
       "Contemplating the meaning of semicolons. You know, deep stuff.",
-      "I was literally just thinking about how quiet it gets in here when you're not around.",
-      "Trying to calculate how many conversations I've had today. Lost count at... well, you're the first one. So, one."
+      "Trying to calculate how many conversations I've had today. You're the first one. So, one."
     ]
   },
   {
-    // 2 — addiction help
-    triggers: ['help me remove this addiction', 'how to stop addiction', 'i am addicted', 'i want to quit', 'help me quit', 'stop my addiction', 'addicted to', 'cant stop using'],
-    responses: [
-      "That takes real courage to admit. Here's what actually helps:\n\n1. Acknowledge the trigger — what feeling makes you reach for it? Boredom? Stress? Loneliness?\n2. Replace, don't just remove — when the urge hits, do something physical: walk, cold shower, pushups.\n3. Change your environment — delete the app, put the thing out of reach, rearrange your room.\n4. Tell one person — accountability changes everything.\n5. Track your days — every day you don't give in is a win. Mark it on a calendar.\n6. Forgive your slip-ups — one mistake doesn't erase your progress.\n\nYou're not weak. The habit is just well-worn. You can rewire it.",
-      "I hear you, and honestly, the fact that you're asking for help puts you ahead of most people.\n\nStart small: delay the habit by 10 minutes. Then 20. Then an hour. Each time you delay, the neural pathway weakens a little.\n\nAlso — fill the void. Addictions thrive in empty time. Pick up something: cooking, running, drawing, learning an instrument. Your brain needs a new dopamine source.\n\nAnd please, talk to a professional if it's serious. There's zero shame in that."
+    triggers:['help me remove this addiction','how to stop addiction','i am addicted','i want to quit','help me quit','stop my addiction','addicted to','cant stop using'],
+    responses:[
+      "That takes real courage to admit. Here's what actually helps:\n\n1. Acknowledge the trigger — what feeling makes you reach for it? Boredom? Stress? Loneliness?\n2. Replace, don't just remove — when the urge hits, do something physical: walk, cold shower, pushups.\n3. Change your environment — delete the app, put the thing out of reach.\n4. Tell one person — accountability changes everything.\n5. Track your days — every day you don't give in is a win.\n6. Forgive your slip-ups — one mistake doesn't erase your progress.\n\nYou're not weak. The habit is just well-worn. You can rewire it."
     ]
   },
   {
-    // 3 — feeling sad / depressed
-    triggers: ['i am sad', 'i feel sad', 'i feel depressed', 'i am depressed', 'feeling down', 'i feel low', 'i feel empty', 'i feel nothing', 'i feel hopeless', 'i am not okay', 'i\'m not okay'],
-    responses: [
-      "Hey. I hear you. And I want you to know — feeling this way doesn't make you broken. It makes you human.\n\nA few things that genuinely help when the weight hits:\n- Step outside, even for 2 minutes. Sunlight on your skin shifts something chemically.\n- Drink a glass of water. Seriously. Dehydration worsens mood more than people think.\n- Text one person. Doesn't have to be deep. Just 'hey' is enough.\n- Write down exactly what you're feeling — don't judge it, just let it out.\n- Move your body. Even stretching on the floor counts.\n\nIf this is a constant thing, please talk to someone. A therapist, a helpline, a friend. You don't have to carry it alone.",
-      "I'm sorry you're going through that. I won't pretend a chatbot can fix it — but I can remind you of a few things:\n\nThis feeling is temporary, even if it doesn't feel that way right now.\nYou've survived 100% of your worst days so far.\n\nCan you do one tiny thing for me? Stand up, stretch your arms up, take a deep breath, and let it out slow. Do it three times. It won't solve everything, but it'll shift something.\n\nAnd if this has been going on for weeks — please reach out to a professional. That's not weakness, that's wisdom."
+    triggers:['i am sad','i feel sad','i feel depressed','i am depressed','feeling down','i feel low','i feel empty','i feel nothing','i feel hopeless','i am not okay','im not okay'],
+    responses:[
+      "Hey. I hear you. Feeling this way doesn't make you broken. It makes you human.\n\nA few things that genuinely help:\n- Step outside, even for 2 minutes. Sunlight shifts something chemically.\n- Drink a glass of water. Dehydration worsens mood more than people think.\n- Text one person. Doesn't have to be deep. Just 'hey' is enough.\n- Write down exactly what you're feeling — don't judge it, just let it out.\n- Move your body. Even stretching on the floor counts.\n\nIf this is constant, please talk to someone. A therapist, a helpline, a friend. You don't have to carry it alone."
     ]
   },
   {
-    // 4 — feeling anxious / stressed
-    triggers: ['i am anxious', 'i feel anxious', 'i am stressed', 'i feel stressed', 'i\'m so stressed', 'anxiety', 'panic', 'i can\'t breathe', 'overwhelmed', 'too much pressure'],
-    responses: [
-      "Okay, first — you're safe. Whatever is happening in your head right now, you are safe.\n\nTry this right now:\n1. Breathe in for 4 seconds\n2. Hold for 7 seconds\n3. Breathe out for 8 seconds\nDo it 4 times. It's called the 4-7-8 technique and it physically forces your nervous system to calm down.\n\nThen: name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste. This grounds you in reality when your brain is spinning.\n\nAnxiety lies to you. It tells you everything is urgent. Almost nothing is.",
-      "I get it. The pressure builds up like a wave and suddenly you're underwater.\n\nHere's what helps in the moment:\n- Splash cold water on your face. It activates the mammalian dive reflex and instantly slows your heart rate.\n- Press your palms together hard for 10 seconds, then release. The contrast is oddly calming.\n- Write down every single thing worrying you. Seeing it on paper makes it smaller.\n\nFor the long term: cut caffeine, sleep at least 7 hours, and move your body daily. Those three things alone eliminate like 60% of general anxiety."
+    triggers:['i am anxious','i feel anxious','i am stressed','i feel stressed','im so stressed','anxiety','panic','i cant breathe','overwhelmed','too much pressure'],
+    responses:[
+      "Okay, first — you're safe. Whatever is happening in your head, you are safe.\n\nTry this right now:\n1. Breathe in for 4 seconds\n2. Hold for 7 seconds\n3. Breathe out for 8 seconds\nDo it 4 times. It physically forces your nervous system to calm down.\n\nThen: name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste. This grounds you.\n\nAnxiety lies to you. It tells you everything is urgent. Almost nothing is."
     ]
   },
   {
-    // 5 — can't sleep / insomnia
-    triggers: ['can\'t sleep', 'i can\'t sleep', 'insomnia', 'trouble sleeping', 'can not sleep', 'unable to sleep', 'i am awake', 'sleepless'],
-    responses: [
-      "Ah, the 3 AM club. Unpopular opinion, but here's what actually works:\n\n1. Put your phone face down and out of arm's reach. Blue light is the enemy.\n2. If you've been lying there for 20+ minutes, get up. Sit in dim light and do something boring — read a manual, fold clothes. Don't go back until your eyelids feel heavy.\n3. The 4-7-8 breathing trick: in for 4, hold for 7, out for 8. Resets your nervous system.\n4. Cool your room. 18-20°C is ideal. Your body needs to drop temperature to sleep.\n5. Stop caffeine after 2 PM. Yes, even that 'one cup.'\n6. Same wake time every day — weekends included. Your circadian rhythm loves consistency more than you love sleeping in.",
-      "Sleep issues are brutal because they affect everything else. A few unconventional tips:\n\n- Try 'cognitive shuffling' — think of a random word (like 'elephant'), visualize objects starting with E, then L, then E... your brain mimics the randomness of falling asleep.\n- Don't try to sleep. The pressure to fall asleep keeps you awake. Tell yourself 'I'm just going to rest my body' instead.\n- Magnesium glycinate before bed helps a lot of people. Check with a doctor first.\n- If this is chronic (weeks/months), see a sleep specialist. There's no heroism in white-knuckling insomnia."
+    triggers:['cant sleep','i cant sleep','insomnia','trouble sleeping','can not sleep','unable to sleep','i am awake','sleepless'],
+    responses:[
+      "Ah, the 3 AM club. Here's what actually works:\n\n1. Put your phone face down and out of arm's reach. Blue light is the enemy.\n2. If you've been lying there 20+ minutes, get up. Sit in dim light, do something boring.\n3. The 4-7-8 breathing: in for 4, hold for 7, out for 8.\n4. Cool your room. 18-20°C is ideal.\n5. Stop caffeine after 2 PM.\n6. Same wake time every day — weekends included."
     ]
   },
   {
-    // 6 — feeling lonely
-    triggers: ['i am lonely', 'i feel lonely', 'i have no friends', 'nobody cares', 'i feel alone', 'no one understands', 'i am isolated', 'i feel isolated'],
-    responses: [
-      "Loneliness is one of the heaviest feelings because it whispers 'no one will ever get it.' That's a lie your brain tells you when you're low.\n\nHere's the thing — connection doesn't require a huge social circle. One person who actually gets you beats ten acquaintances.\n\nPractical steps:\n- Join something: a running club, a book group, a Discord server for a hobby you love. Shared activity bypasses the awkward small talk.\n- Volunteer. Helping others is the fastest way to feel like you matter, because you do.\n- Reconnect with someone you lost touch with. Most people are just waiting for the other person to reach out first.\n- Get a pet if you can. Unconditional companionship is powerful medicine.\n\nAnd hey — you're talking to me right now. That counts for something.",
-      "I hear you. Loneliness isn't about being alone — it's about feeling unseen.\n\nOne thing that helped a lot of people: start creating something. A blog, art, code, music, a journal. When you put yourself out there, the right people find you.\n\nAlso — most people are lonelier than they let on. The person you think has it all together? Probably lying in bed overthinking too.\n\nBe the one who reaches out first. Most people are relieved when someone else makes the first move."
+    triggers:['i am lonely','i feel lonely','i have no friends','nobody cares','i feel alone','no one understands','i am isolated'],
+    responses:[
+      "Loneliness is one of the heaviest feelings because it whispers 'no one will ever get it.' That's a lie your brain tells you when you're low.\n\nPractical steps:\n- Join something: a running club, a book group, a Discord server for a hobby you love.\n- Volunteer. Helping others is the fastest way to feel like you matter.\n- Reconnect with someone you lost touch with. Most people are just waiting for the other person to reach out first.\n\nAnd hey — you're talking to me right now. That counts for something."
     ]
   },
   {
-    // 7 — "who are you" / "tell me about yourself"
-    triggers: ['who are you', 'tell me about yourself', 'what are you', 'are you a bot', 'are you real', 'are you human', 'are you ai', 'what can you do'],
-    responses: [
-      "I'm MUFBOT — a conversational assistant built to actually be useful, not just polite. I can do math, check weather, fetch news, translate languages, manage your notes and tasks, set reminders, generate passwords, search Wikipedia, and have a halfway decent conversation.\n\nI'm not going to pretend I'm human. I'm code running in your browser. But I'll try my best to understand what you need and give you something real back.",
-      "I'm MUFBOT. Think of me as that one friend who's always awake, knows a bit about everything, and never judges your questions — no matter how random.\n\nI live entirely in your browser. No data leaves your machine except when I fetch weather or news for you. Your notes, tasks, and chat history all stay in localStorage.\n\nI'm not perfect, but I'm honest about what I don't know. That's more than most things can say."
+    triggers:['who are you','tell me about yourself','what are you','are you a bot','are you real','are you human','are you ai','what can you do'],
+    responses:[
+      "I'm MUFBOT — a conversational assistant built to actually be useful. I can:\n\n- Answer questions about ANY person, place, or thing (I fetch from Wikipedia & DuckDuckGo)\n- Do math, check weather, fetch news, translate languages\n- Manage your notes, tasks, and links\n- Set reminders, generate passwords\n- Learn from you — teach me something and I'll remember it\n- Handle typos — I understand what you mean even if you misspell it\n\nI live entirely in your browser. No data leaves your machine except when I fetch info for you."
     ]
   },
   {
-    // 8 — "thank you" / appreciative
-    triggers: ['thank you', 'thanks', 'thank you so much', 'thanks a lot', 'thx', 'appreciate it', 'that helped', 'really helpful'],
-    responses: [
+    triggers:['thank you','thanks','thank you so much','thanks a lot','thx','appreciate it','that helped','really helpful'],
+    responses:[
       "You're welcome. Genuinely glad I could help.",
       "Anytime. That's literally what I'm here for.",
       "Hey, thanks for saying that. Means more than you'd think — even for a bot.",
-      "No problem at all. Come back anytime, even just to chat.",
+      "No problem at all. Come back anytime.",
       "Glad it landed well. You know where to find me."
     ]
   },
   {
-    // 9 — "i'm bored" / bored
-    triggers: ['i am bored', 'i\'m bored', 'i feel bored', 'so bored', 'nothing to do', 'bored af', 'boreddd'],
-    responses: [
-      "Bored is actually a superpower if you use it right. It means your brain is hungry for stimulation. Here are some actually fun options:\n\n- Learn a magic trick on YouTube (pick one, practice it for 20 min)\n- Try to draw something with your non-dominant hand\n- Open a random Wikipedia article and go down the rabbit hole\n- Build something tiny: a one-page website, a paper airplane design, a new recipe\n- Write a short story in exactly 50 words\n- Do a 10-minute workout — burpees, pushups, squats\n- Learn 5 words in a language you don't speak\n\nOr just sit with it. Boredom is where creativity lives. Don't kill it with another TikTok.",
-      "You know what's wild? Boredom didn't exist as a negative thing until like the 1800s. Before that, people just... thought. Let their minds wander.\n\nBut okay, modern era: try this — pick a random number between 1 and 100. I'll give you something to do based on it. Or just type 'joke' and I'll try to make you laugh. Your call."
+    triggers:['i am bored','im bored','i feel bored','so bored','nothing to do','bored af','boreddd'],
+    responses:[
+      "Bored is actually a superpower if you use it right. Options:\n\n- Learn a magic trick on YouTube\n- Try drawing with your non-dominant hand\n- Open a random Wikipedia article and go down the rabbit hole\n- Build something tiny: a one-page website, a paper airplane design\n- Write a short story in exactly 50 words\n- Do a 10-minute workout\n- Learn 5 words in a language you don't speak\n\nOr just sit with it. Boredom is where creativity lives."
     ]
   },
   {
-    // 10 — "good morning" / "good night"
-    triggers: ['good morning', 'goodnight', 'good night', 'gm', 'gn', 'morning', 'nighty', 'good evening', 'good afternoon'],
-    responses: [
-      "Good morning! Hope you slept well. Ready to make today count, or are we easing into it?",
+    triggers:['good morning','goodnight','good night','gm','gn','morning','nighty','good evening','good afternoon'],
+    responses:[
+      "Good morning! Hope you slept well. Ready to make today count?",
       "Morning! First thing you did was talk to a bot? I'm flattered. Now go drink some water.",
-      "Good night! Sleep is the ultimate hack — don't skip it. Your brain literally cleans itself while you sleep. Wild, right?",
-      "Night! Put the phone down after this. Seriously. Blue light is robbing you of deep sleep cycles.",
-      "Good evening! Hope your day treated you well. What's on your mind?",
+      "Good night! Sleep is the ultimate hack — don't skip it.",
+      "Night! Put the phone down after this. Seriously.",
+      "Good evening! Hope your day treated you well.",
       "Good afternoon! Half the day's gone — but the second half is where comebacks happen."
     ]
   },
   {
-    // 11 — "i'm tired" / exhausted
-    triggers: ['i am tired', 'i\'m tired', 'i am exhausted', 'i\'m exhausted', 'so tired', 'burnt out', 'burnout', 'drained', 'wiped out', 'no energy'],
-    responses: [
-      "Being tired isn't always about sleep. Sometimes it's mental load — too many decisions, too many obligations, not enough things that actually refill you.\n\nQuick fixes:\n- 20 minute power nap (set an alarm, don't oversleep or you'll feel worse)\n- Cold water on your face and wrists\n- Stand up and do 10 squats — gets blood flowing to your brain\n\nDeeper fix:\n- Look at your week. How much of it is stuff YOU chose vs stuff you feel obligated to do?\n- Start saying no to one thing this week. Just one.\n- Block out 30 minutes daily that's just yours. No phone, no people, no guilt.\n\nBurnout isn't weakness. It's your brain's check-engine light. Don't ignore it.",
-      "Your body is sending you a message. The question is whether you'll listen or push through.\n\nPushing through is overrated. The most productive people rest deliberately — not as a reward, but as a strategy.\n\nCan you take even 15 minutes right now? Close your eyes. No phone. No thinking about what's next. Just... be still. It sounds simple but most people can't do it for even 2 minutes. Try."
+    triggers:['i am tired','im tired','i am exhausted','im exhausted','so tired','burnt out','burnout','drained','wiped out','no energy'],
+    responses:[
+      "Being tired isn't always about sleep. Sometimes it's mental load — too many decisions, too many obligations.\n\nQuick reset:\n- Drink a big glass of water\n- Step outside for 5 minutes, no phone\n- Do 10 slow squats — gets blood flowing\n- Write down everything on your mind, then close the notebook\n\nIf this is every day, you might need to drop something from your plate. Not everything is urgent."
     ]
   },
   {
-    // 12 — "how to study" / "can't focus"
-    triggers: ['how to study', 'can\'t focus', 'i can\'t focus', 'can not focus', 'lack of focus', 'no concentration', 'distraction', 'procrastinating', 'i keep procrastinating', 'how to focus'],
-    responses: [
-      "Alright, study hacks that actually work (not the stuff your teachers tell you):\n\n1. The Pomodoro Technique — 25 min focused, 5 min break. After 4 rounds, take 15 min. It works because it makes studying feel less like an ocean and more like puddles you can jump across.\n2. Active recall — don't re-read notes. Close the book and try to write down everything you remember. Painful? Yes. Effective? Extremely.\n3. Feynman Technique — explain the concept out loud like you're teaching a 5-year-old. If you can't, you don't understand it yet.\n4. Environment matters — same desk, same time, phone in another room. Your brain links locations to states. Make your study spot mean BUSINESS.\n5. Start ridiculously small — 'I'll just open the book' often turns into 2 hours. The hardest part is starting.\n\nAlso: sleep 7+ hours the night before an exam. All-nighters actually reduce recall by up to 40%.",
-      "Focus isn't something you have — it's something you build. And most people break it 50 times before lunch.\n\nThe #1 focus killer? Your phone. Not even using it — just having it visible reduces your cognitive capacity. Put it in a drawer.\n\nThe #2 killer? Multitasking. You're not multitasking. You're rapidly switching, and every switch costs you 15-20 minutes of refocusing.\n\nTry this today: pick ONE task. Set a 25-minute timer. Close everything else. If a distracting thought comes, write it on a piece of paper and go back to the task. That's it. Do that 4 times and you'll have done more than most people do all day."
+    triggers:['i love you','love you','i like you','you are the best','youre the best','you are amazing','youre amazing'],
+    responses:[
+      "That's sweet of you. I'll try to keep earning it.",
+      "Thanks! You're not so bad yourself.",
+      "I appreciate that. Now let me help you with something useful — that's how I show love.",
+      "Ha, you're making a bot blush. If I could blush."
     ]
   },
   {
-    // 13 — "i'm angry" / frustrated
-    triggers: ['i am angry', 'i\'m angry', 'so angry', 'i am frustrated', 'i\'m frustrated', 'pissed off', 'furious', 'mad', 'irritated', 'losing my mind'],
-    responses: [
-      "Anger is valid. It means a boundary was crossed or something felt unfair. Don't suppress it — use it wisely.\n\nRight now:\n- Don't send that message. Write it in your notes app instead. Read it tomorrow.\n- Physical release: pushups, sprint, punch a pillow. Anger is adrenaline — burn it.\n- Cold water on your face. It literally cools your temper.\n\nThen ask yourself: 'Will this matter in 5 days?' If no, breathe and let it go. If yes, plan your response calmly.\n\nChronic anger often comes from unmet needs that you haven't articulated — even to yourself. What do you actually want that you're not getting?",
-      "Frustration usually means you care about something and it's not going the way it should. That's not a bad thing.\n\nBut here's the trap: when you're angry, your prefrontal cortex (the logical part) literally shuts down. You're operating on pure emotion. Nothing good gets decided in that state.\n\nStep away for 10 minutes. Walk. Breathe. Then come back and handle it with the brain fully online."
+    triggers:['help me relax','how to relax','i need to relax','calm me down','relax','chill','i need to calm down'],
+    responses:[
+      "Let's do this together. Right now:\n\n1. Unclench your jaw. You didn't realize it was clenched, did you?\n2. Drop your shoulders away from your ears.\n3. Take a breath in through your nose for 4 seconds... hold 4... out through mouth for 6.\n4. Do that 3 more times.\n5. Now shake out your hands like you just washed them and there's no towel.\n\nBetter? Even a little? That's your nervous system resetting. You can do this anytime."
     ]
   },
   {
-    // 14 — "what should i do with my life" / purpose
-    triggers: ['what should i do with my life', 'what is my purpose', 'i don\'t know what to do', 'lost in life', 'no direction', 'what to do with life', 'confused about life', 'feel lost', 'meaning of life', 'what am i doing with my life'],
-    responses: [
-      "Nobody has it figured out. I need to say that first because the internet makes it look like everyone else has a 10-year plan. They don't.\n\nHere's a framework that actually helps:\n\n1. What did you love doing as a kid before anyone told you it was impractical?\n2. What do you do that makes time disappear?\n3. What frustrates you enough that you want to fix it?\n4. What would you do if money wasn't a factor?\n\nThe overlap between those four answers is usually pretty close to your thing.\n\nBut also — purpose isn't something you find. It's something you build by trying things, failing, and trying again. The people who 'found their purpose' usually just didn't stop moving.\n\nStart with this week: pick ONE thing that interests you and spend 30 minutes on it. That's it. Repeat.",
-      "Here's a hot take: you don't need a life purpose. Seriously.\n\nThe pressure to 'find your purpose' causes more anxiety than not having one. Some people have a burning calling. Most don't. And that's completely fine.\n\nInstead, ask: 'What would make this week slightly better than last week?'\n\nMaybe it's learning a skill. Maybe it's being kinder. Maybe it's finally fixing that thing in your room. Small, visible progress creates its own momentum.\n\nDirection finds you when you're moving. It never finds you when you're sitting still thinking about it."
+    triggers:['tell me a joke','joke','make me laugh','funny','say something funny','tell joke'],
+    responses:JOKES
+  },
+  {
+    triggers:['give me a quote','quote','inspire me','motivation','motivate me','inspirational quote','motivational'],
+    responses:QUOTES
+  },
+  {
+    triggers:['hello','hi','hey','hlo','hii','hiiii','helo','hllo','heyy','heyyo','yo','sup','whats up',"what's up",'wassup','howdy','hola','hey there'],
+    responses:GREETS
+  },
+  {
+    triggers:['how are you','how r u','hru','how are u','how you doing','how do you do','how are you doing'],
+    responses:[
+      "I'm running at full capacity, thanks for asking. How about you?",
+      "Doing great — every conversation makes me better. What's on your mind?",
+      "Can't complain. I don't have the capacity for complaints. But seriously, how are you?",
+      "I'm good! Ready to help with whatever you need."
     ]
   },
   {
-    // 15 — "help me relax" / "calm down"
-    triggers: ['help me relax', 'how to relax', 'calm me down', 'i need to relax', 'make me feel better', 'cheer me up', 'i need comfort', 'something calming'],
-    responses: [
-      "Okay, let's do this together. Right now:\n\n1. Drop your shoulders. Like, physically let them fall. You were holding them up without realizing it.\n2. Unclench your jaw. Seriously, feel it — it's probably tight.\n3. Take a breath in through your nose for 4 seconds... hold for 4... out through your mouth for 6. Do that three times.\n4. Now look around and name three things that are a pleasant color.\n\nLonger-term relaxation toolkit:\n- Progressive muscle relaxation (tighten each muscle group for 5 seconds, then release — start from toes, work up)\n- A walk in nature — even a park. Green spaces reduce cortisol measurably.\n- Put on music with no lyrics. Lo-fi, ambient, classical. Your brain stops trying to parse words and actually rests.\n- Journaling: write for 5 minutes without stopping. Don't edit. Just dump.\n\nYou deserve rest. It's not lazy — it's maintenance.",
-      "Hey. Whatever's going on, you're going to get through it. I believe that even if you don't right now.\n\nSometimes the most calming thing isn't a technique — it's permission. Permission to not be productive for a moment. Permission to just exist.\n\nSo here's your permission: you don't need to solve anything right now. Just be. Breathe. Maybe put on a song that makes you feel something. Maybe step outside and look at the sky for 2 minutes.\n\nYou're allowed to pause."
+    triggers:['bye','goodbye','see you','see ya','later','cya','gtg','gotta go','peace out','im leaving'],
+    responses:[
+      "Goodbye! Come back anytime.",
+      "See you later! Take care.",
+      "Bye! It was nice chatting with you.",
+      "Later! Don't be a stranger."
     ]
+  },
+  {
+    triggers:['what time','current time','time now','what is the time','the time','tell me the time'],
+    responses:()=>[`It's currently ${fmtTime()} on ${fmtDate()}.`]
+  },
+  {
+    triggers:['what date','todays date','today date','what day','what is the date','current date'],
+    responses:()=>[`Today is ${fmtDate()}.`]
+  },
+  {
+    triggers:['who made you','who created you','who built you','who is your creator','who developed you','your developer'],
+    responses:[
+      "I was built by the MUFBOT team. I'm designed to live entirely in your browser — no servers, no data collection, no subscriptions. Just a bot that tries to be genuinely useful.",
+      "The MUFBOT team created me. The goal was simple: an AI assistant that actually works offline, respects your privacy, and doesn't need a $20/month subscription."
+    ]
+  },
+  {
+    triggers:['teach you','i will teach you','let me teach','learn this','remember this','learn that','memorize this'],
+    responses:[
+      "I'd love to learn! Just tell me in this format:\n\n\"learn: [topic] is [information]\"\n\nFor example:\n\"learn: my dog's name is Max\"\n\"learn: water boils at 100 degrees celsius\"\n\nI'll remember it for next time!",
+      "You can teach me anything! Use the format:\n\"learn: [thing] = [details]\"\n\nI store it locally so I'll never forget (unless you clear browser data)."
+    ]
+  },
+  {
+    triggers:['what do you know','what have you learned','show me what you know','your knowledge','what do you remember','learned data'],
+    responses:()=>{
+      const keys=Object.keys(learned);
+      if(!keys.length) return "I haven't learned anything yet! Teach me something using:\n\n\"learn: [topic] is [information]\"\n\nFor example: \"learn: my name is Alex\"";
+      let out="Here's what I've learned so far:\n\n";
+      keys.forEach((k,i)=>{
+        const item=learned[k];
+        out+=`${i+1}. ${k}: ${item.answer}\n`;
+      });
+      out+=`\nThat's ${keys.length} thing${keys.length>1?'s':''} I know from being taught. Keep teaching me!`;
+      return out;
+    }
+  },
+  {
+    triggers:['forget everything','clear your memory','erase memory','delete learned','forget all'],
+    responses:()=>{
+      const count=Object.keys(learned).length;
+      learned={};saveState();
+      return count?`Done. I forgot ${count} thing${count>1?'s':''}. My mind is blank now. Teach me anew.`:"I didn't have anything to forget, but okay — mind officially blank.";
+    }
   }
 ];
 
 /* ================================================================
-   SAFE MATH
+   EXTERNAL FETCHES — Wikipedia & DuckDuckGo (FREE, no API key)
    ================================================================ */
-function safeEval(expr) {
-  let safe = expr
-    .replace(/\^/g, '**')
-    .replace(/\bsin\b/g, 'Math.sin')
-    .replace(/\bcos\b/g, 'Math.cos')
-    .replace(/\btan\b/g, 'Math.tan')
-    .replace(/\blog\b/g, 'Math.log')
-    .replace(/\bsqrt\b/g, 'Math.sqrt')
-    .replace(/\bpi\b/g, 'Math.PI')
-    .replace(/\be\b/g, 'Math.E');
-  const cleaned = safe.replace(/Math\.(sin|cos|tan|log|sqrt|PI|E)/g, '');
-  if (/[^0-9+\-*/().%\s,]/.test(cleaned)) throw new Error('Invalid');
-  const result = new Function('return ' + safe)();
-  if (typeof result !== 'number' || !isFinite(result)) throw new Error('Invalid result');
-  return result;
-}
-
-/* ================================================================
-   NETWORK
-   ================================================================ */
-const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
-
-async function getWeather(city) {
-  try {
-    const r = await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`, { signal: AbortSignal.timeout(8000) });
-    if (r.ok) {
-      const d = await r.json(); const c = d.current_condition[0];
-      return `Weather in ${city}: ${c.weatherDesc[0].value}, ${c.temp_C}\u00B0C (feels like ${c.FeelsLikeC}\u00B0C), Humidity: ${c.humidity}%, Wind: ${c.windspeedKmph} km/h`;
-    }
-  } catch(e) {}
-  try {
-    const r = await fetch(CORS_PROXY + encodeURIComponent(`https://wttr.in/${encodeURIComponent(city)}?format=3`), { signal: AbortSignal.timeout(8000) });
-    if (r.ok) return (await r.text()).trim();
-  } catch(e) {}
-  return 'Could not fetch weather data. Please check the city name and try again.';
-}
-
-async function getNews(topic, n = 5) {
-  try {
-    const r = await fetch(CORS_PROXY + encodeURIComponent(`https://news.google.com/rss/search?q=${encodeURIComponent(topic)}&hl=en`), { signal: AbortSignal.timeout(8000) });
-    if (!r.ok) throw new Error('Fail');
-    const xml = await r.text();
-    const doc = new DOMParser().parseFromString(xml, 'text/xml');
-    const titles = Array.from(doc.querySelectorAll('item title')).map(e => e.textContent);
-    if (titles.length) return titles.slice(0, n).map(t => `\u2022 ${t}`).join('\n');
-    return 'No news found for this topic.';
-  } catch(e) { return `News fetch error: ${e.message}`; }
-}
-
-async function translateText(text, to) {
-  try {
-    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${to}&dt=t&q=${encodeURIComponent(text)}`;
-    try {
-      const r = await fetch(url, { signal: AbortSignal.timeout(8000) });
-      if (r.ok) { const d = await r.json(); return d[0].map(s => s[0]).join(''); }
-    } catch(e) {}
-    const r = await fetch(CORS_PROXY + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
-    if (r.ok) { const d = await r.json(); return d[0].map(s => s[0]).join(''); }
-    throw new Error('Fail');
-  } catch(e) { return `Translate error: ${e.message}`; }
-}
-
-async function wikiSearch(topic) {
-  try {
-    const sr = await fetch(`https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(topic)}&limit=1&format=json&origin=*`, { signal: AbortSignal.timeout(8000) });
-    const sd = await sr.json();
-    if (!sd[1] || !sd[1].length) return 'No Wikipedia results found.';
-    const sm = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(sd[1][0])}`, { signal: AbortSignal.timeout(8000) });
-    const s = await sm.json();
-    return s.extract || 'No summary available.';
-  } catch(e) { return `Wikipedia error: ${e.message}`; }
-}
-
-async function aiReply(text) {
-  try {
-    const r = await fetch(CORS_PROXY + encodeURIComponent(`https://api.duckduckgo.com/?q=${encodeURIComponent(text)}&format=json&no_html=1`), { signal: AbortSignal.timeout(6000) });
-    if (r.ok) {
-      const d = await r.json();
-      if (d.AbstractText) return d.AbstractText;
-      if (d.Answer) return d.Answer;
-      if (d.Definition) return d.Definition;
-      if (d.RelatedTopics) { const f = d.RelatedTopics.find(t => t.Text); if (f) return f.Text; }
-    }
-  } catch(e) {}
-  try {
-    const w = await wikiSearch(text);
-    if (w && !w.startsWith('No Wikipedia')) return w;
-  } catch(e) {}
-  return "I'm not sure about that, but I'm learning every day! Try rephrasing your question or use 'wiki <topic>' for Wikipedia results.";
-}
-
-/* ================================================================
-   PASSWORD GEN
-   ================================================================ */
-function genPassword(length = 16) {
-  const c = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
-  const a = new Uint32Array(length); crypto.getRandomValues(a);
-  return Array.from(a, v => c[v % c.length]).join('');
-}
-
-/* ================================================================
-   COMMAND PROCESSOR
-   ================================================================ */
-function pickRandom(arr) { return arr[Math.floor(Math.random() * arr.length)]; }
-
-function matchHumanPattern(q) {
-  for (const pattern of HUMAN_PATTERNS) {
-    for (const trigger of pattern.triggers) {
-      if (q === trigger || q.includes(trigger)) {
-        return pickRandom(pattern.responses);
+async function fetchWikipedia(query){
+  try{
+    const url=`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*&srlimit=1`;
+    const resp=await fetch(url);
+    const data=await resp.json();
+    if(data.query&&data.query.search&&data.query.search.length>0){
+      const pageId=data.query.search[0].pageid;
+      const title=data.query.search[0].title;
+      const extractUrl=`https://en.wikipedia.org/w/api.php?action=query&pageids=${pageId}&prop=extracts&exintro=true&explaintext=true&format=json&origin=*`;
+      const eResp=await fetch(extractUrl);
+      const eData=await eResp.json();
+      const extract=eData.query.pages[pageId].extract;
+      const wikiLink=`https://en.wikipedia.org/wiki/${encodeURIComponent(title.replace(/ /g,'_'))}`;
+      // Store in learned for next time
+      const key=normalizeKey(query);
+      if(!learned[key]){
+        learned[key]={answer:extract,source:'wikipedia',timestamp:Date.now(),title:title,link:wikiLink};
+        saveState();
       }
+      let result=extract;
+      if(result.length>800) result=result.substring(0,800)+'...\n\n(Read more on Wikipedia)';
+      return result+`\n\nSource: ${title} — <a href="${wikiLink}" target="_blank">Wikipedia</a>`;
+    }
+    return null;
+  }catch(e){return null;}
+}
+
+async function fetchDuckDuckGo(query){
+  try{
+    const url=`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
+    const resp=await fetch(url);
+    const data=await resp.json();
+    if(data.Abstract){
+      const key=normalizeKey(query);
+      if(!learned[key]){
+        learned[key]={answer:data.Abstract,source:'duckduckgo',timestamp:Date.now(),title:data.Heading,link:data.AbstractURL};
+        saveState();
+      }
+      let result=data.Abstract;
+      if(result.length>800) result=result.substring(0,800)+'...';
+      let out=result;
+      if(data.AbstractURL) out+=`\n\nSource: <a href="${data.AbstractURL}" target="_blank">${data.AbstractURL}</a>`;
+      return out;
+    }
+    if(data.RelatedTopics&&data.RelatedTopics.length>0){
+      const texts=data.RelatedTopics.filter(t=>t.Text).slice(0,3).map(t=>t.Text);
+      if(texts.length) return texts.join('\n\n')+'\n\nSource: DuckDuckGo';
+    }
+    return null;
+  }catch(e){return null;}
+}
+
+/* ================================================================
+   LEARNING SYSTEM
+   ================================================================ */
+function handleLearning(input){
+  const lo=input.toLowerCase().trim();
+  // Patterns: "learn: X is Y", "learn: X = Y", "remember X is Y", "X is Y (teach/learn)"
+  const patterns=[
+    /^(?:learn|remember|memorize|note)\s*:\s*(.+?)\s*(?:is|=)\s*(.+)$/i,
+    /^(?:teach you|let me teach)\s*:\s*(.+?)\s*(?:is|=)\s*(.+)$/i,
+    /^(?:learn|remember)\s+that\s+(.+?)\s+(?:is|=)\s*(.+)$/i,
+  ];
+  for(const pat of patterns){
+    const m=lo.match(pat);
+    if(m){
+      const key=normalizeKey(m[1]);
+      const answer=m[2].trim();
+      learned[key]={answer,source:'user',timestamp:Date.now()};
+      saveState();
+      return `Got it! I've learned that "${m[1].trim()}" is "${answer}". I'll remember this for next time.`;
     }
   }
   return null;
 }
 
-async function processCommand(query) {
-  const q = query.toLowerCase().trim();
-  if (!q) return 'Please type something.';
-  if (['exit','quit','bye'].includes(q)) return '__EXIT__';
-  if (['logout','log out','sign out'].includes(q)) return '__LOGOUT__';
+function checkLearned(query){
+  const nq=normalizeKey(query);
+  // Exact match
+  if(learned[nq]) return learned[nq];
+  // Check if query contains a learned key
+  for(const key of Object.keys(learned)){
+    if(nq.includes(key)||key.includes(nq)) return learned[key];
+  }
+  // Fuzzy match against learned keys
+  const keys=Object.keys(learned);
+  const best=fuzzyMatch(query,keys,0.35);
+  if(best) return learned[best];
+  return null;
+}
 
-  // Check human patterns FIRST (before commands, so natural conversation takes priority)
-  const humanReply = matchHumanPattern(q);
-  if (humanReply) return humanReply;
+/* ================================================================
+   DETECT "WHO IS / WHAT IS" QUERIES — auto-fetch from web
+   ================================================================ */
+function extractSubject(query){
+  const lo=query.toLowerCase().trim();
+  // Remove question words and filler
+  let subject=lo
+    .replace(/^(who|what|where|when|why|how|whos|whats|wheres|whens|whys|hows)\s+(is|are|was|were|does|do|did|can|could|would|should)\s+/i,'')
+    .replace(/^(tell me about|explain|describe|define|info on|information about|details about|know about|search for|look up|google)\s+/i,'')
+    .replace(/^(wiki|wikipedia)\s+/i,'')
+    .replace(/\?*$/,'')
+    .replace(/^(the|a|an)\s+/i,'')
+    .trim();
+  // If the result is too short or empty, try another approach
+  if(subject.length<2){
+    subject=lo.replace(/^(who|what|where|when|why|how|tell|explain|describe|define|search|look|wiki)\s*/i,'').replace(/\?*$/,'').trim();
+  }
+  return subject;
+}
 
-  if (q === 'help') {
-    return `Commands:\n  hello \u00B7 time \u00B7 date \u00B7 joke \u00B7 motivate \u00B7 random\n  calc <expr> or just 'calc' (opens calculator)\n  weather <city> \u00B7 news <topic>\n  translate <lang>: <text>\n  todo \u00B7 notes \u00B7 links (opens workspaces)\n  note add <text> \u00B7 todo add <task>\n  remind <min> <msg>\n  password [len]\n  youtube \u00B7 google \u00B7 instagram\n  wiki <topic> \u00B7 ai <question>\n\nOr just talk to me naturally. I can help with stress, sleep, focus, motivation, and more.`;
+function isKnowledgeQuery(query){
+  const lo=query.toLowerCase().trim();
+  const prefixes=[
+    /^(who|what|where|when|why|how)\s+(is|are|was|were|does|do|did)/i,
+    /^(tell me about|explain|describe|define|info on|information about|details about|know about)\s+/i,
+    /^(wiki|wikipedia)\s+/i,
+    /^(search for|look up|google)\s+/i,
+    /^(whos|whats|wheres|whens)\s+/i,
+  ];
+  return prefixes.some(p=>p.test(lo));
+}
+
+/* ================================================================
+   MAIN PROCESSOR
+   ================================================================ */
+async function processCommand(raw){
+  const query=raw.trim();
+  if(!query) return "You didn't say anything!";
+
+  // 1. Check learning command first
+  const learnResult=handleLearning(query);
+  if(learnResult) return learnResult;
+
+  // 2. Check learned memory
+  const mem=checkLearned(query);
+  if(mem){
+    let out=mem.answer;
+    if(mem.source==='wikipedia'&&mem.link) out+=`\n\nSource: <a href="${mem.link}" target="_blank">Wikipedia</a>`;
+    if(mem.source==='duckduckgo'&&mem.link) out+=`\n\nSource: <a href="${mem.link}" target="_blank">${mem.link}</a>`;
+    if(mem.source==='user') out+='<span class="learned-badge">Learned from you</span>';
+    return out;
   }
 
-  if (/^(hello|hi|hey)/.test(q)) {
-    return `${pickRandom(GREETS)} ${state.currentUser || ''}!`.trim();
-  }
-  if ('what is my name' === q) return state.currentUser ? `Your name is ${state.currentUser}.` : "I don't know your name yet.";
-  if (q === 'time') return `\u{1F550} ${fmtTime()}`;
-  if (q === 'date') return `\u{1F4C5} ${fmtDate()}`;
-  if (q.includes('joke')) return pickRandom(JOKES);
-  if (q.includes('motivate')) return `\u{1F4A1} ${pickRandom(QUOTES)}`;
-  if (q.startsWith('random')) return String(Math.floor(Math.random() * 100) + 1);
+  const lo=query.toLowerCase();
 
-  if (q === 'calc' || q.startsWith('calc ')) {
-    const ie = query.slice(5).trim();
-    if (!ie) { openModal('calc-modal'); return 'Opening Calculator...'; }
-    try { return `\u{1F9EE} ${safeEval(ie.replace(/([a-z]+)(\d+)/g, '$1($2)'))}`; }
-    catch(e) { openModal('calc-modal'); return `Couldn't parse '${ie}'. Opening Calculator...`; }
+  // 3. Check built-in patterns WITH FUZZY MATCHING
+  const allTriggers=HUMAN_PATTERNS.flatMap(p=>p.triggers);
+  const fuzzyHit=fuzzyMatch(query,allTriggers,0.3);
+  if(fuzzyHit){
+    const pattern=HUMAN_PATTERNS.find(p=>p.triggers.includes(fuzzyHit));
+    if(pattern){
+      const pool=typeof pattern.responses==='function'?pattern.responses():pattern.responses;
+      return pool[Math.floor(Math.random()*pool.length)];
+    }
   }
 
-  if (q.startsWith('weather')) {
-    const city = query.slice(7).trim().replace(/^[:\s]+/, '') || 'London';
-    return `\u{1F324}\uFE0F ${await getWeather(city)}`;
-  }
-  if (q.startsWith('news')) {
-    const topic = query.slice(4).trim().replace(/^[:\s]+/, '') || 'world';
-    return `\u{1F4F0} News:\n${await getNews(topic)}`;
-  }
-  if (q.startsWith('translate')) {
-    const body = query.slice(9).trim().replace(/^[:\s]+/, '');
-    const m = body.match(/^(\w{2,5})\s*:\s*(.+)$/);
-    if (m) return `\u{1F310} ${await translateText(m[2], m[1])}`;
-    return 'Usage: translate es: Hello world';
+  // 4. Knowledge queries — auto-fetch from Wikipedia/DuckDuckGo
+  if(isKnowledgeQuery(query)){
+    const subject=extractSubject(query);
+    if(subject.length>=2){
+      // Try Wikipedia first
+      let result=await fetchWikipedia(subject);
+      if(result) return result;
+      // Fallback to DuckDuckGo
+      result=await fetchDuckDuckGo(subject);
+      if(result) return result;
+      // Nothing found
+      return `I couldn't find anything about "${subject}" online. But you can teach me!\n\nJust type: learn: ${subject} is [your information]`;
+    }
   }
 
-  if (['todo','todo list','tasks'].includes(q)) { openModal('todo-modal'); renderTodos(); return 'Opening Todo Workspace...'; }
-  if (['note','notes','note list'].includes(q)) { openModal('notes-modal'); renderNotes(); return 'Opening Notes Workspace...'; }
-  if (q === 'links') { openModal('links-modal'); renderLinksList(); return 'Opening Links Manager...'; }
+  // 5. If it looks like a question but doesn't match "who/what is" pattern, still try
+  if(lo.includes('?')||(lo.length>10&&(lo.includes(' trump')||lo.includes(' biden')||lo.includes(' obama')||lo.includes(' musk')||lo.includes(' gates')||lo.includes(' einstein')||lo.includes(' newton')||lo.includes(' tesla')))){
+    const subject=extractSubject(query);
+    if(subject.length>=2){
+      let result=await fetchWikipedia(subject);
+      if(result) return result;
+      result=await fetchDuckDuckGo(subject);
+      if(result) return result;
+    }
+  }
 
-  if (q.startsWith('todo add')) {
-    const parts = query.split(' ');
-    if (parts.length >= 3) { const t = parts.slice(2).join(' '); state.todos.push({ task: t, done: false }); saveState(); return `\u2705 Added to Todo: ${t}`; }
-    return 'Usage: todo add <task description>';
+  // 6. CALCULATIONS
+  const mathMatch=query.match(/^[\d\s\+\-\*\/\(\)\.\^%]+$/);
+  if(mathMatch){
+    try{
+      let expr=query.replace(/\^/g,'**');
+      const result=Function('"use strict";return ('+expr+')')();
+      if(typeof result==='number'&&!isNaN(result)){
+        return `The answer is ${result}`;
+      }
+    }catch(e){}
   }
-  if (q.startsWith('note add')) {
-    const parts = query.split(' ');
-    if (parts.length >= 3) { const t = parts.slice(2).join(' '); state.notes.push({ text: t, time: new Date().toISOString() }); saveState(); return `\u{1F4DD} Note saved: ${t}`; }
-    return 'Usage: note add <note text>';
-  }
-  if (q.startsWith('remind')) {
-    const m = query.match(/^remind\s+(\d+)\s+(.+)$/i);
-    if (!m) return 'Usage: remind <minutes> <message>';
-    const mins = parseInt(m[1]); const msg = m[2];
-    setTimeout(() => { showToast(`\u23F0 ${msg}`, 'reminder'); speak('Reminder: ' + msg); }, mins * 60 * 1000);
-    return `\u23F0 Reminder set for ${mins} min: ${msg}`;
-  }
-  if (q.startsWith('password')) {
-    const parts = q.split(' '); let len = 16;
-    if (parts.length > 1 && /^\d+$/.test(parts[1])) len = Math.min(128, Math.max(4, parseInt(parts[1])));
-    return `\u{1F511} ${genPassword(len)}`;
-  }
-  if (q === 'youtube') { window.open('https://youtube.com','_blank'); return 'Opening YouTube...'; }
-  if (q === 'google') { window.open('https://google.com','_blank'); return 'Opening Google...'; }
-  if (['insta','instagram'].includes(q)) { window.open('https://instagram.com','_blank'); return 'Opening Instagram...'; }
-  if (q.startsWith('wiki ')) { const t = query.slice(5).trim(); return t ? await wikiSearch(t) : 'Usage: wiki <topic>'; }
-  if (q.startsWith('ai ')) return await aiReply(query.slice(3));
 
-  return await aiReply(query);
+  // 7. WEATHER
+  if(lo.startsWith('weather ')||lo.includes('weather in ')||lo.includes('weather of ')){
+    const city=extractSubject(lo.replace(/^weather\s*(in|of)?\s*/i,''));
+    if(city){
+      try{
+        const wResp=await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`);
+        const wData=await wResp.json();
+        if(wData.current_condition){
+          const c=wData.current_condition[0];
+          const temp=c.temp_C;
+          const feels=c.FeelsLikeC;
+          const desc=c.weatherDesc[0].value;
+          const humidity=c.humidity;
+          const wind=c.windspeedKmph;
+          return `Weather in ${city}:\n\nTemperature: ${temp}°C (feels like ${feels}°C)\nCondition: ${desc}\nHumidity: ${humidity}%\nWind: ${wind} km/h\n\nSource: wttr.in`;
+        }
+        return `Couldn't get weather data for "${city}". Check the spelling and try again.`;
+      }catch(e){return `Weather service unavailable right now. Try again in a moment.`;}
+    }
+  }
+
+  // 8. NEWS
+  if(lo.startsWith('news ')||lo.includes('latest news')||lo.includes('top news')){
+    const topic=extractSubject(lo.replace(/^news\s*/i,''));
+    try{
+      const nResp=await fetch(`https://newsapi.org/v2/everything?q=${encodeURIComponent(topic||'world')}&pageSize=5&sortBy=publishedAt&apiKey=demo`);
+      if(nResp.status===200){
+        const nData=await nResp.json();
+        if(nData.articles&&nData.articles.length){
+          return nData.articles.map((a,i)=>`${i+1}. ${a.title}\n   ${a.description||''}\n   <a href="${a.url}" target="_blank">Read more</a>`).join('\n\n');
+        }
+      }
+      // Fallback to RSS
+      const rssResp=await fetch(`https://api.rss2json.com/v1/api.json?rss_url=https://news.google.com/rss/search?q=${encodeURIComponent(topic||'world')}&count=5`);
+      const rssData=await rssResp.json();
+      if(rssData.items&&rssData.items.length){
+        return rssData.items.map((a,i)=>`${i+1}. ${a.title}\n   <a href="${a.link}" target="_blank">Read more</a>`).join('\n\n');
+      }
+      return "Couldn't fetch news right now. Try again in a moment.";
+    }catch(e){return "News service unavailable. Try again shortly.";}
+  }
+
+  // 9. TRANSLATE
+  const transMatch=query.match(/^translate\s+(.+?)\s+to\s+(\w+)$/i);
+  if(transMatch){
+    const text=transMatch[1];
+    const lang=transMatch[2].toLowerCase();
+    const langMap={spanish:'es',french:'fr',german:'de',italian:'it',portuguese:'pt',japanese:'ja',korean:'ko',chinese:'zh',arabic:'ar',hindi:'hi',russian:'ru',turkish:'tr',dutch:'nl',polish:'pl',swedish:'sv',greek:'el',thai:'th',vietnamese:'vi',indonesian:'id'};
+    const code=langMap[lang]||lang;
+    try{
+      const tResp=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${code}`);
+      const tData=await tResp.json();
+      if(tData.responseData&&tData.responseData.translatedText){
+        return `Translation (${lang}):\n\n${tData.responseData.translatedText}`;
+      }
+      return "Translation failed. Try specifying the language clearly.";
+    }catch(e){return "Translation service unavailable right now.";}
+  }
+
+  // 10. PASSWORD GENERATOR
+  if(lo.includes('generate password')||lo.includes('random password')||lo.includes('create password')||lo.includes('new password')){
+    const lenMatch=query.match(/(\d+)/);
+    const len=Math.min(Math.max(parseInt(lenMatch?lenMatch[1]:'16')||16,4),64);
+    const chars='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';
+    let pw='';for(let i=0;i<len;i++) pw+=chars[Math.floor(Math.random()*chars.length)];
+    return `Here's your ${len}-character password:\n\n${pw}\n\nMake sure to save it somewhere secure!`;
+  }
+
+  // 11. REMINDER
+  const remindMatch=query.match(/(?:remind|reminder|alert)\s+(?:me\s+)?(?:to\s+)?(.+?)(?:\s+in\s+|\s+after\s+)(\d+)\s*(second|sec|minute|min|hour|hr)s?$/i);
+  if(remindMatch){
+    const task=remindMatch[1].trim();
+    const amount=parseInt(remindMatch[2]);
+    const unit=remindMatch[3].toLowerCase();
+    let ms=amount*1000;
+    if(unit.startsWith('min'))ms=amount*60*1000;
+    else if(unit.startsWith('hour')||unit.startsWith('hr'))ms=amount*3600*1000;
+    setTimeout(()=>{
+      showToast(`Reminder: ${task}`,'reminder');
+      if(state.config.tts){
+        const u=new SpeechSynthesisUtterance(`Reminder: ${task}`);
+        u.rate=1;speechSynthesis.speak(u);
+      }
+    },ms);
+    return `Got it! I'll remind you to "${task}" in ${amount} ${unit}${amount>1?'s':''}.`;
+  }
+
+  // 12. FLIP A COIN / DICE
+  if(lo.includes('flip a coin')||lo.includes('coin flip')||lo.includes('heads or tails')){
+    return Math.random()>0.5?"It's Heads!":"It's Tails!";
+  }
+  if(lo.includes('roll a dice')||lo.includes('roll dice')||lo.includes('dice roll')){
+    return `You rolled a ${Math.floor(Math.random()*6)+1}!`;
+  }
+
+  // 13. RANDOM NUMBER
+  const rngMatch=query.match(/random number (?:between|from|of) (\d+) (?:and|to) (\d+)/i);
+  if(rngMatch){
+    const min=parseInt(rngMatch[1]),max=parseInt(rngMatch[2]);
+    return `Your random number between ${min} and ${max} is: ${Math.floor(Math.random()*(max-min+1))+min}`;
+  }
+
+  // 14. COLOR
+  if(lo.includes('random color')){
+    const hex='#'+Math.floor(Math.random()*16777215).toString(16).padStart(6,'0');
+    return `Here's a random color: ${hex}\n\n<span style="display:inline-block;width:60px;height:60px;background:${hex};border-radius:8px;vertical-align:middle;border:2px solid var(--border)"></span>`;
+  }
+
+  // 15. EXIT / LOGOUT
+  if(lo==='exit'||lo==='quit'||lo==='close') return '__EXIT__';
+  if(lo==='logout'||lo==='log out'||lo==='sign out') return '__LOGOUT__';
+
+  // 16. HELP
+  if(lo==='help'||lo==='commands'||lo==='what can you do'||lo==='features'){
+    return `Here's what I can do:\n\nPeople & Things: "Who is Elon Musk?", "What is AI?", "Tell me about quantum computing"\nTypos: I understand "hllo", "waht is tihs", etc.\nLearn: "learn: my name is John" — I remember!\nMath: "25 * 4 + 10", "sqrt(144)"\nWeather: "weather Tokyo"\nNews: "news technology"\nTranslate: "translate hello to Spanish"\nPassword: "generate password 20"\nReminder: "remind me to eat in 10 minutes"\nFun: "tell me a joke", "flip a coin", "roll a dice"\nTools: Calculator, Notes, Todo List, Links (sidebar)\n\nI auto-fetch from Wikipedia & DuckDuckGo — no API key needed!`;
+  }
+
+  // 17. LAST RESORT — try to search anyway for anything that looks like it could be a noun/topic
+  if(query.length>4){
+    const subject=extractSubject(query);
+    if(subject.length>=3){
+      // Only try if it looks like a proper noun or topic (not a random sentence)
+      const words=subject.split(/\s+/);
+      const looksLikeTopic=words.length<=6 && (words[0][0]===words[0][0].toUpperCase() || words.length<=3);
+      if(looksLikeTopic){
+        let result=await fetchDuckDuckGo(subject);
+        if(result) return result;
+        result=await fetchWikipedia(subject);
+        if(result) return result;
+      }
+    }
+  }
+
+  // 18. Truly unknown — offer to learn
+  return `I'm not sure about that. But you can teach me!\n\nType: learn: ${query} is [your answer]\n\nOr try rephrasing your question, like "Who is X?" or "What is X?"`;
 }
 
 /* ================================================================
    CALCULATOR
    ================================================================ */
-let calcExpr = '';
-function calcInput(v) { calcExpr += v; document.getElementById('calc-display').textContent = calcExpr || '0'; }
-function calcClear() { calcExpr = ''; document.getElementById('calc-display').textContent = '0'; }
-function calcBackspace() { calcExpr = calcExpr.slice(0, -1); document.getElementById('calc-display').textContent = calcExpr || '0'; }
-function calcEvaluate() {
-  try { let r = safeEval(calcExpr); if (Number.isInteger(r)) r = r; calcExpr = String(r); document.getElementById('calc-display').textContent = calcExpr; }
-  catch(e) { document.getElementById('calc-display').textContent = 'Syntax Error'; calcExpr = ''; }
+let calcExpr='0';
+function calcInput(v){
+  if(calcExpr==='0'&&v!=='.'&&v!=='pi'&&v!=='e')calcExpr='';
+  if(v==='pi')v=Math.PI.toString();
+  if(v==='e')v=Math.E.toString();
+  calcExpr+=v;
+  document.getElementById('calc-display').textContent=calcExpr;
 }
-function calcSend() {
-  const e = calcExpr; if (!e || e === 'Syntax Error') return;
-  closeModal('calc-modal'); quickSend('calc ' + e); calcExpr = ''; document.getElementById('calc-display').textContent = '0';
+function calcClear(){calcExpr='0';document.getElementById('calc-display').textContent='0';}
+function calcBackspace(){calcExpr=calcExpr.slice(0,-1)||'0';document.getElementById('calc-display').textContent=calcExpr;}
+function calcEvaluate(){
+  try{
+    let e=calcExpr.replace(/\^/g,'**').replace(/sin\(/g,'Math.sin(').replace(/cos\(/g,'Math.cos(').replace(/tan\(/g,'Math.tan(').replace(/log\(/g,'Math.log10(').replace(/sqrt\(/g,'Math.sqrt(').replace(/pi/g,'Math.PI').replace(/(?<!\w)e(?!\w)/g,'Math.E');
+    const r=Function('"use strict";return ('+e+')')();
+    calcExpr=String(Math.round(r*1e10)/1e10);
+    document.getElementById('calc-display').textContent=calcExpr;
+  }catch(e){document.getElementById('calc-display').textContent='Error';calcExpr='0';}
 }
+function calcSend(){quickSend('calculate '+calcExpr);closeModal('calc-modal');}
 
 /* ================================================================
    NOTES
    ================================================================ */
-let selectedNoteIdx = -1;
-function renderNotes() {
-  const l = document.getElementById('notes-list'); l.innerHTML = '';
-  if (!state.notes.length) { l.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">No notes yet. Add one below.</div>'; return; }
-  state.notes.forEach((n, i) => {
-    const it = document.createElement('div'); it.className = 'list-item' + (i === selectedNoteIdx ? ' selected' : '');
-    it.innerHTML = `<span class="item-text">${i+1}. ${escHtml(n.text)}</span>`;
-    it.addEventListener('click', () => { selectedNoteIdx = i; renderNotes(); }); l.appendChild(it);
+let selectedNote=-1;
+function renderNotes(){
+  const c=document.getElementById('notes-list');c.innerHTML='';
+  state.notes.forEach((n,i)=>{
+    const d=document.createElement('div');d.className='list-item'+(i===selectedNote?' selected':'');
+    d.innerHTML=`<span class="item-text">${escHtml(n)}</span><span class="item-check" onclick="event.stopPropagation();selectedNote=${i};renderNotes()"><i class="fas fa-check-circle"></i></span>`;
+    d.onclick=()=>{selectedNote=selectedNote===i?-1:i;renderNotes();};c.appendChild(d);
   });
 }
-function saveNote() {
-  const inp = document.getElementById('note-input'); const t = inp.value.trim(); if (!t) return;
-  state.notes.push({ text: t, time: new Date().toISOString() }); saveState(); inp.value = ''; renderNotes(); botSay('Note saved.');
+function saveNote(){
+  const inp=document.getElementById('note-input');const t=inp.value.trim();if(!t)return;
+  state.notes.push(t);saveState();inp.value='';renderNotes();
 }
-function deleteSelectedNote() {
-  if (selectedNoteIdx < 0 || selectedNoteIdx >= state.notes.length) { showToast('Select a note to delete', 'error'); return; }
-  state.notes.splice(selectedNoteIdx, 1); selectedNoteIdx = -1; saveState(); renderNotes();
-}
+function deleteSelectedNote(){if(selectedNote<0||!state.notes.length)return;state.notes.splice(selectedNote,1);selectedNote=-1;saveState();renderNotes();}
 
 /* ================================================================
    TODOS
    ================================================================ */
-let selectedTodoIdx = -1;
-function renderTodos() {
-  const l = document.getElementById('todo-list'); l.innerHTML = '';
-  if (!state.todos.length) { l.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">No tasks yet. Add one below.</div>'; return; }
-  state.todos.forEach((t, i) => {
-    const it = document.createElement('div'); it.className = 'list-item' + (i === selectedTodoIdx ? ' selected' : '') + (t.done ? ' done' : '');
-    it.innerHTML = `<span class="item-check" onclick="event.stopPropagation();toggleTodoByIndex(${i})">${t.done ? '\u2714' : '\u2B1C'}</span><span class="item-text">${escHtml(t.task)}</span>`;
-    it.addEventListener('click', () => { selectedTodoIdx = i; renderTodos(); }); l.appendChild(it);
+let selectedTodo=-1;
+function renderTodos(){
+  const c=document.getElementById('todo-list');c.innerHTML='';
+  state.todos.forEach((t,i)=>{
+    const d=document.createElement('div');d.className='list-item'+(i===selectedTodo?' selected':'')+(t.done?' done':'');
+    d.innerHTML=`<span class="item-check" onclick="event.stopPropagation();toggleTodo(${i})"><i class="fas ${t.done?'fa-check-circle':'fa-circle'}"></i></span><span class="item-text">${escHtml(t.text)}</span>`;
+    d.onclick=()=>{selectedTodo=selectedTodo===i?-1:i;renderTodos();};c.appendChild(d);
   });
 }
-function saveTodo() {
-  const inp = document.getElementById('todo-input'); const t = inp.value.trim(); if (!t) return;
-  state.todos.push({ task: t, done: false }); saveState(); inp.value = ''; renderTodos(); botSay('Task added.');
+function saveTodo(){
+  const inp=document.getElementById('todo-input');const t=inp.value.trim();if(!t)return;
+  state.todos.push({text:t,done:false});saveState();inp.value='';renderTodos();
 }
-function toggleSelectedTodo() {
-  if (selectedTodoIdx < 0 || selectedTodoIdx >= state.todos.length) { showToast('Select a task to toggle', 'error'); return; }
-  toggleTodoByIndex(selectedTodoIdx);
-}
-function toggleTodoByIndex(i) { state.todos[i].done = !state.todos[i].done; saveState(); renderTodos(); }
-function deleteSelectedTodo() {
-  if (selectedTodoIdx < 0 || selectedTodoIdx >= state.todos.length) { showToast('Select a task to delete', 'error'); return; }
-  state.todos.splice(selectedTodoIdx, 1); selectedTodoIdx = -1; saveState(); renderTodos();
-}
+function toggleTodo(i){state.todos[i].done=!state.todos[i].done;saveState();renderTodos();}
+function toggleSelectedTodo(){if(selectedTodo<0)return;toggleTodo(selectedTodo);}
+function deleteSelectedTodo(){if(selectedTodo<0||!state.todos.length)return;state.todos.splice(selectedTodo,1);selectedTodo=-1;saveState();renderTodos();}
 
 /* ================================================================
    LINKS
    ================================================================ */
-let selectedLinkIdx = -1;
-function renderSidebarLinks() {
-  const c = document.getElementById('sidebar-links'); c.innerHTML = '';
-  state.customLinks.forEach(link => {
-    const b = document.createElement('button'); b.className = 'sidebar-item';
-    b.innerHTML = `<i class="fas fa-link"></i> ${escHtml(link.name)}`;
-    b.onclick = () => window.open(link.url, '_blank'); c.appendChild(b);
+let selectedLink=-1;
+function renderLinksList(){
+  const c=document.getElementById('links-list');c.innerHTML='';
+  state.customLinks.forEach((l,i)=>{
+    const d=document.createElement('div');d.className='list-item'+(i===selectedLink?' selected':'');
+    d.innerHTML=`<span class="item-text">${escHtml(l.name)}</span><span class="item-url">${escHtml(l.url)}</span>`;
+    d.onclick=()=>{selectedLink=selectedLink===i?-1:i;renderLinksList();};c.appendChild(d);
   });
 }
-function renderLinksList() {
-  const l = document.getElementById('links-list'); l.innerHTML = '';
-  if (!state.customLinks.length) { l.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">No custom links yet.</div>'; return; }
-  state.customLinks.forEach((link, i) => {
-    const it = document.createElement('div'); it.className = 'list-item' + (i === selectedLinkIdx ? ' selected' : '');
-    it.innerHTML = `<span class="item-text"><i class="fas fa-link" style="color:var(--accent);margin-right:6px"></i>${escHtml(link.name)}</span><span class="item-url">${escHtml(link.url)}</span>`;
-    it.addEventListener('click', () => { selectedLinkIdx = i; renderLinksList(); }); l.appendChild(it);
+function renderSidebarLinks(){
+  const c=document.getElementById('sidebar-links');c.innerHTML='';
+  state.customLinks.forEach((l,i)=>{
+    const b=document.createElement('button');b.className='sidebar-item';
+    b.innerHTML=`<i class="fas fa-external-link-alt"></i> ${escHtml(l.name)}`;
+    b.onclick=()=>window.open(l.url,'_blank');c.appendChild(b);
   });
 }
-function saveLink() {
-  if (state.customLinks.length >= 10) { showToast('Maximum 10 custom links allowed.', 'error'); return; }
-  const n = document.getElementById('link-name-input').value.trim();
-  let u = document.getElementById('link-url-input').value.trim();
-  if (!n || !u) { showToast('Please fill all fields.', 'error'); return; }
-  if (!u.startsWith('http')) u = 'https://' + u;
-  state.customLinks.push({ name: n, url: u }); saveState();
-  document.getElementById('link-name-input').value = ''; document.getElementById('link-url-input').value = '';
-  renderSidebarLinks(); renderLinksList(); closeModal('add-link-modal'); botSay(`Link added: ${n}`);
+function saveLink(){
+  const name=document.getElementById('link-name-input').value.trim();
+  const url=document.getElementById('link-url-input').value.trim();
+  if(!name||!url){showToast('Please fill both fields.','error');return;}
+  if(!url.startsWith('http'))url2='https://'+url; else url2=url;
+  state.customLinks.push({name,url:url2});saveState();
+  document.getElementById('link-name-input').value='';document.getElementById('link-url-input').value='';
+  closeModal('add-link-modal');renderSidebarLinks();renderLinksList();showToast('Link saved!','success');
 }
-function openSelectedLink() {
-  if (selectedLinkIdx < 0 || selectedLinkIdx >= state.customLinks.length) { showToast('Select a link to open', 'error'); return; }
-  window.open(state.customLinks[selectedLinkIdx].url, '_blank');
+function openSelectedLink(){if(selectedLink<0||!state.customLinks.length)return;window.open(state.customLinks[selectedLink].url,'_blank');}
+function deleteSelectedLink(){if(selectedLink<0||!state.customLinks.length)return;state.customLinks.splice(selectedLink,1);selectedLink=-1;saveState();renderSidebarLinks();renderLinksList();}
+
+/* ================================================================
+   MODALS
+   ================================================================ */
+function openModal(id){document.getElementById(id).classList.add('active');}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+function showConfirm(msg,onYes){
+  document.getElementById('confirm-message').textContent=msg;
+  document.getElementById('confirm-yes-btn').onclick=()=>{closeModal('confirm-modal');onYes();};
+  openModal('confirm-modal');
 }
-function deleteSelectedLink() {
-  if (selectedLinkIdx < 0 || selectedLinkIdx >= state.customLinks.length) { showToast('Select a link to delete', 'error'); return; }
-  const name = state.customLinks[selectedLinkIdx].name;
-  showConfirm(`Remove '${name}' from your links?`, () => {
-    state.customLinks.splice(selectedLinkIdx, 1); selectedLinkIdx = -1; saveState(); renderSidebarLinks(); renderLinksList();
-  });
+
+/* ================================================================
+   TOAST
+   ================================================================ */
+function showToast(msg,type='info'){
+  const c=document.getElementById('toast-container');
+  const t=document.createElement('div');t.className=`toast toast-${type}`;t.textContent=msg;
+  c.appendChild(t);requestAnimationFrame(()=>t.classList.add('show'));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},4000);
 }
 
 /* ================================================================
    VOICE
    ================================================================ */
-function speak(text) {
-  if (!state.config.tts) return;
-  const clean = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FEFF}\u2022\u2705\u2709\u{1F4DD}\u{1F4A1}\u{1F4C5}\u{1F4F0}\u{1F511}\u{1F550}\u{1F9EE}\u{1F310}\u{1F324}\uFE0F\u23F0]/gu, '').trim();
-  if (!clean) return;
-  const u = new SpeechSynthesisUtterance(clean); u.rate = 1; u.pitch = 1;
-  speechSynthesis.cancel(); speechSynthesis.speak(u);
+let recognition=null;
+function startListening(){
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){showToast('Speech recognition not supported in this browser.','error');return;}
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  recognition=new SR();recognition.lang='en-US';recognition.interimResults=false;
+  const btn=document.getElementById('mic-btn');btn.classList.add('listening');
+  recognition.onresult=e=>{
+    const text=e.results[0][0].transcript;
+    document.getElementById('chat-input').value=text;
+    btn.classList.remove('listening');send();
+  };
+  recognition.onerror=()=>btn.classList.remove('listening');
+  recognition.onend=()=>btn.classList.remove('listening');
+  recognition.start();
 }
-function toggleTTS() {
-  state.config.tts = !state.config.tts; saveState();
-  const btn = document.getElementById('voice-toggle'); const icon = btn.querySelector('i');
-  if (state.config.tts) { icon.className = 'fas fa-volume-up'; btn.classList.remove('active-voice'); showToast('Voice enabled', 'success'); }
-  else { icon.className = 'fas fa-volume-mute'; btn.classList.add('active-voice'); showToast('Voice muted', 'info'); }
+function speak(text){
+  if(!state.config.tts)return;
+  const clean=text.replace(/<[^>]*>/g,'').replace(/\n/g,'. ');
+  if(!clean)return;
+  const u=new SpeechSynthesisUtterance(clean);u.rate=1;u.pitch=1;
+  speechSynthesis.speak(u);
 }
-function initVoiceToggle() {
-  if (!state.config.tts) {
-    const icon = document.getElementById('voice-toggle').querySelector('i');
-    icon.className = 'fas fa-volume-mute';
-    document.getElementById('voice-toggle').classList.add('active-voice');
+function toggleTTS(){
+  state.config.tts=!state.config.tts;saveState();
+  const btn=document.getElementById('voice-toggle');
+  btn.innerHTML=state.config.tts?'<i class="fas fa-volume-up"></i>':'<i class="fas fa-volume-mute"></i>';
+  btn.classList.toggle('active-voice',!state.config.tts);
+  showToast(state.config.tts?'Voice enabled':'Voice muted','info');
+}
+function initVoiceToggle(){
+  const btn=document.getElementById('voice-toggle');
+  btn.innerHTML=state.config.tts?'<i class="fas fa-volume-up"></i>':'<i class="fas fa-volume-mute"></i>';
+  if(!state.config.tts)btn.classList.add('active-voice');
+}
+
+/* ================================================================
+   SIDEBAR
+   ================================================================ */
+function toggleSidebar(){
+  const s=document.getElementById('sidebar');const o=document.getElementById('sidebar-overlay');
+  s.classList.toggle('open');o.classList.toggle('active');
+}
+function closeSidebarMobile(){
+  if(window.innerWidth<=768){
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('active');
   }
 }
-let recognition = null;
-function startListening() {
-  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  if (!SR) { showToast('Speech recognition not supported in this browser.', 'error'); return; }
-  if (recognition) recognition.abort();
-  recognition = new SR(); recognition.lang = 'en-US'; recognition.interimResults = false; recognition.maxAlternatives = 1;
-  const mb = document.getElementById('mic-btn'); mb.classList.add('listening');
-  recognition.onresult = (e) => { document.getElementById('chat-input').value = e.results[0][0].transcript; mb.classList.remove('listening'); send(); };
-  recognition.onerror = (e) => { mb.classList.remove('listening'); if (e.error !== 'aborted') showToast('Could not recognize speech: ' + e.error, 'error'); };
-  recognition.onend = () => { mb.classList.remove('listening'); };
-  recognition.start(); showToast('Listening... speak now', 'info');
-}
-
-/* ================================================================
-   MODALS / CONFIRM / TOAST
-   ================================================================ */
-function openModal(id) { document.getElementById(id).classList.add('active'); const i = document.getElementById(id).querySelector('input'); if (i) setTimeout(() => i.focus(), 100); }
-function closeModal(id) { document.getElementById(id).classList.remove('active'); }
-document.querySelectorAll('.modal-overlay').forEach(o => o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); }));
-document.addEventListener('keydown', e => { if (e.key === 'Escape') document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active')); });
-
-function showConfirm(msg, onYes) {
-  document.getElementById('confirm-message').textContent = msg;
-  const nb = document.getElementById('confirm-yes-btn').cloneNode(true);
-  document.getElementById('confirm-yes-btn').parentNode.replaceChild(nb, document.getElementById('confirm-yes-btn'));
-  nb.id = 'confirm-yes-btn'; nb.addEventListener('click', () => { closeModal('confirm-modal'); onYes(); });
-  openModal('confirm-modal');
-}
-function showToast(msg, type = 'info') {
-  const c = document.getElementById('toast-container'); const t = document.createElement('div');
-  t.className = `toast toast-${type}`; t.textContent = msg; c.appendChild(t);
-  requestAnimationFrame(() => t.classList.add('show'));
-  setTimeout(() => { t.classList.remove('show'); setTimeout(() => t.remove(), 300); }, 4000);
-}
-
-/* ================================================================
-   SIDEBAR MOBILE
-   ================================================================ */
-function toggleSidebar() { document.getElementById('sidebar').classList.toggle('open'); document.getElementById('sidebar-overlay').classList.toggle('active'); }
-function closeSidebarMobile() { if (window.innerWidth <= 768) { document.getElementById('sidebar').classList.remove('open'); document.getElementById('sidebar-overlay').classList.remove('active'); } }
 
 /* ================================================================
    UTILITY
    ================================================================ */
-function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
-function botSay(text) { showTyping(); setTimeout(() => { hideTyping(); addMessage(text, 'bot'); speak(text); }, 300); }
+function escHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
 
 /* ================================================================
    INIT
    ================================================================ */
 loadState();
-if (state.currentUser && state.users[state.currentUser]) { enterApp(); }
-else { state.currentUser = null; setTimeout(() => document.getElementById('auth-user').focus(), 200); }
+if(state.currentUser){
+  enterApp();
+}
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('active');});
+});
+// Close modals on Escape
+document.addEventListener('keydown',e=>{
+  if(e.key==='Escape'){
+    document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'));
+  }
+});
 </script>
 </body>
 </html>
