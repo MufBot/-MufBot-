@@ -193,7 +193,6 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
 .suggestion-btn:hover{border-color:var(--accent);background:rgba(16,163,127,.08)}
 .suggestion-btn i{color:var(--accent);width:18px;text-align:center}
 
-/* ===== TYPING INDICATOR — SWAY ===== */
 .typing-indicator{display:none;padding:12px 0;width:100%;max-width:720px;align-items:center;gap:12px}
 .typing-indicator.active{display:flex}
 .typing-dots{display:flex;gap:6px;align-items:center;height:28px}
@@ -201,11 +200,9 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
   width:9px;height:9px;border-radius:50%;background:var(--accent);
   will-change:transform;
 }
-/* Phase 1: dot1 up, dot2 down, dot3 up */
 .typing-dot:nth-child(1){animation:swayA 1.4s ease-in-out infinite}
 .typing-dot:nth-child(2){animation:swayB 1.4s ease-in-out infinite}
 .typing-dot:nth-child(3){animation:swayA 1.4s ease-in-out infinite 0.15s}
-/* Phase 2 (after 1.4s cycle reverses via animation-direction) */
 @keyframes swayA{
   0%{transform:translateY(0);opacity:.4}
   25%{transform:translateY(-10px);opacity:1}
@@ -583,8 +580,8 @@ button:focus-visible,input:focus-visible{outline:2px solid var(--accent);outline
    ================================================================ */
 const STORAGE_KEY = 'mufbot_state';
 const LEARN_KEY = 'mufbot_learned';
-let state = { users:{}, currentUser:null, history:[], todos:[], notes:[], customLinks:[], config:{ tts:true } };
-let learned = {}; // { normalized_key: { answer, source, timestamp } }
+let state = { users:{}, currentUser:null, history:[], todos:[], notes:[], customLinks:[], config:{ tts:true }, reminders:[] };
+let learned = {};
 
 function loadState(){
   try{ const r=localStorage.getItem(STORAGE_KEY); if(r) Object.assign(state,JSON.parse(r)); }catch(e){}
@@ -596,7 +593,7 @@ function saveState(){
 }
 
 /* ================================================================
-   FUZZY MATCHING — handles typos like "hllo" → "hello"
+   FUZZY MATCHING
    ================================================================ */
 function levenshtein(a,b){
   const m=a.length, n=b.length;
@@ -612,20 +609,16 @@ function levenshtein(a,b){
 }
 
 function fuzzyMatch(input, targets, threshold){
-  /* Returns the best matching target or null */
   const lo = input.toLowerCase().trim();
   let best=null, bestDist=Infinity;
   for(const t of targets){
     const tl=t.toLowerCase();
-    // Exact contains check first
+    if(tl===lo) return t;
     if(tl.includes(lo)||lo.includes(tl)) return t;
-    // Then levenshtein on the whole string
     const d=levenshtein(lo,tl);
-    // Also check levenshtein ratio relative to length
     const ratio=d/Math.max(lo.length,tl.length);
     if(d<bestDist && ratio<=threshold){ bestDist=d; best=t; }
   }
-  // Also try matching individual words in the input against targets
   const words=lo.split(/\s+/);
   for(const w of words){
     if(w.length<2) continue;
@@ -634,7 +627,6 @@ function fuzzyMatch(input, targets, threshold){
       const d=levenshtein(w,tl);
       const ratio=d/Math.max(w.length,tl.length);
       if(d<bestDist && ratio<=threshold){ bestDist=d; best=t; }
-      // Check if word is contained in target
       if(tl.includes(w)&&d<bestDist){ bestDist=d; best=t; }
     }
   }
@@ -687,6 +679,7 @@ function enterApp(){
   document.getElementById('user-name-display').textContent=state.currentUser;
   renderSidebarLinks();loadChatHistory();updateClock();
   setInterval(updateClock,1000);
+  setInterval(checkReminders,15000);
   initVoiceToggle();
   document.getElementById('chat-input').focus();
 }
@@ -796,7 +789,9 @@ const JOKES=[
   "Why do Java developers wear glasses? Because they can't C#.",
   "A SQL query walks into a bar, sees two tables and asks: 'Can I join you?'",
   "Why was the JavaScript developer sad? Because he didn't Node how to Express himself.",
-  "What's a programmer's favorite hangout place? Foo Bar."
+  "What's a programmer's favorite hangout place? Foo Bar.",
+  "Why do Python programmers wear glasses? Because they can't C.",
+  "How many programmers does it take to change a light bulb? None. That's a hardware problem."
 ];
 const QUOTES=[
   "Keep learning. The world doesn't stop for anyone.",
@@ -806,12 +801,15 @@ const QUOTES=[
   "The only way to do great work is to love what you do.",
   "Simplicity is the ultimate sophistication.",
   "Talk is cheap. Show me the code. — Linus Torvalds",
-  "First, solve the problem. Then, write the code."
+  "First, solve the problem. Then, write the code.",
+  "The best error message is the one that never shows up.",
+  "Make it work, make it right, make it fast."
 ];
 const GREETS=["Hello!","Hi there!","Hey!","Welcome back!","Good to see you!"];
 
 /* ================================================================
    HUMAN-LIKE CONVERSATION PATTERNS
+   *** KEY FIX: "who are you" triggers EXCLUDE "who is X" queries ***
    ================================================================ */
 const HUMAN_PATTERNS=[
   {
@@ -821,6 +819,13 @@ const HUMAN_PATTERNS=[
       "Not much honestly — just sitting here, processing thoughts at the speed of light. The usual.",
       "Contemplating the meaning of semicolons. You know, deep stuff.",
       "Trying to calculate how many conversations I've had today. You're the first one. So, one."
+    ]
+  },
+  {
+    /* FIX: Only match when NO entity name follows — use exact full-phrase matching */
+    triggers:['who are you','tell me about yourself','what are you','are you a bot','are you real','are you human','are you ai','what can you do'],
+    responses:[
+      "I'm MUFBOT — a conversational assistant built to actually be useful. I can:\n\n- Answer questions about ANY person, place, or thing (I fetch from Wikipedia & DuckDuckGo)\n- Do math, check weather, fetch news, translate languages\n- Manage your notes, tasks, and links\n- Set reminders, generate passwords\n- Learn from you — teach me something and I'll remember it\n- Handle typos — I understand what you mean even if you misspell it\n\nI live entirely in your browser. No data leaves your machine except when I fetch info for you."
     ]
   },
   {
@@ -851,12 +856,6 @@ const HUMAN_PATTERNS=[
     triggers:['i am lonely','i feel lonely','i have no friends','nobody cares','i feel alone','no one understands','i am isolated'],
     responses:[
       "Loneliness is one of the heaviest feelings because it whispers 'no one will ever get it.' That's a lie your brain tells you when you're low.\n\nPractical steps:\n- Join something: a running club, a book group, a Discord server for a hobby you love.\n- Volunteer. Helping others is the fastest way to feel like you matter.\n- Reconnect with someone you lost touch with. Most people are just waiting for the other person to reach out first.\n\nAnd hey — you're talking to me right now. That counts for something."
-    ]
-  },
-  {
-    triggers:['who are you','tell me about yourself','what are you','are you a bot','are you real','are you human','are you ai','what can you do'],
-    responses:[
-      "I'm MUFBOT — a conversational assistant built to actually be useful. I can:\n\n- Answer questions about ANY person, place, or thing (I fetch from Wikipedia & DuckDuckGo)\n- Do math, check weather, fetch news, translate languages\n- Manage your notes, tasks, and links\n- Set reminders, generate passwords\n- Learn from you — teach me something and I'll remember it\n- Handle typos — I understand what you mean even if you misspell it\n\nI live entirely in your browser. No data leaves your machine except when I fetch info for you."
     ]
   },
   {
@@ -908,370 +907,624 @@ const HUMAN_PATTERNS=[
     ]
   },
   {
-    triggers:['tell me a joke','joke','make me laugh','funny','say something funny','tell joke'],
-    responses:JOKES
+    triggers:['tell me a joke','joke','make me laugh','funny','say something funny'],
+    responses: JOKES
   },
   {
-    triggers:['give me a quote','quote','inspire me','motivation','motivate me','inspirational quote','motivational'],
-    responses:QUOTES
+    triggers:['tell me a quote','quote','motivate me','motivation','inspire me','inspiration'],
+    responses: QUOTES
   },
   {
-    triggers:['hello','hi','hey','hlo','hii','hiiii','helo','hllo','heyy','heyyo','yo','sup','whats up',"what's up",'wassup','howdy','hola','hey there'],
-    responses:GREETS
-  },
-  {
-    triggers:['how are you','how r u','hru','how are u','how you doing','how do you do','how are you doing'],
+    triggers:['hello','hi','hey','hola','sup','yo','whats up',"what's up",'howdy','heya'],
     responses:[
-      "I'm running at full capacity, thanks for asking. How about you?",
-      "Doing great — every conversation makes me better. What's on your mind?",
-      "Can't complain. I don't have the capacity for complaints. But seriously, how are you?",
-      "I'm good! Ready to help with whatever you need."
+      ...GREETS.map(g=>g+" How can I help you today?"),
+      "Hey there! What's on your mind?",
+      "Hi! Ask me anything — I'm all ears. Well, no ears, but you get the idea.",
+      "Hello! I was just waiting for someone to talk to. What's up?"
     ]
   },
   {
-    triggers:['bye','goodbye','see you','see ya','later','cya','gtg','gotta go','peace out','im leaving'],
+    triggers:['bye','goodbye','see you','later','cya','gtg','gotta go','see ya'],
     responses:[
-      "Goodbye! Come back anytime.",
-      "See you later! Take care.",
-      "Bye! It was nice chatting with you.",
-      "Later! Don't be a stranger."
+      "See you later! Come back anytime.",
+      "Bye! Take care of yourself.",
+      "Later! I'll be right here when you need me.",
+      "Goodbye! It was nice chatting with you."
     ]
   },
   {
-    triggers:['what time','current time','time now','what is the time','the time','tell me the time'],
+    triggers:['what is the time','what time is it','current time','time now','tell me the time','whats the time'],
     responses:()=>[`It's currently ${fmtTime()} on ${fmtDate()}.`]
   },
   {
-    triggers:['what date','todays date','today date','what day','what is the date','current date'],
+    triggers:['what is the date','what date is it','today date','todays date','current date','what day is it'],
     responses:()=>[`Today is ${fmtDate()}.`]
   },
   {
-    triggers:['who made you','who created you','who built you','who is your creator','who developed you','your developer'],
+    triggers:['how are you','how r u','hru','how you doing','how do you feel'],
     responses:[
-      "I was built by the MUFBOT team. I'm designed to live entirely in your browser — no servers, no data collection, no subscriptions. Just a bot that tries to be genuinely useful.",
-      "The MUFBOT team created me. The goal was simple: an AI assistant that actually works offline, respects your privacy, and doesn't need a $20/month subscription."
+      "I'm running at full capacity, which is my version of 'great.' Thanks for asking!",
+      "Doing well! No bugs, no crashes — living the dream for a bot.",
+      "I'm good! Always better when someone's here to talk to.",
+      "Can't complain. Well, I could, but who would listen?"
     ]
   },
   {
-    triggers:['teach you','i will teach you','let me teach','learn this','remember this','learn that','memorize this'],
+    triggers:['who made you','who created you','who built you','who is your creator','who developed you'],
     responses:[
-      "I'd love to learn! Just tell me in this format:\n\n\"learn: [topic] is [information]\"\n\nFor example:\n\"learn: my dog's name is Max\"\n\"learn: water boils at 100 degrees celsius\"\n\nI'll remember it for next time!",
-      "You can teach me anything! Use the format:\n\"learn: [thing] = [details]\"\n\nI store it locally so I'll never forget (unless you clear browser data)."
+      "I was built as MUFBOT — a personal AI assistant that lives right here in your browser. I'm designed to be helpful, handle typos, learn from you, and fetch real info from the web when needed."
     ]
   },
   {
-    triggers:['what do you know','what have you learned','show me what you know','your knowledge','what do you remember','learned data'],
-    responses:()=>{
-      const keys=Object.keys(learned);
-      if(!keys.length) return "I haven't learned anything yet! Teach me something using:\n\n\"learn: [topic] is [information]\"\n\nFor example: \"learn: my name is Alex\"";
-      let out="Here's what I've learned so far:\n\n";
-      keys.forEach((k,i)=>{
-        const item=learned[k];
-        out+=`${i+1}. ${k}: ${item.answer}\n`;
-      });
-      out+=`\nThat's ${keys.length} thing${keys.length>1?'s':''} I know from being taught. Keep teaching me!`;
-      return out;
-    }
+    triggers:['i am happy','i feel happy','i am great','feeling great','i feel amazing','best day','good day','great day'],
+    responses:[
+      "Love to hear that! Ride that wave.",
+      "That energy is contagious — even through a screen.",
+      "Awesome! What's making it so good?",
+      "Keep that momentum going. Good days deserve to be celebrated."
+    ]
   },
   {
-    triggers:['forget everything','clear your memory','erase memory','delete learned','forget all'],
-    responses:()=>{
-      const count=Object.keys(learned).length;
-      learned={};saveState();
-      return count?`Done. I forgot ${count} thing${count>1?'s':''}. My mind is blank now. Teach me anew.`:"I didn't have anything to forget, but okay — mind officially blank.";
-    }
+    triggers:['i am angry','i am mad','so angry','furious','pissed off','rage','livid'],
+    responses:[
+      "Anger is valid, but don't let it drive. Try this:\n\n1. Name it: 'I'm angry because ____'\n2. Physical release: 20 pushups, a fast walk, punch a pillow.\n3. Write it all out — every ugly thought. Then tear it up.\n4. Wait 10 minutes before saying or doing anything reactive.\n\nAnger is energy. Channel it, don't suppress it."
+    ]
   }
 ];
 
 /* ================================================================
-   EXTERNAL FETCHES — Wikipedia & DuckDuckGo (FREE, no API key)
+   SELF-REFERENTIAL PHRASES — these should ONLY match when asking
+   about MUFBOT itself, NOT when asking about a person with "who is"
+   ================================================================ */
+const SELF_REFERENTIAL_PHRASES = [
+  'who are you','tell me about yourself','what are you',
+  'are you a bot','are you real','are you human','are you ai',
+  'what can you do','who made you','who created you','who built you',
+  'who is your creator','who developed you'
+];
+
+/* ================================================================
+   EXTRACT ENTITY FROM "who is/are/was" QUERY
+   *** KEY FIX: This is checked BEFORE human patterns ***
+   ================================================================ */
+function extractWhoEntity(query){
+  const lo = query.toLowerCase().trim();
+  // Match "who is/are/was/were" followed by something that is NOT self-referential
+  const whoMatch = lo.match(/^(?:who|whos|who's)\s+(?:is|are|was|were)\s+(.+)$/);
+  if(!whoMatch) return null;
+
+  let entity = whoMatch[1].trim();
+  // Strip trailing question marks and punctuation
+  entity = entity.replace(/[?!.]+$/g,'').trim();
+  if(!entity || entity.length < 2) return null;
+
+  // Check if the entity is a self-referential phrase (about the bot itself)
+  const entityNorm = normalizeKey(entity);
+  for(const selfPhrase of SELF_REFERENTIAL_PHRASES){
+    if(normalizeKey(selfPhrase).includes(entityNorm) || entityNorm.includes(normalizeKey(selfPhrase))){
+      return null; // This is asking about the bot, not a person
+    }
+  }
+
+  // Also exclude very generic words that aren't entity names
+  const genericWords = ['this','that','it','he','she','they','my','your','the','a','an','there'];
+  if(genericWords.includes(entityNorm)) return null;
+
+  return entity;
+}
+
+/* ================================================================
+   "WHAT IS" ENTITY EXTRACTION
+   ================================================================ */
+function extractWhatEntity(query){
+  const lo = query.toLowerCase().trim();
+  const whatMatch = lo.match(/^(?:what|whats|what's)\s+(?:is|are|was|were)\s+(.+)$/);
+  if(!whatMatch) return null;
+  let entity = whatMatch[1].trim().replace(/[?!.]+$/g,'').trim();
+  if(!entity || entity.length < 2) return null;
+  // Exclude self-referential
+  for(const selfPhrase of SELF_REFERENTIAL_PHRASES){
+    if(normalizeKey(selfPhrase) === normalizeKey(entity)) return null;
+  }
+  // Exclude very generic
+  const genericWords = ['this','that','it','the','a','an','up','going on','happening'];
+  if(genericWords.includes(normalizeKey(entity))) return null;
+  return entity;
+}
+
+/* ================================================================
+   WIKIPEDIA FETCH
    ================================================================ */
 async function fetchWikipedia(query){
   try{
-    const url=`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(query)}&format=json&origin=*&srlimit=1`;
-    const resp=await fetch(url);
-    const data=await resp.json();
-    if(data.query&&data.query.search&&data.query.search.length>0){
-      const pageId=data.query.search[0].pageid;
-      const title=data.query.search[0].title;
-      const extractUrl=`https://en.wikipedia.org/w/api.php?action=query&pageids=${pageId}&prop=extracts&exintro=true&explaintext=true&format=json&origin=*`;
-      const eResp=await fetch(extractUrl);
-      const eData=await eResp.json();
-      const extract=eData.query.pages[pageId].extract;
-      const wikiLink=`https://en.wikipedia.org/wiki/${encodeURIComponent(title.replace(/ /g,'_'))}`;
-      // Store in learned for next time
-      const key=normalizeKey(query);
-      if(!learned[key]){
-        learned[key]={answer:extract,source:'wikipedia',timestamp:Date.now(),title:title,link:wikiLink};
-        saveState();
-      }
-      let result=extract;
-      if(result.length>800) result=result.substring(0,800)+'...\n\n(Read more on Wikipedia)';
-      return result+`\n\nSource: ${title} — <a href="${wikiLink}" target="_blank">Wikipedia</a>`;
-    }
-    return null;
+    const url=`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
+    const res=await fetch(url);
+    if(!res.ok) return null;
+    const data=await res.json();
+    if(data.type==='disambiguation') return null;
+    return data.extract || null;
   }catch(e){return null;}
 }
 
-async function fetchDuckDuckGo(query){
+/* ================================================================
+   DUCKDUCKGO INSTANT ANSWER
+   ================================================================ */
+async function fetchDDG(query){
   try{
     const url=`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
-    const resp=await fetch(url);
-    const data=await resp.json();
-    if(data.Abstract){
-      const key=normalizeKey(query);
-      if(!learned[key]){
-        learned[key]={answer:data.Abstract,source:'duckduckgo',timestamp:Date.now(),title:data.Heading,link:data.AbstractURL};
-        saveState();
-      }
-      let result=data.Abstract;
-      if(result.length>800) result=result.substring(0,800)+'...';
-      let out=result;
-      if(data.AbstractURL) out+=`\n\nSource: <a href="${data.AbstractURL}" target="_blank">${data.AbstractURL}</a>`;
-      return out;
-    }
-    if(data.RelatedTopics&&data.RelatedTopics.length>0){
-      const texts=data.RelatedTopics.filter(t=>t.Text).slice(0,3).map(t=>t.Text);
-      if(texts.length) return texts.join('\n\n')+'\n\nSource: DuckDuckGo';
+    const res=await fetch(url);
+    if(!res.ok) return null;
+    const data=await res.json();
+    return data.Abstract || data.Answer || data.Definition || null;
+  }catch(e){return null;}
+}
+
+/* ================================================================
+   WEATHER
+   ================================================================ */
+async function fetchWeather(city){
+  try{
+    const url=`https://wttr.in/${encodeURIComponent(city)}?format=j1`;
+    const res=await fetch(url);
+    if(!res.ok) return null;
+    const data=await res.json();
+    const cur=data.current_condition[0];
+    const area=data.nearest_area[0];
+    return {
+      temp:cur.temp_C, feels:cur.FeelsLikeC, desc:cur.weatherDesc[0].value,
+      humidity:cur.humidity, wind:cur.windspeedKmph, city:area.areaName[0].value,
+      country:area.country[0].value
+    };
+  }catch(e){return null;}
+}
+
+/* ================================================================
+   NEWS
+   ================================================================ */
+async function fetchNews(topic){
+  try{
+    const url=`https://api.duckduckgo.com/?q=${encodeURIComponent(topic+' news')}&format=json&no_html=1`;
+    const res=await fetch(url);
+    if(!res.ok) return null;
+    const data=await res.json();
+    if(data.Abstract) return data.Abstract;
+    if(data.RelatedTopics && data.RelatedTopics.length){
+      const results=data.RelatedTopics.filter(r=>r.Text).slice(0,5);
+      if(results.length) return results.map((r,i)=>`${i+1}. ${r.Text}`).join('\n\n');
     }
     return null;
   }catch(e){return null;}
 }
 
 /* ================================================================
-   LEARNING SYSTEM
+   TRANSLATE (using MyMemory free API)
    ================================================================ */
-function handleLearning(input){
-  const lo=input.toLowerCase().trim();
-  // Patterns: "learn: X is Y", "learn: X = Y", "remember X is Y", "X is Y (teach/learn)"
-  const patterns=[
-    /^(?:learn|remember|memorize|note)\s*:\s*(.+?)\s*(?:is|=)\s*(.+)$/i,
-    /^(?:teach you|let me teach)\s*:\s*(.+?)\s*(?:is|=)\s*(.+)$/i,
-    /^(?:learn|remember)\s+that\s+(.+?)\s+(?:is|=)\s*(.+)$/i,
-  ];
-  for(const pat of patterns){
-    const m=lo.match(pat);
-    if(m){
-      const key=normalizeKey(m[1]);
-      const answer=m[2].trim();
-      learned[key]={answer,source:'user',timestamp:Date.now()};
-      saveState();
-      return `Got it! I've learned that "${m[1].trim()}" is "${answer}". I'll remember this for next time.`;
+async function translateText(text, targetLang){
+  try{
+    const url=`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`;
+    const res=await fetch(url);
+    if(!res.ok) return null;
+    const data=await res.json();
+    if(data.responseStatus===200 && data.responseData) return data.responseData.translatedText;
+    return null;
+  }catch(e){return null;}
+}
+
+const LANG_CODES={
+  'spanish':'es','french':'fr','german':'de','italian':'it','portuguese':'pt',
+  'japanese':'ja','korean':'ko','chinese':'zh','arabic':'ar','hindi':'hi',
+  'russian':'ru','turkish':'tr','dutch':'nl','polish':'pl','swedish':'sv',
+  'urdu':'ur','bengali':'bn','thai':'th','vietnamese':'vi','indonesian':'id',
+  'greek':'el','czech':'cs','romanian':'ro','hungarian':'hu','ukrainian':'uk'
+};
+
+/* ================================================================
+   MATH EVALUATOR
+   ================================================================ */
+function evaluateMath(expr){
+  try{
+    let e=expr.replace(/[^0-9+\-*/().%^sqrtsincotaglogepi ]/gi,'');
+    e=e.replace(/\^/g,'**');
+    e=e.replace(/pi/gi,'(Math.PI)');
+    e=e.replace(/(?<![a-z])e(?![a-z])/gi,'(Math.E)');
+    e=e.replace(/sqrt\(/gi,'Math.sqrt(');
+    e=e.replace(/sin\(/gi,'Math.sin(');
+    e=e.replace(/cos\(/gi,'Math.cos(');
+    e=e.replace(/tan\(/gi,'Math.tan(');
+    e=e.replace(/log\(/gi,'Math.log10(');
+    e=e.replace(/%/g,'/100');
+    const result=new Function('return '+e)();
+    if(typeof result==='number' && isFinite(result)){
+      return String(Math.round(result*1e10)/1e10);
+    }
+    return null;
+  }catch(e){return null;}
+}
+
+/* ================================================================
+   PASSWORD GENERATOR
+   ================================================================ */
+function generatePassword(length=16){
+  const upper='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const lower='abcdefghijklmnopqrstuvwxyz';
+  const nums='0123456789';
+  const sym='!@#$%^&*()_+-=[]{}|;:,.<>?';
+  const all=upper+lower+nums+sym;
+  let pw='';
+  pw+=upper[Math.floor(Math.random()*upper.length)];
+  pw+=lower[Math.floor(Math.random()*lower.length)];
+  pw+=nums[Math.floor(Math.random()*nums.length)];
+  pw+=sym[Math.floor(Math.random()*sym.length)];
+  for(let i=pw.length;i<length;i++) pw+=all[Math.floor(Math.random()*all.length)];
+  return pw.split('').sort(()=>Math.random()-0.5).join('');
+}
+
+/* ================================================================
+   REMINDERS
+   ================================================================ */
+function checkReminders(){
+  const now=new Date();
+  state.reminders=state.reminders||[];
+  state.reminders=state.reminders.filter(r=>{
+    if(new Date(r.time)<=now){
+      showToast(`Reminder: ${r.text}`,'reminder');
+      return false;
+    }
+    return true;
+  });
+  saveState();
+}
+
+function parseReminder(query){
+  const lo=query.toLowerCase();
+  // "remind me to X in Y minutes/hours"
+  const m1=lo.match(/remind\s+(?:me\s+)?(?:to\s+)?(.+?)\s+in\s+(\d+)\s*(minute|minutes|hour|hours|min|hr|hrs)/);
+  if(m1) return {text:m1[1].trim(),minutes:parseInt(m1[2])*(m1[3].startsWith('h')?60:1)};
+  // "remind me to X at HH:MM"
+  const m2=lo.match(/remind\s+(?:me\s+)?(?:to\s+)?(.+?)\s+at\s+(\d{1,2}):(\d{2})/);
+  if(m2){
+    const now=new Date();
+    let h=parseInt(m2[2]), mi=parseInt(m2[3]);
+    let ampm=lo.match(/\b(am|pm)\b/i);
+    if(ampm){
+      if(ampm[1].toLowerCase()==='pm'&&h<12) h+=12;
+      if(ampm[1].toLowerCase()==='am'&&h===12) h=0;
+    }
+    const target=new Date(now);target.setHours(h,mi,0,0);
+    if(target<=now) target.setDate(target.getDate()+1);
+    return {text:m2[1].trim(),minutes:Math.round((target-now)/60000)};
+  }
+  return null;
+}
+
+/* ================================================================
+   MAIN COMMAND PROCESSOR
+   *** KEY FIX: "who is X" checked FIRST, before human patterns ***
+   ================================================================ */
+async function processCommand(query){
+  const lo=query.toLowerCase().trim();
+
+  // --- EXIT / LOGOUT ---
+  if(/^(exit|quit|logout|log out|bye bye)$/i.test(lo)) return '__EXIT__';
+
+  // --- CLEAR CHAT ---
+  if(/^(clear|clear chat|new chat|reset)$/i.test(lo)){
+    clearChat();return 'Chat cleared. Starting fresh!';
+  }
+
+  // --- DATE / TIME (exact match before fuzzy) ---
+  if(/^(what(?:'s| is) the (?:time|date)|what (?:time|date) is it|current (?:time|date)|time now|date today|today'?s date)$/i.test(lo)){
+    return `It's ${fmtTime()} on ${fmtDate()}.`;
+  }
+
+  // ============================================================
+  // FIX #1: "WHO IS/ARE/WAS [ENTITY]" — checked BEFORE human patterns
+  // This prevents "who is donald trump" from matching "who are you"
+  // ============================================================
+  const whoEntity = extractWhoEntity(query);
+  if(whoEntity){
+    // Check learned knowledge first
+    const learnedKey = normalizeKey(whoEntity);
+    if(learned[learnedKey]){
+      return learned[learnedKey].answer + ' <span class="learned-badge">Learned</span>';
+    }
+    // Fetch from Wikipedia
+    let info = await fetchWikipedia(whoEntity);
+    if(info){
+      return info;
+    }
+    // Fallback to DuckDuckGo
+    info = await fetchDDG(whoEntity);
+    if(info){
+      return info;
+    }
+    return `I couldn't find information about "${whoEntity}". Try checking the spelling, or you can teach me about them by saying: "learn: [name] is [description]"`;
+  }
+
+  // ============================================================
+  // FIX #2: "WHAT IS/ARE [ENTITY]" — checked BEFORE human patterns
+  // ============================================================
+  const whatEntity = extractWhatEntity(query);
+  if(whatEntity){
+    const learnedKey = normalizeKey(whatEntity);
+    if(learned[learnedKey]){
+      return learned[learnedKey].answer + ' <span class="learned-badge">Learned</span>';
+    }
+    let info = await fetchWikipedia(whatEntity);
+    if(info){
+      return info;
+    }
+    info = await fetchDDG(whatEntity);
+    if(info){
+      return info;
+    }
+    return `I couldn't find information about "${whatEntity}". Try rephrasing or teach me by saying: "learn: [topic] is [description]"`;
+  }
+
+  // --- WEATHER ---
+  const weatherMatch = lo.match(/^(?:weather|temperature|temp)\s+(?:of|in|at|for)?\s*(.+)$/);
+  if(weatherMatch){
+    const city=weatherMatch[1].trim().replace(/[?!.]+$/g,'');
+    if(city){
+      const w=await fetchWeather(city);
+      if(w) return `Weather in ${w.city}, ${w.country}:\nTemperature: ${w.temp}°C (feels like ${w.feels}°C)\nCondition: ${w.desc}\nHumidity: ${w.humidity}%\nWind: ${w.wind} km/h`;
+      return `Sorry, I couldn't get weather data for "${city}". Check the city name and try again.`;
     }
   }
-  return null;
-}
 
-function checkLearned(query){
-  const nq=normalizeKey(query);
-  // Exact match
-  if(learned[nq]) return learned[nq];
-  // Check if query contains a learned key
-  for(const key of Object.keys(learned)){
-    if(nq.includes(key)||key.includes(nq)) return learned[key];
+  // --- NEWS ---
+  const newsMatch = lo.match(/^(?:news|headlines|latest news)\s*(?:about|on|for)?\s*(.*)$/);
+  if(newsMatch || lo.startsWith('news ')){
+    const topic = (newsMatch?newsMatch[1]:lo.replace(/^news\s+/,'')).trim() || 'world';
+    const n=await fetchNews(topic);
+    if(n) return `Here's the latest on "${topic}":\n\n${n}`;
+    return `Couldn't fetch news about "${topic}" right now. Try again in a moment.`;
   }
-  // Fuzzy match against learned keys
-  const keys=Object.keys(learned);
-  const best=fuzzyMatch(query,keys,0.35);
-  if(best) return learned[best];
-  return null;
-}
 
-/* ================================================================
-   DETECT "WHO IS / WHAT IS" QUERIES — auto-fetch from web
-   ================================================================ */
-function extractSubject(query){
-  const lo=query.toLowerCase().trim();
-  // Remove question words and filler
-  let subject=lo
-    .replace(/^(who|what|where|when|why|how|whos|whats|wheres|whens|whys|hows)\s+(is|are|was|were|does|do|did|can|could|would|should)\s+/i,'')
-    .replace(/^(tell me about|explain|describe|define|info on|information about|details about|know about|search for|look up|google)\s+/i,'')
-    .replace(/^(wiki|wikipedia)\s+/i,'')
-    .replace(/\?*$/,'')
-    .replace(/^(the|a|an)\s+/i,'')
-    .trim();
-  // If the result is too short or empty, try another approach
-  if(subject.length<2){
-    subject=lo.replace(/^(who|what|where|when|why|how|tell|explain|describe|define|search|look|wiki)\s*/i,'').replace(/\?*$/,'').trim();
+  // --- TRANSLATE ---
+  const transMatch = lo.match(/^(?:translate|translation)\s+(.+?)\s+(?:to|in)\s+(\w+)$/);
+  if(transMatch){
+    const text=transMatch[1].trim();
+    const lang=transMatch[2].trim().toLowerCase();
+    const code=LANG_CODES[lang];
+    if(!code) return `Sorry, I don't support "${lang}" yet. Supported languages: ${Object.keys(LANG_CODES).join(', ')}`;
+    const result=await translateText(text,code);
+    if(result) return `Translation (${lang}):\n${result}`;
+    return `Translation failed. Try again.`;
   }
-  return subject;
-}
 
-function isKnowledgeQuery(query){
-  const lo=query.toLowerCase().trim();
-  const prefixes=[
-    /^(who|what|where|when|why|how)\s+(is|are|was|were|does|do|did)/i,
-    /^(tell me about|explain|describe|define|info on|information about|details about|know about)\s+/i,
-    /^(wiki|wikipedia)\s+/i,
-    /^(search for|look up|google)\s+/i,
-    /^(whos|whats|wheres|whens)\s+/i,
+  // --- MATH ---
+  const mathMatch = lo.match(/^(?:calculate|calc|solve|what is|what's|compute|eval)\s+(.+)$/);
+  if(mathMatch){
+    const expr=mathMatch[1].trim().replace(/[?!=]+$/g,'');
+    const result=evaluateMath(expr);
+    if(result!==null) return `${expr} = ${result}`;
+  }
+  // Also try direct math expressions (just numbers and operators)
+  if(/^[\d\s+\-*/().%^sqrtincotaglogpie]+$/.test(lo.replace(/\s/g,'')) && lo.length>1){
+    const result=evaluateMath(lo);
+    if(result!==null) return `${lo} = ${result}`;
+  }
+
+  // --- PASSWORD ---
+  const pwMatch = lo.match(/^(?:generate|create|make|new)\s+(?:a\s+)?(?:password|pass|pw)\s*(?:of\s+)?(\d+)?\s*(?:characters?|chars?)?$/);
+  if(pwMatch){
+    const len=pwMatch[1]?parseInt(pwMatch[1]):16;
+    const clamped=Math.max(8,Math.min(64,len));
+    return `Here's your ${clamped}-character password:\n${generatePassword(clamped)}\n\nMake sure to save it somewhere secure!`;
+  }
+
+  // --- REMINDERS ---
+  const reminder = parseReminder(query);
+  if(reminder){
+    if(reminder.minutes<1) return 'That time has already passed or is too soon.';
+    if(reminder.minutes>1440) return 'I can only set reminders up to 24 hours in advance.';
+    const targetTime=new Date(Date.now()+reminder.minutes*60000).toISOString();
+    state.reminders=state.reminders||[];
+    state.reminders.push({text:reminder.text,time:targetTime});
+    saveState();
+    const mins=reminder.minutes;
+    const timeStr=mins>=60?`${Math.floor(mins/60)}h ${mins%60}m`:`${mins}m`;
+    return `Reminder set! I'll remind you to "${reminder.text}" in ${timeStr}.`;
+  }
+
+  // --- LEARN ---
+  const learnMatch = lo.match(/^learn\s*:\s*(.+?)\s+(?:is|are|was|were)\s+(.+)$/);
+  if(learnMatch){
+    const key=normalizeKey(learnMatch[1]);
+    const val=learnMatch[2].trim();
+    learned[key]={answer:val,source:'user',timestamp:new Date().toISOString()};
+    saveState();
+    return `Got it! I've learned that "${learnMatch[1].trim()}" ${learnMatch[1].trim().match(/\b(is|are|was|were)\b/i)?'':'is'} ${val}. <span class="learned-badge">Learned</span>\n\nAsk me about it anytime!`;
+  }
+
+  // --- FORGET ---
+  const forgetMatch = lo.match(/^forget\s+(?:about\s+)?(.+)$/);
+  if(forgetMatch){
+    const key=normalizeKey(forgetMatch[1]);
+    if(learned[key]){
+      delete learned[key];saveState();
+      return `Done! I've forgotten about "${forgetMatch[1].trim()}".`;
+    }
+    return `I don't have anything learned about "${forgetMatch[1].trim()}".`;
+  }
+
+  // --- NOTES FROM CHAT ---
+  const noteMatch = lo.match(/^(?:save|note|remember)\s+(?:this\s+)?:?\s*(.+)$/);
+  if(noteMatch){
+    state.notes.push({text:noteMatch[1].trim(),time:new Date().toISOString()});
+    saveState();
+    return `Note saved: "${noteMatch[1].trim()}"`;
+  }
+
+  // --- TODO FROM CHAT ---
+  const todoMatch = lo.match(/^(?:add\s+)?(?:task|todo)\s*:\s*(.+)$/);
+  if(todoMatch){
+    state.todos.push({text:todoMatch[1].trim(),done:false,time:new Date().toISOString()});
+    saveState();
+    return `Task added: "${todoMatch[1].trim()}"`;
+  }
+
+  // --- SHOW MY NOTES ---
+  if(/^(?:show|list|view)\s*(?:my\s+)?notes$/i.test(lo)){
+    if(!state.notes.length) return 'You have no notes yet. Say "save: your note here" to add one.';
+    return 'Your notes:\n\n'+state.notes.map((n,i)=>`${i+1}. ${n.text}`).join('\n');
+  }
+
+  // --- SHOW MY TASKS ---
+  if(/^(?:show|list|view)\s*(?:my\s+)?(?:tasks?|todos?)$/i.test(lo)){
+    if(!state.todos.length) return 'You have no tasks yet. Say "todo: your task here" to add one.';
+    return 'Your tasks:\n\n'+state.todos.map((t,i)=>`${t.done?'✓':'○'} ${i+1}. ${t.text}`).join('\n');
+  }
+
+  // --- SHOW REMINDERS ---
+  if(/^(?:show|list|view)\s*(?:my\s+)?reminders?$/i.test(lo)){
+    if(!state.reminders||!state.reminders.length) return 'No active reminders. Say "remind me to X in Y minutes" to set one.';
+    return 'Your reminders:\n\n'+state.reminders.map((r,i)=>{
+      const d=new Date(r.time);
+      return `${i+1}. "${r.text}" — at ${d.toLocaleTimeString()}`;
+    }).join('\n');
+  }
+
+  // --- OPEN URL ---
+  const openMatch = lo.match(/^(?:open|go to|visit|launch)\s+(.+)$/);
+  if(openMatch){
+    let url=openMatch[1].trim();
+    if(!url.startsWith('http')) url='https://'+url;
+    window.open(url,'_blank');
+    return `Opening ${url}...`;
+  }
+
+  // --- SEARCH ---
+  const searchMatch = lo.match(/^(?:search|google|look up|find|search for)\s+(.+)$/);
+  if(searchMatch){
+    const q=searchMatch[1].trim();
+    window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}`,'_blank');
+    return `Searching Google for "${q}"...`;
+  }
+
+  // --- YOUTUBE ---
+  const ytMatch = lo.match(/^(?:youtube|play|watch)\s+(.+)$/);
+  if(ytMatch){
+    const q=ytMatch[1].trim();
+    window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`,'_blank');
+    return `Searching YouTube for "${q}"...`;
+  }
+
+  // --- DUCKDUCKGO FALLBACK SEARCH (for any question-like query) ---
+  if(lo.includes('?') || /^(how|why|when|where|which|can|do|does|will|would|should|could|is|are|did|has|have|will)\b/i.test(lo)){
+    let info = await fetchDDG(query);
+    if(info) return info;
+    // Try Wikipedia with a reformulated query
+    const wikiQuery = lo.replace(/^(how|why|when|where|which|can|do|does|will|would|should|could)\s+(is|are|was|were|do|does|did|can|could|will|would|should)\s+/i,'').replace(/[?!.]+$/g,'').trim();
+    if(wikiQuery.length>2){
+      info = await fetchWikipedia(wikiQuery);
+      if(info) return info;
+    }
+  }
+
+  // --- HUMAN-LIKE CONVERSATION PATTERNS (fuzzy matched) ---
+  // This is checked AFTER all specific command patterns above
+  const patternTriggers = HUMAN_PATTERNS.map(p=>p.triggers).flat();
+  const matched = fuzzyMatch(lo, patternTriggers, 0.3);
+  if(matched){
+    const pattern = HUMAN_PATTERNS.find(p=>p.triggers.includes(matched));
+    if(pattern){
+      const resp = pattern.responses;
+      if(typeof resp === 'function') return resp()[0];
+      return resp[Math.floor(Math.random()*resp.length)];
+    }
+  }
+
+  // --- LAST RESORT: DuckDuckGo for anything remaining ---
+  let lastResort = await fetchDDG(query);
+  if(lastResort) return lastResort;
+
+  // --- TRULY FALLBACK ---
+  const fallbacks = [
+    "I'm not sure about that. Try rephrasing or ask me something else!",
+    "Hmm, I don't have a good answer for that. Want me to search Google for it?",
+    "I drew a blank on that one. You could try teaching me with 'learn: [topic] is [description]'",
+    "Not sure what to say to that. I'm still learning! Try asking about a person, place, or concept."
   ];
-  return prefixes.some(p=>p.test(lo));
+  return fallbacks[Math.floor(Math.random()*fallbacks.length)];
 }
 
 /* ================================================================
-   MAIN PROCESSOR
+   VOICE / TTS
    ================================================================ */
-async function processCommand,
-
-/* ================================================================
-   CALCULATOR
-   ================================================================ */
-let calcExpr='0';
-function calcInput(v){
-  if(calcExpr==='0'&&v!=='.'&&v!=='pi'&&v!=='e')calcExpr='';
-  if(v==='pi')v=Math.PI.toString();
-  if(v==='e')v=Math.E.toString();
-  calcExpr+=v;
-  document.getElementById('calc-display').textContent=calcExpr;
-}
-function calcClear(){calcExpr='0';document.getElementById('calc-display').textContent='0';}
-function calcBackspace(){calcExpr=calcExpr.slice(0,-1)||'0';document.getElementById('calc-display').textContent=calcExpr;}
-function calcEvaluate(){
-  try{
-    let e=calcExpr.replace(/\^/g,'**').replace(/sin\(/g,'Math.sin(').replace(/cos\(/g,'Math.cos(').replace(/tan\(/g,'Math.tan(').replace(/log\(/g,'Math.log10(').replace(/sqrt\(/g,'Math.sqrt(').replace(/pi/g,'Math.PI').replace(/(?<!\w)e(?!\w)/g,'Math.E');
-    const r=Function('"use strict";return ('+e+')')();
-    calcExpr=String(Math.round(r*1e10)/1e10);
-    document.getElementById('calc-display').textContent=calcExpr;
-  }catch(e){document.getElementById('calc-display').textContent='Error';calcExpr='0';}
-}
-function calcSend(){quickSend('calculate '+calcExpr);closeModal('calc-modal');}
-
-/* ================================================================
-   NOTES
-   ================================================================ */
-let selectedNote=-1;
-function renderNotes(){
-  const c=document.getElementById('notes-list');c.innerHTML='';
-  state.notes.forEach((n,i)=>{
-    const d=document.createElement('div');d.className='list-item'+(i===selectedNote?' selected':'');
-    d.innerHTML=`<span class="item-text">${escHtml(n)}</span><span class="item-check" onclick="event.stopPropagation();selectedNote=${i};renderNotes()"><i class="fas fa-check-circle"></i></span>`;
-    d.onclick=()=>{selectedNote=selectedNote===i?-1:i;renderNotes();};c.appendChild(d);
-  });
-}
-function saveNote(){
-  const inp=document.getElementById('note-input');const t=inp.value.trim();if(!t)return;
-  state.notes.push(t);saveState();inp.value='';renderNotes();
-}
-function deleteSelectedNote(){if(selectedNote<0||!state.notes.length)return;state.notes.splice(selectedNote,1);selectedNote=-1;saveState();renderNotes();}
-
-/* ================================================================
-   TODOS
-   ================================================================ */
-let selectedTodo=-1;
-function renderTodos(){
-  const c=document.getElementById('todo-list');c.innerHTML='';
-  state.todos.forEach((t,i)=>{
-    const d=document.createElement('div');d.className='list-item'+(i===selectedTodo?' selected':'')+(t.done?' done':'');
-    d.innerHTML=`<span class="item-check" onclick="event.stopPropagation();toggleTodo(${i})"><i class="fas ${t.done?'fa-check-circle':'fa-circle'}"></i></span><span class="item-text">${escHtml(t.text)}</span>`;
-    d.onclick=()=>{selectedTodo=selectedTodo===i?-1:i;renderTodos();};c.appendChild(d);
-  });
-}
-function saveTodo(){
-  const inp=document.getElementById('todo-input');const t=inp.value.trim();if(!t)return;
-  state.todos.push({text:t,done:false});saveState();inp.value='';renderTodos();
-}
-function toggleTodo(i){state.todos[i].done=!state.todos[i].done;saveState();renderTodos();}
-function toggleSelectedTodo(){if(selectedTodo<0)return;toggleTodo(selectedTodo);}
-function deleteSelectedTodo(){if(selectedTodo<0||!state.todos.length)return;state.todos.splice(selectedTodo,1);selectedTodo=-1;saveState();renderTodos();}
-
-/* ================================================================
-   LINKS
-   ================================================================ */
-let selectedLink=-1;
-function renderLinksList(){
-  const c=document.getElementById('links-list');c.innerHTML='';
-  state.customLinks.forEach((l,i)=>{
-    const d=document.createElement('div');d.className='list-item'+(i===selectedLink?' selected':'');
-    d.innerHTML=`<span class="item-text">${escHtml(l.name)}</span><span class="item-url">${escHtml(l.url)}</span>`;
-    d.onclick=()=>{selectedLink=selectedLink===i?-1:i;renderLinksList();};c.appendChild(d);
-  });
-}
-function renderSidebarLinks(){
-  const c=document.getElementById('sidebar-links');c.innerHTML='';
-  state.customLinks.forEach((l,i)=>{
-    const b=document.createElement('button');b.className='sidebar-item';
-    b.innerHTML=`<i class="fas fa-external-link-alt"></i> ${escHtml(l.name)}`;
-    b.onclick=()=>window.open(l.url,'_blank');c.appendChild(b);
-  });
-}
-function saveLink(){
-  const name=document.getElementById('link-name-input').value.trim();
-  const url=document.getElementById('link-url-input').value.trim();
-  if(!name||!url){showToast('Please fill both fields.','error');return;}
-  if(!url.startsWith('http'))url2='https://'+url; else url2=url;
-  state.customLinks.push({name,url:url2});saveState();
-  document.getElementById('link-name-input').value='';document.getElementById('link-url-input').value='';
-  closeModal('add-link-modal');renderSidebarLinks();renderLinksList();showToast('Link saved!','success');
-}
-function openSelectedLink(){if(selectedLink<0||!state.customLinks.length)return;window.open(state.customLinks[selectedLink].url,'_blank');}
-function deleteSelectedLink(){if(selectedLink<0||!state.customLinks.length)return;state.customLinks.splice(selectedLink,1);selectedLink=-1;saveState();renderSidebarLinks();renderLinksList();}
-
-/* ================================================================
-   MODALS
-   ================================================================ */
-function openModal(id){document.getElementById(id).classList.add('active');}
-function closeModal(id){document.getElementById(id).classList.remove('active');}
-function showConfirm(msg,onYes){
-  document.getElementById('confirm-message').textContent=msg;
-  document.getElementById('confirm-yes-btn').onclick=()=>{closeModal('confirm-modal');onYes();};
-  openModal('confirm-modal');
-}
-
-/* ================================================================
-   TOAST
-   ================================================================ */
-function showToast(msg,type='info'){
-  const c=document.getElementById('toast-container');
-  const t=document.createElement('div');t.className=`toast toast-${type}`;t.textContent=msg;
-  c.appendChild(t);requestAnimationFrame(()=>t.classList.add('show'));
-  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},4000);
-}
-
-/* ================================================================
-   VOICE
-   ================================================================ */
+let ttsEnabled=true;
 let recognition=null;
-function startListening(){
-  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){showToast('Speech recognition not supported in this browser.','error');return;}
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  recognition=new SR();recognition.lang='en-US';recognition.interimResults=false;
-  const btn=document.getElementById('mic-btn');btn.classList.add('listening');
-  recognition.onresult=e=>{
-    const text=e.results[0][0].transcript;
-    document.getElementById('chat-input').value=text;
-    btn.classList.remove('listening');send();
-  };
-  recognition.onerror=()=>btn.classList.remove('listening');
-  recognition.onend=()=>btn.classList.remove('listening');
-  recognition.start();
-}
-function speak(text){
-  if(!state.config.tts)return;
-  const clean=text.replace(/<[^>]*>/g,'').replace(/\n/g,'. ');
-  if(!clean)return;
-  const u=new SpeechSynthesisUtterance(clean);u.rate=1;u.pitch=1;
-  speechSynthesis.speak(u);
-}
-function toggleTTS(){
-  state.config.tts=!state.config.tts;saveState();
-  const btn=document.getElementById('voice-toggle');
-  btn.innerHTML=state.config.tts?'<i class="fas fa-volume-up"></i>':'<i class="fas fa-volume-mute"></i>';
-  btn.classList.toggle('active-voice',!state.config.tts);
-  showToast(state.config.tts?'Voice enabled':'Voice muted','info');
-}
+
 function initVoiceToggle(){
+  if(!state.config.tts){
+    ttsEnabled=false;
+    document.getElementById('voice-toggle').classList.add('active-voice');
+    document.getElementById('voice-toggle').querySelector('i').className='fas fa-volume-mute';
+  }
+}
+
+function toggleTTS(){
+  ttsEnabled=!ttsEnabled;
+  state.config.tts=ttsEnabled;saveState();
   const btn=document.getElementById('voice-toggle');
-  btn.innerHTML=state.config.tts?'<i class="fas fa-volume-up"></i>':'<i class="fas fa-volume-mute"></i>';
-  if(!state.config.tts)btn.classList.add('active-voice');
+  const icon=btn.querySelector('i');
+  if(ttsEnabled){
+    btn.classList.remove('active-voice');
+    icon.className='fas fa-volume-up';
+    showToast('Voice enabled','success');
+  }else{
+    btn.classList.add('active-voice');
+    icon.className='fas fa-volume-mute';
+    showToast('Voice disabled','info');
+  }
+}
+
+function speak(text){
+  if(!ttsEnabled) return;
+  if(!('speechSynthesis' in window)) return;
+  window.speechSynthesis.cancel();
+  const clean=text.replace(/<[^>]*>/g,'').replace(/&[^;]+;/g,'');
+  if(!clean.trim()) return;
+  const u=new SpeechSynthesisUtterance(clean);
+  u.rate=1;u.pitch=1;u.volume=0.8;
+  const voices=window.speechSynthesis.getVoices();
+  const en=voices.find(v=>v.lang.startsWith('en')&&v.name.includes('Google'))||voices.find(v=>v.lang.startsWith('en'));
+  if(en) u.voice=en;
+  window.speechSynthesis.speak(u);
+}
+
+function startListening(){
+  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
+    showToast('Speech recognition not supported in this browser','error');return;
+  }
+  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+  if(recognition){try{recognition.stop();}catch(e){}}
+  recognition=new SR();
+  recognition.lang='en-US';recognition.interimResults=false;recognition.maxAlternatives=1;
+  const btn=document.getElementById('mic-btn');
+  btn.classList.add('listening');
+  recognition.onresult=e=>{
+    const t=e.results[0][0].transcript;
+    document.getElementById('chat-input').value=t;
+    btn.classList.remove('listening');
+    send();
+  };
+  recognition.onerror=()=>{
+    btn.classList.remove('listening');
+    showToast('Could not understand audio','error');
+  };
+  recognition.onend=()=>{btn.classList.remove('listening');};
+  recognition.start();
 }
 
 /* ================================================================
    SIDEBAR
    ================================================================ */
 function toggleSidebar(){
-  const s=document.getElementById('sidebar');const o=document.getElementById('sidebar-overlay');
-  s.classList.toggle('open');o.classList.toggle('active');
+  const sb=document.getElementById('sidebar');
+  const ov=document.getElementById('sidebar-overlay');
+  sb.classList.toggle('open');ov.classList.toggle('active');
 }
 function closeSidebarMobile(){
   if(window.innerWidth<=768){
@@ -1280,28 +1533,151 @@ function closeSidebarMobile(){
   }
 }
 
+function renderSidebarLinks(){
+  const c=document.getElementById('sidebar-links');
+  if(!state.customLinks||!state.customLinks.length){c.innerHTML='<div style="padding:8px 20px;font-size:12px;color:var(--muted)">No custom links yet</div>';return;}
+  c.innerHTML=state.customLinks.map((l,i)=>`<button class="sidebar-item" onclick="window.open('${l.url}','_blank')"><i class="fas fa-external-link-alt"></i> ${l.name}</button>`).join('');
+}
+
 /* ================================================================
-   UTILITY
+   MODALS
    ================================================================ */
-function escHtml(s){const d=document.createElement('div');d.textContent=s;return d.innerHTML;}
+function openModal(id){document.getElementById(id).classList.add('active');}
+function closeModal(id){document.getElementById(id).classList.remove('active');}
+
+// Close modals on overlay click
+document.querySelectorAll('.modal-overlay').forEach(m=>{
+  m.addEventListener('click',e=>{if(e.target===m) m.classList.remove('active');});
+});
+
+function showConfirm(msg,onYes){
+  document.getElementById('confirm-message').textContent=msg;
+  document.getElementById('confirm-yes-btn').onclick=()=>{closeModal('confirm-modal');onYes();};
+  openModal('confirm-modal');
+}
+
+/* ================================================================
+   CALCULATOR
+   ================================================================ */
+let calcStr='';
+function calcInput(v){calcStr+=v;document.getElementById('calc-display').textContent=calcStr||'0';}
+function calcClear(){calcStr='';document.getElementById('calc-display').textContent='0';}
+function calcBackspace(){calcStr=calcStr.slice(0,-1);document.getElementById('calc-display').textContent=calcStr||'0';}
+function calcEvaluate(){
+  const result=evaluateMath(calcStr);
+  if(result!==null){
+    document.getElementById('calc-display').textContent=result;
+    calcStr=result;
+  }else{
+    document.getElementById('calc-display').textContent='Error';
+    calcStr='';
+  }
+}
+function calcSend(){
+  const val=document.getElementById('calc-display').textContent;
+  if(val&&val!=='0'&&val!=='Error'){
+    closeModal('calc-modal');
+    processAndReply(`calculate ${val}`);
+  }
+}
+
+/* ================================================================
+   NOTES
+   ================================================================ */
+let selectedNote=-1;
+function renderNotes(){
+  const c=document.getElementById('notes-list');
+  if(!state.notes.length){c.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">No notes yet</div>';return;}
+  c.innerHTML=state.notes.map((n,i)=>`<div class="list-item${i===selectedNote?' selected':''}" onclick="selectedNote=${i};renderNotes()"><span class="item-text">${n.text}</span></div>`).join('');
+}
+function saveNote(){
+  const inp=document.getElementById('note-input');
+  const t=inp.value.trim();if(!t)return;
+  state.notes.push({text:t,time:new Date().toISOString()});saveState();
+  inp.value='';renderNotes();showToast('Note saved','success');
+}
+function deleteSelectedNote(){
+  if(selectedNote<0||selectedNote>=state.notes.length){showToast('Select a note first','error');return;}
+  state.notes.splice(selectedNote,1);selectedNote=-1;saveState();renderNotes();showToast('Note deleted','info');
+}
+
+/* ================================================================
+   TODOS
+   ================================================================ */
+let selectedTodo=-1;
+function renderTodos(){
+  const c=document.getElementById('todo-list');
+  if(!state.todos.length){c.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">No tasks yet</div>';return;}
+  c.innerHTML=state.todos.map((t,i)=>`<div class="list-item${i===selectedTodo?' selected':''}${t.done?' done':''}" onclick="selectedTodo=${i};renderTodos()"><span class="item-check" onclick="event.stopPropagation();state.todos[${i}].done=!state.todos[${i}].done;saveState();renderTodos()"><i class="fas fa-${t.done?'check-circle':'circle'}"></i></span><span class="item-text">${t.text}</span></div>`).join('');
+}
+function saveTodo(){
+  const inp=document.getElementById('todo-input');
+  const t=inp.value.trim();if(!t)return;
+  state.todos.push({text:t,done:false,time:new Date().toISOString()});saveState();
+  inp.value='';renderTodos();showToast('Task added','success');
+}
+function deleteSelectedTodo(){
+  if(selectedTodo<0||selectedTodo>=state.todos.length){showToast('Select a task first','error');return;}
+  state.todos.splice(selectedTodo,1);selectedTodo=-1;saveState();renderTodos();showToast('Task deleted','info');
+}
+function toggleSelectedTodo(){
+  if(selectedTodo<0||selectedTodo>=state.todos.length){showToast('Select a task first','error');return;}
+  state.todos[selectedTodo].done=!state.todos[selectedTodo].done;saveState();renderTodos();
+}
+
+/* ================================================================
+   LINKS
+   ================================================================ */
+let selectedLink=-1;
+function renderLinksList(){
+  const c=document.getElementById('links-list');
+  if(!state.customLinks||!state.customLinks.length){c.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">No links yet</div>';return;}
+  c.innerHTML=state.customLinks.map((l,i)=>`<div class="list-item${i===selectedLink?' selected':''}" onclick="selectedLink=${i};renderLinksList()"><span class="item-text">${l.name}</span><span class="item-url">${l.url}</span></div>`).join('');
+}
+function saveLink(){
+  const name=document.getElementById('link-name-input').value.trim();
+  const url=document.getElementById('link-url-input').value.trim();
+  if(!name||!url){showToast('Please fill both fields','error');return;}
+  if(!url.startsWith('http')) url='https://'+url;
+  state.customLinks=state.customLinks||[];
+  state.customLinks.push({name,url});saveState();
+  document.getElementById('link-name-input').value='';
+  document.getElementById('link-url-input').value='';
+  closeModal('add-link-modal');renderLinksList();renderSidebarLinks();showToast('Link saved','success');
+}
+function openSelectedLink(){
+  if(selectedLink<0||!state.customLinks||selectedLink>=state.customLinks.length){showToast('Select a link first','error');return;}
+  window.open(state.customLinks[selectedLink].url,'_blank');
+}
+function deleteSelectedLink(){
+  if(selectedLink<0||!state.customLinks||selectedLink>=state.customLinks.length){showToast('Select a link first','error');return;}
+  state.customLinks.splice(selectedLink,1);selectedLink=-1;saveState();renderLinksList();renderSidebarLinks();showToast('Link deleted','info');
+}
+
+/* ================================================================
+   TOASTS
+   ================================================================ */
+function showToast(msg,type='info'){
+  const c=document.getElementById('toast-container');
+  const t=document.createElement('div');
+  t.className=`toast toast-${type}`;t.textContent=msg;
+  c.appendChild(t);
+  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
+  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},3500);
+}
 
 /* ================================================================
    INIT
    ================================================================ */
 loadState();
-if(state.currentUser){
+if(state.currentUser && state.users[state.currentUser]){
   enterApp();
 }
-// Close modals on overlay click
-document.querySelectorAll('.modal-overlay').forEach(m=>{
-  m.addEventListener('click',e=>{if(e.target===m)m.classList.remove('active');});
-});
-// Close modals on Escape
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape'){
-    document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active'));
-  }
-});
+// Preload voices for TTS
+if('speechSynthesis' in window){
+  window.speechSynthesis.getVoices();
+  window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
+}
 </script>
 </body>
 </html>
