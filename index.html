@@ -1,0 +1,1562 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>MUFBOT · AI Assistant</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600;700&family=Space+Grotesk:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root {
+  --bg: #212121;
+  --panel: #171717;
+  --panel-hover: #2f2f2f;
+  --fg: #ececec;
+  --muted: #8e8ea0;
+  --accent: #10a37f;
+  --accent-hover: #0d8c6d;
+  --accent-glow: rgba(16,163,127,0.15);
+  --input-bg: #40414f;
+  --border: #2f2f2f;
+  --red: #ef4146;
+  --green: #10a37f;
+  --scrollbar: #565869;
+  --card-bg: #1e1e1e;
+  --font-ui: 'DM Sans', sans-serif;
+  --font-display: 'Space Grotesk', sans-serif;
+}
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+html, body { height: 100%; overflow: hidden; }
+body { font-family: var(--font-ui); background: var(--bg); color: var(--fg); }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--scrollbar); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--muted); }
+input, button { font-family: inherit; }
+button { cursor: pointer; border: none; outline: none; }
+button:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* ===== AUTH SCREEN ===== */
+#auth-screen {
+  position: fixed; inset: 0; z-index: 1000; display: flex; align-items: center; justify-content: center;
+  background: var(--bg);
+  background-image: radial-gradient(ellipse at 30% 20%, rgba(16,163,127,0.06) 0%, transparent 60%),
+                    radial-gradient(ellipse at 70% 80%, rgba(16,163,127,0.04) 0%, transparent 60%);
+}
+#auth-screen.hidden { display: none; }
+.auth-card {
+  width: 420px; max-width: 95vw; background: rgba(30,30,30,0.85); backdrop-filter: blur(20px);
+  border-radius: 16px; border: 1px solid var(--border); padding: 40px;
+  animation: authIn 0.5s ease;
+}
+@keyframes authIn { from { opacity: 0; transform: translateY(20px) scale(0.97); } to { opacity: 1; transform: none; } }
+.auth-icon { text-align: center; font-size: 52px; color: var(--accent); margin-bottom: 4px; }
+.auth-title { text-align: center; font-family: var(--font-display); font-size: 28px; font-weight: 700; margin-bottom: 24px; }
+.auth-tabs { display: flex; gap: 0; margin-bottom: 4px; }
+.auth-tab {
+  flex: 1; padding: 10px; background: transparent; color: var(--muted); font-size: 14px; font-weight: 600;
+  border-bottom: 2px solid transparent; transition: all 0.2s;
+}
+.auth-tab.active { color: var(--accent); border-bottom-color: var(--accent); }
+.auth-tab:hover:not(.active) { color: var(--fg); }
+.auth-sep { height: 1px; background: var(--border); margin-bottom: 20px; }
+.auth-error { color: var(--red); font-size: 13px; min-height: 20px; margin-bottom: 8px; text-align: center; }
+.auth-field-label { font-size: 12px; color: var(--muted); margin-bottom: 6px; display: block; }
+.auth-input {
+  width: 100%; padding: 12px 14px; background: var(--panel-hover); color: var(--fg); border: 1px solid var(--border);
+  border-radius: 8px; font-size: 14px; margin-bottom: 16px; transition: border-color 0.2s;
+}
+.auth-input:focus { border-color: var(--accent); }
+.auth-submit {
+  width: 100%; padding: 14px; background: var(--accent); color: #fff; font-size: 15px; font-weight: 600;
+  border-radius: 8px; transition: background 0.2s;
+}
+.auth-submit:hover { background: var(--accent-hover); }
+
+/* ===== APP LAYOUT ===== */
+#app { display: none; height: 100vh; width: 100vw; }
+#app.active { display: flex; }
+
+/* ===== SIDEBAR ===== */
+#sidebar {
+  width: 260px; min-width: 260px; height: 100vh; background: var(--panel); display: flex; flex-direction: column;
+  border-right: 1px solid var(--border); transition: transform 0.3s ease; z-index: 100;
+}
+.sidebar-new-chat {
+  margin: 12px; padding: 12px 14px; background: transparent; color: var(--fg); font-size: 15px; font-weight: 500;
+  border-radius: 8px; text-align: left; display: flex; align-items: center; gap: 10px; transition: background 0.15s;
+}
+.sidebar-new-chat:hover { background: var(--panel-hover); }
+.sidebar-section-label { font-size: 11px; font-weight: 700; color: var(--muted); padding: 16px 20px 6px; text-transform: uppercase; letter-spacing: 0.5px; }
+.sidebar-item {
+  display: flex; align-items: center; gap: 10px; padding: 8px 20px; color: var(--muted); font-size: 13px;
+  cursor: pointer; border: none; background: transparent; width: 100%; text-align: left;
+  border-left: 3px solid transparent; transition: all 0.15s;
+}
+.sidebar-item:hover { background: var(--panel-hover); color: var(--fg); border-left-color: var(--accent); }
+.sidebar-item i { width: 18px; text-align: center; font-size: 13px; }
+.sidebar-scroll { flex: 1; overflow-y: auto; overflow-x: hidden; }
+.sidebar-bottom {
+  border-top: 1px solid var(--border); padding: 10px 12px; display: flex; align-items: center; gap: 10px;
+  background: var(--panel);
+}
+.sidebar-user-box {
+  flex: 1; display: flex; align-items: center; gap: 10px; padding: 8px 10px; background: var(--panel-hover); border-radius: 8px;
+}
+.sidebar-user-icon { font-size: 18px; }
+.sidebar-user-info { overflow: hidden; }
+.sidebar-user-name { font-size: 13px; font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.sidebar-actions { display: flex; gap: 4px; }
+.sidebar-action-btn {
+  width: 34px; height: 34px; display: flex; align-items: center; justify-content: center;
+  background: transparent; color: var(--muted); border-radius: 6px; font-size: 14px; transition: all 0.15s;
+}
+.sidebar-action-btn:hover { background: var(--panel-hover); color: var(--fg); }
+.sidebar-action-btn.active-voice { color: var(--accent); }
+
+/* ===== HAMBURGER ===== */
+#hamburger {
+  display: none; position: fixed; top: 12px; left: 12px; z-index: 200;
+  width: 40px; height: 40px; background: var(--panel); color: var(--fg); border-radius: 8px;
+  font-size: 18px; align-items: center; justify-content: center; border: 1px solid var(--border);
+}
+.sidebar-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.5); z-index: 99; }
+.sidebar-overlay.active { display: block; }
+
+/* ===== MAIN AREA ===== */
+#main { flex: 1; display: flex; flex-direction: column; height: 100vh; min-width: 0; position: relative; }
+#topbar {
+  height: 50px; display: flex; align-items: center; justify-content: space-between; padding: 0 20px;
+  flex-shrink: 0;
+}
+.topbar-model { font-family: var(--font-display); font-weight: 700; font-size: 15px; }
+#clock { font-size: 12px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
+/* ===== CHAT AREA ===== */
+#chat-area { flex: 1; overflow-y: auto; display: flex; flex-direction: column; }
+#messages { flex: 1; display: flex; flex-direction: column; align-items: center; padding: 10px 20px 20px; }
+.message { width: 100%; max-width: 720px; padding: 14px 0; animation: msgIn 0.3s ease; }
+@keyframes msgIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+.message-label { font-size: 13px; font-weight: 700; margin-bottom: 6px; }
+.user-label { color: var(--muted); }
+.bot-label { color: var(--accent); }
+.message-text { font-size: 15px; line-height: 1.65; white-space: pre-wrap; word-break: break-word; }
+
+/* ===== WELCOME ===== */
+#welcome {
+  flex: 1; display: flex; flex-direction: column; align-items: center; justify-content: center;
+  padding: 40px 20px; text-align: center;
+}
+#welcome.hidden { display: none; }
+.welcome-icon {
+  width: 80px; height: 80px; border-radius: 50%; background: var(--accent-glow);
+  display: flex; align-items: center; justify-content: center; font-size: 36px; color: var(--accent);
+  margin-bottom: 16px; animation: welcomePulse 3s ease-in-out infinite;
+}
+@keyframes welcomePulse {
+  0%, 100% { box-shadow: 0 0 0 0 rgba(16,163,127,0.2); }
+  50% { box-shadow: 0 0 0 20px rgba(16,163,127,0); }
+}
+.welcome-title { font-family: var(--font-display); font-size: 32px; font-weight: 700; margin-bottom: 8px; }
+.welcome-sub { color: var(--muted); font-size: 16px; margin-bottom: 36px; }
+.welcome-suggestions { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; max-width: 480px; width: 100%; }
+.suggestion-btn {
+  padding: 14px 18px; background: var(--panel-hover); color: var(--fg); border: 1px solid var(--border);
+  border-radius: 10px; font-size: 13px; text-align: left; transition: all 0.2s; display: flex; align-items: center; gap: 10px;
+}
+.suggestion-btn:hover { border-color: var(--accent); background: rgba(16,163,127,0.08); }
+.suggestion-btn i { color: var(--accent); width: 18px; text-align: center; }
+
+/* ===== TYPING INDICATOR ===== */
+.typing-indicator { display: none; padding: 10px 0; width: 100%; max-width: 720px; }
+.typing-indicator.active { display: flex; align-items: center; gap: 8px; }
+.typing-dots { display: flex; gap: 4px; }
+.typing-dot {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--muted);
+  animation: typingBounce 1.4s ease-in-out infinite;
+}
+.typing-dot:nth-child(2) { animation-delay: 0.2s; }
+.typing-dot:nth-child(3) { animation-delay: 0.4s; }
+@keyframes typingBounce {
+  0%, 60%, 100% { transform: translateY(0); opacity: 0.4; }
+  30% { transform: translateY(-6px); opacity: 1; }
+}
+.typing-text { font-size: 13px; color: var(--muted); }
+
+/* ===== INPUT BAR ===== */
+#input-bar { padding: 0 20px 16px; flex-shrink: 0; }
+.input-wrap {
+  display: flex; align-items: center; background: var(--input-bg); border-radius: 12px;
+  border: 1px solid transparent; transition: border-color 0.2s;
+}
+.input-wrap:focus-within { border-color: var(--accent); }
+.input-btn {
+  width: 44px; height: 44px; display: flex; align-items: center; justify-content: center;
+  background: transparent; color: var(--muted); font-size: 16px; flex-shrink: 0; transition: color 0.15s;
+}
+.input-btn:hover { color: var(--fg); }
+.input-btn.listening { color: var(--red); animation: micPulse 1s ease-in-out infinite; }
+@keyframes micPulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.4; } }
+#chat-input {
+  flex: 1; padding: 13px 0; background: transparent; color: var(--fg); font-size: 15px; border: none; outline: none;
+}
+#chat-input::placeholder { color: var(--muted); }
+.input-disclaimer { text-align: center; font-size: 11px; color: var(--muted); padding-top: 8px; }
+
+/* ===== MODALS ===== */
+.modal-overlay {
+  position: fixed; inset: 0; background: rgba(0,0,0,0.6); backdrop-filter: blur(4px);
+  z-index: 500; display: none; align-items: center; justify-content: center;
+}
+.modal-overlay.active { display: flex; }
+.modal {
+  background: var(--card-bg); border: 1px solid var(--border); border-radius: 14px;
+  animation: modalIn 0.25s ease; overflow: hidden; max-height: 90vh; display: flex; flex-direction: column;
+}
+@keyframes modalIn { from { opacity: 0; transform: scale(0.95); } to { opacity: 1; transform: none; } }
+.modal-header {
+  padding: 16px 20px; display: flex; align-items: center; justify-content: space-between;
+  border-bottom: 1px solid var(--border); flex-shrink: 0;
+}
+.modal-header h3 { font-size: 15px; font-weight: 600; }
+.modal-close {
+  width: 32px; height: 32px; display: flex; align-items: center; justify-content: center;
+  background: transparent; color: var(--muted); border-radius: 6px; font-size: 14px; transition: all 0.15s;
+}
+.modal-close:hover { background: var(--panel-hover); color: var(--fg); }
+.modal-body { padding: 20px; overflow-y: auto; flex: 1; }
+.modal-footer { padding: 14px 20px; border-top: 1px solid var(--border); display: flex; gap: 8px; flex-shrink: 0; }
+
+/* ===== CALCULATOR ===== */
+#calc-modal .modal { width: 370px; }
+.calc-display {
+  background: var(--panel-hover); margin: 0 16px 16px; padding: 20px; border-radius: 10px;
+  text-align: right; font-size: 28px; font-weight: 300; min-height: 72px;
+  display: flex; align-items: center; justify-content: flex-end; word-break: break-all;
+  font-variant-numeric: tabular-nums;
+}
+.calc-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 6px; padding: 0 16px 16px; }
+.calc-btn {
+  padding: 14px 4px; border-radius: 8px; font-size: 15px; font-weight: 600;
+  background: var(--panel-hover); color: var(--fg); transition: all 0.12s; border: none;
+}
+.calc-btn:hover { background: var(--border); }
+.calc-btn:active { transform: scale(0.95); }
+.calc-btn.accent { background: var(--accent); color: #fff; }
+.calc-btn.accent:hover { background: var(--accent-hover); }
+.calc-btn.danger { color: var(--red); }
+
+/* ===== LIST MODALS (Notes, Todo, Links) ===== */
+#notes-modal .modal, #todo-modal .modal, #links-modal .modal, #add-link-modal .modal { width: 500px; max-width: 95vw; }
+.list-area {
+  min-height: 200px; max-height: 360px; overflow-y: auto; background: var(--panel-hover);
+  border-radius: 8px; padding: 4px;
+}
+.list-item {
+  padding: 10px 14px; border-radius: 6px; font-size: 14px; cursor: default;
+  display: flex; align-items: center; gap: 10px; transition: background 0.12s;
+}
+.list-item:hover { background: var(--border); }
+.list-item.selected { background: rgba(16,163,127,0.15); }
+.list-item.done { text-decoration: line-through; color: var(--muted); }
+.list-item .item-check { cursor: pointer; color: var(--muted); font-size: 14px; }
+.list-item .item-check:hover { color: var(--accent); }
+.list-item .item-text { flex: 1; }
+.list-item .item-url { font-size: 12px; color: var(--muted); margin-left: auto; max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.list-input-row { display: flex; gap: 8px; }
+.list-input {
+  flex: 1; padding: 10px 14px; background: var(--panel-hover); color: var(--fg); border: 1px solid var(--border);
+  border-radius: 8px; font-size: 14px;
+}
+.list-input:focus { border-color: var(--accent); outline: none; }
+.list-add-btn {
+  padding: 10px 16px; background: var(--accent); color: #fff; font-size: 13px; font-weight: 600;
+  border-radius: 8px; transition: background 0.15s; white-space: nowrap;
+}
+.list-add-btn:hover { background: var(--accent-hover); }
+.icon-btn {
+  width: 38px; height: 38px; display: flex; align-items: center; justify-content: center;
+  border-radius: 8px; font-size: 13px; transition: all 0.15s; flex-shrink: 0; border: none;
+}
+.icon-btn.green { background: var(--accent); color: #fff; }
+.icon-btn.green:hover { background: var(--accent-hover); }
+.icon-btn.red { background: var(--red); color: #fff; }
+.icon-btn.red:hover { background: #d6363a; }
+.icon-btn.blue { background: #3b82f6; color: #fff; }
+.icon-btn.blue:hover { background: #2563eb; }
+
+/* ===== CONFIRM MODAL ===== */
+#confirm-modal .modal { width: 380px; }
+.confirm-msg { font-size: 15px; line-height: 1.5; text-align: center; padding: 10px 0; }
+.confirm-btns { display: flex; gap: 10px; justify-content: center; }
+.confirm-btn {
+  padding: 10px 28px; border-radius: 8px; font-size: 14px; font-weight: 600; transition: background 0.15s;
+}
+.confirm-yes { background: var(--red); color: #fff; }
+.confirm-yes:hover { background: #d6363a; }
+.confirm-no { background: var(--panel-hover); color: var(--fg); }
+.confirm-no:hover { background: var(--border); }
+
+/* ===== TOAST ===== */
+#toast-container { position: fixed; top: 16px; right: 16px; z-index: 9000; display: flex; flex-direction: column; gap: 8px; }
+.toast {
+  padding: 14px 20px; border-radius: 10px; font-size: 14px; color: #fff; min-width: 260px; max-width: 400px;
+  transform: translateX(120%); transition: transform 0.3s ease; box-shadow: 0 8px 30px rgba(0,0,0,0.3);
+}
+.toast.show { transform: translateX(0); }
+.toast-info { background: #1e3a5f; border-left: 4px solid #3b82f6; }
+.toast-success { background: #1a3d2e; border-left: 4px solid var(--accent); }
+.toast-error { background: #3d1a1a; border-left: 4px solid var(--red); }
+.toast-reminder { background: #3d3a1a; border-left: 4px solid #f59e0b; }
+
+/* ===== RESPONSIVE ===== */
+@media (max-width: 768px) {
+  #sidebar { position: fixed; left: 0; top: 0; transform: translateX(-100%); z-index: 200; }
+  #sidebar.open { transform: translateX(0); }
+  #hamburger { display: flex; }
+  #main { padding-left: 0; }
+  .welcome-suggestions { grid-template-columns: 1fr; }
+  .auth-card { margin: 16px; padding: 28px; }
+  #calc-modal .modal { width: 95vw; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+</style>
+</head>
+<body>
+
+<!-- ===== AUTH SCREEN ===== -->
+<div id="auth-screen">
+  <div class="auth-card">
+    <div class="auth-icon"><i class="fas fa-robot"></i></div>
+    <div class="auth-title">MUFBOT</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-mode="login" onclick="setAuthMode('login')">Login</button>
+      <button class="auth-tab" data-mode="register" onclick="setAuthMode('register')">Sign Up</button>
+    </div>
+    <div class="auth-sep"></div>
+    <div class="auth-error" id="auth-error"></div>
+    <label class="auth-field-label">Username</label>
+    <input class="auth-input" id="auth-user" type="text" autocomplete="username" spellcheck="false">
+    <label class="auth-field-label">Password</label>
+    <input class="auth-input" id="auth-pass" type="password" autocomplete="current-password">
+    <button class="auth-submit" id="auth-submit" onclick="submitAuth()">Login</button>
+  </div>
+</div>
+
+<!-- ===== HAMBURGER ===== -->
+<button id="hamburger" onclick="toggleSidebar()" aria-label="Toggle sidebar"><i class="fas fa-bars"></i></button>
+<div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+<!-- ===== APP ===== -->
+<div id="app">
+  <!-- SIDEBAR -->
+  <aside id="sidebar">
+    <button class="sidebar-new-chat" onclick="clearChat()"><i class="fas fa-plus"></i> New chat</button>
+    <div class="sidebar-scroll">
+      <div class="sidebar-section-label">Today</div>
+      <button class="sidebar-item" onclick="quickSend('hello')"><i class="fas fa-comment"></i> General conversation</button>
+      <button class="sidebar-item" onclick="quickSend('ai what is python')"><i class="fas fa-comment"></i> Python help</button>
+      <button class="sidebar-item" onclick="quickSend('weather London')"><i class="fas fa-comment"></i> Weather check</button>
+
+      <div class="sidebar-section-label">Tools</div>
+      <button class="sidebar-item" onclick="openModal('calc-modal')"><i class="fas fa-calculator"></i> Calculator</button>
+      <button class="sidebar-item" onclick="openModal('notes-modal'); renderNotes()"><i class="fas fa-sticky-note"></i> Notes</button>
+      <button class="sidebar-item" onclick="openModal('todo-modal'); renderTodos()"><i class="fas fa-check-circle"></i> Todo List</button>
+      <button class="sidebar-item" onclick="openModal('links-modal'); renderLinksList()"><i class="fas fa-link"></i> Links</button>
+      <button class="sidebar-item" onclick="quickSend('weather London')"><i class="fas fa-cloud-sun"></i> Weather</button>
+      <button class="sidebar-item" onclick="quickSend('news world')"><i class="fas fa-newspaper"></i> News</button>
+      <button class="sidebar-item" onclick="window.open('https://google.com','_blank')"><i class="fab fa-google"></i> Google</button>
+      <button class="sidebar-item" onclick="window.open('https://youtube.com','_blank')"><i class="fab fa-youtube"></i> YouTube</button>
+
+      <div class="sidebar-section-label">My Links</div>
+      <div id="sidebar-links"></div>
+      <button class="sidebar-item" onclick="openModal('add-link-modal')" style="color:var(--accent)"><i class="fas fa-plus"></i> Add link</button>
+    </div>
+
+    <div class="sidebar-bottom">
+      <div class="sidebar-user-box">
+        <span class="sidebar-user-icon"><i class="fas fa-user-circle"></i></span>
+        <div class="sidebar-user-info">
+          <div class="sidebar-user-name" id="user-name-display">User</div>
+        </div>
+      </div>
+      <div class="sidebar-actions">
+        <button class="sidebar-action-btn" id="voice-toggle" onclick="toggleTTS()" title="Toggle voice" aria-label="Toggle text-to-speech"><i class="fas fa-volume-up"></i></button>
+        <button class="sidebar-action-btn" onclick="doLogout()" title="Logout" aria-label="Logout"><i class="fas fa-sign-out-alt"></i></button>
+      </div>
+    </div>
+  </aside>
+
+  <!-- MAIN -->
+  <main id="main">
+    <div id="topbar">
+      <span class="topbar-model">MUFBOT</span>
+      <span id="clock">--:--:--</span>
+    </div>
+
+    <div id="chat-area">
+      <div id="welcome">
+        <div class="welcome-icon"><i class="fas fa-robot"></i></div>
+        <div class="welcome-title">MUFBOT</div>
+        <div class="welcome-sub">How can I help you today?</div>
+        <div class="welcome-suggestions">
+          <button class="suggestion-btn" onclick="quickSend('Tell me a joke')"><i class="fas fa-face-laugh-beam"></i> Tell me a joke</button>
+          <button class="suggestion-btn" onclick="quickSend('weather London')"><i class="fas fa-cloud-sun"></i> What's the weather?</button>
+          <button class="suggestion-btn" onclick="openModal('calc-modal')"><i class="fas fa-calculator"></i> Open Calculator</button>
+          <button class="suggestion-btn" onclick="quickSend('motivate me')"><i class="fas fa-lightbulb"></i> Motivate me</button>
+        </div>
+      </div>
+
+      <div id="messages"></div>
+      <div class="typing-indicator" id="typing-indicator">
+        <div class="typing-dots"><div class="typing-dot"></div><div class="typing-dot"></div><div class="typing-dot"></div></div>
+        <span class="typing-text">MUFBOT is thinking...</span>
+      </div>
+    </div>
+
+    <div id="input-bar">
+      <div class="input-wrap">
+        <button class="input-btn" id="mic-btn" onclick="startListening()" title="Voice input" aria-label="Voice input"><i class="fas fa-microphone"></i></button>
+        <input id="chat-input" type="text" placeholder="Message MUFBOT..." autocomplete="off" spellcheck="false">
+        <button class="input-btn" onclick="send()" title="Send" aria-label="Send message"><i class="fas fa-paper-plane"></i></button>
+      </div>
+      <div class="input-disclaimer">MUFBOT can make mistakes. Consider checking important information.</div>
+    </div>
+  </main>
+</div>
+
+<!-- ===== CALCULATOR MODAL ===== -->
+<div class="modal-overlay" id="calc-modal">
+  <div class="modal">
+    <div class="modal-header"><h3><i class="fas fa-calculator"></i> Scientific Calculator</h3><button class="modal-close" onclick="closeModal('calc-modal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body" style="padding-bottom:8px">
+      <div class="calc-display" id="calc-display">0</div>
+      <div class="calc-grid">
+        <button class="calc-btn" onclick="calcInput('sin(')">sin</button>
+        <button class="calc-btn" onclick="calcInput('cos(')">cos</button>
+        <button class="calc-btn" onclick="calcInput('tan(')">tan</button>
+        <button class="calc-btn" onclick="calcInput('log(')">log</button>
+        <button class="calc-btn danger" onclick="calcClear()">C</button>
+        <button class="calc-btn" onclick="calcInput('(')">(</button>
+        <button class="calc-btn" onclick="calcInput(')')">)</button>
+        <button class="calc-btn" onclick="calcInput('^')">^</button>
+        <button class="calc-btn" onclick="calcInput('sqrt(')">sqrt</button>
+        <button class="calc-btn danger" onclick="calcBackspace()"><i class="fas fa-backspace"></i></button>
+        <button class="calc-btn" onclick="calcInput('7')">7</button>
+        <button class="calc-btn" onclick="calcInput('8')">8</button>
+        <button class="calc-btn" onclick="calcInput('9')">9</button>
+        <button class="calc-btn" onclick="calcInput('/')">/</button>
+        <button class="calc-btn" onclick="calcInput('*')">*</button>
+        <button class="calc-btn" onclick="calcInput('4')">4</button>
+        <button class="calc-btn" onclick="calcInput('5')">5</button>
+        <button class="calc-btn" onclick="calcInput('6')">6</button>
+        <button class="calc-btn" onclick="calcInput('-')">-</button>
+        <button class="calc-btn" onclick="calcInput('+')">+</button>
+        <button class="calc-btn" onclick="calcInput('1')">1</button>
+        <button class="calc-btn" onclick="calcInput('2')">2</button>
+        <button class="calc-btn" onclick="calcInput('3')">3</button>
+        <button class="calc-btn" onclick="calcInput('pi')">pi</button>
+        <button class="calc-btn accent" onclick="calcEvaluate()">=</button>
+        <button class="calc-btn" onclick="calcInput('0')">0</button>
+        <button class="calc-btn" onclick="calcInput('.')">.</button>
+        <button class="calc-btn" onclick="calcInput('e')">e</button>
+        <button class="calc-btn" onclick="calcInput('%')">%</button>
+        <button class="calc-btn accent" onclick="calcSend()" title="Send to chat">Send</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== NOTES MODAL ===== -->
+<div class="modal-overlay" id="notes-modal">
+  <div class="modal">
+    <div class="modal-header"><h3><i class="fas fa-sticky-note"></i> My Notes</h3><button class="modal-close" onclick="closeModal('notes-modal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div class="list-area" id="notes-list"></div>
+    </div>
+    <div class="modal-footer">
+      <div class="list-input-row" style="flex:1">
+        <input class="list-input" id="note-input" placeholder="Write a note..." onkeydown="if(event.key==='Enter')saveNote()">
+        <button class="icon-btn red" onclick="deleteSelectedNote()" title="Delete selected"><i class="fas fa-trash"></i></button>
+        <button class="list-add-btn" onclick="saveNote()">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TODO MODAL ===== -->
+<div class="modal-overlay" id="todo-modal">
+  <div class="modal">
+    <div class="modal-header"><h3><i class="fas fa-check-circle"></i> Task List</h3><button class="modal-close" onclick="closeModal('todo-modal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <div class="list-area" id="todo-list"></div>
+    </div>
+    <div class="modal-footer">
+      <div class="list-input-row" style="flex:1">
+        <input class="list-input" id="todo-input" placeholder="Add a task..." onkeydown="if(event.key==='Enter')saveTodo()">
+        <button class="icon-btn red" onclick="deleteSelectedTodo()" title="Delete selected"><i class="fas fa-trash"></i></button>
+        <button class="icon-btn green" onclick="toggleSelectedTodo()" title="Toggle done"><i class="fas fa-check"></i></button>
+        <button class="list-add-btn" onclick="saveTodo()">Add</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== LINKS MODAL ===== -->
+<div class="modal-overlay" id="links-modal">
+  <div class="modal">
+    <div class="modal-header">
+      <h3><i class="fas fa-link"></i> My Custom Links</h3>
+      <div style="display:flex;gap:6px">
+        <button class="list-add-btn" onclick="closeModal('links-modal');openModal('add-link-modal')">Add Link</button>
+        <button class="modal-close" onclick="closeModal('links-modal')"><i class="fas fa-times"></i></button>
+      </div>
+    </div>
+    <div class="modal-body">
+      <div class="list-area" id="links-list"></div>
+    </div>
+    <div class="modal-footer">
+      <button class="icon-btn blue" onclick="openSelectedLink()" title="Open link"><i class="fas fa-external-link-alt"></i></button>
+      <button class="icon-btn red" onclick="deleteSelectedLink()" title="Delete link"><i class="fas fa-trash"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== ADD LINK MODAL ===== -->
+<div class="modal-overlay" id="add-link-modal">
+  <div class="modal">
+    <div class="modal-header"><h3><i class="fas fa-plus-circle"></i> Add Custom Link</h3><button class="modal-close" onclick="closeModal('add-link-modal')"><i class="fas fa-times"></i></button></div>
+    <div class="modal-body">
+      <label class="auth-field-label">Link Name (e.g., GitHub)</label>
+      <input class="auth-input" id="link-name-input" placeholder="My Website">
+      <label class="auth-field-label">URL (e.g., github.com)</label>
+      <input class="auth-input" id="link-url-input" placeholder="https://example.com">
+    </div>
+    <div class="modal-footer" style="justify-content:flex-end">
+      <button class="list-add-btn" onclick="saveLink()">Save Link</button>
+    </div>
+  </div>
+</div>
+
+<!-- ===== CONFIRM MODAL ===== -->
+<div class="modal-overlay" id="confirm-modal">
+  <div class="modal">
+    <div class="modal-body" style="padding:28px">
+      <div class="confirm-msg" id="confirm-message"></div>
+      <div class="confirm-btns" style="margin-top:20px">
+        <button class="confirm-btn confirm-no" onclick="closeModal('confirm-modal')">Cancel</button>
+        <button class="confirm-btn confirm-yes" id="confirm-yes-btn">Confirm</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ===== TOAST CONTAINER ===== -->
+<div id="toast-container"></div>
+
+<script>
+/* ================================================================
+   STATE MANAGEMENT
+   ================================================================ */
+const STORAGE_KEY = 'mufbot_state';
+let state = {
+  users: {},
+  currentUser: null,
+  history: [],
+  todos: [],
+  notes: [],
+  customLinks: [],
+  config: { tts: true }
+};
+
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (raw) {
+      const saved = JSON.parse(raw);
+      Object.assign(state, saved);
+    }
+  } catch(e) { console.warn('Failed to load state:', e); }
+}
+
+function saveState() {
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
+  catch(e) { console.warn('Failed to save state:', e); }
+}
+
+/* ================================================================
+   PASSWORD HASHING (SHA-256)
+   ================================================================ */
+async function hashPassword(pw) {
+  if (crypto.subtle) {
+    const data = new TextEncoder().encode(pw);
+    const hash = await crypto.subtle.digest('SHA-256', data);
+    return Array.from(new Uint8Array(hash)).map(b => b.toString(16).padStart(2,'0')).join('');
+  }
+  // Fallback for insecure contexts
+  let h = 0;
+  for (let i = 0; i < pw.length; i++) { h = ((h << 5) - h) + pw.charCodeAt(i); h |= 0; }
+  return Math.abs(h).toString(16).padStart(64, '0');
+}
+
+/* ================================================================
+   AUTHENTICATION
+   ================================================================ */
+let authMode = 'login';
+
+function setAuthMode(mode) {
+  authMode = mode;
+  document.querySelectorAll('.auth-tab').forEach(t => t.classList.toggle('active', t.dataset.mode === mode));
+  document.getElementById('auth-submit').textContent = mode === 'login' ? 'Login' : 'Create Account';
+  document.getElementById('auth-error').textContent = '';
+}
+
+async function submitAuth() {
+  const user = document.getElementById('auth-user').value.trim();
+  const pass = document.getElementById('auth-pass').value.trim();
+  const errEl = document.getElementById('auth-error');
+
+  if (!user || !pass) { errEl.textContent = 'Please fill all fields.'; return; }
+
+  const hashed = await hashPassword(pass);
+
+  if (authMode === 'register') {
+    if (state.users[user]) { errEl.textContent = 'Username already exists.'; return; }
+    state.users[user] = { password: hashed };
+    saveState();
+  } else {
+    if (!state.users[user] || state.users[user].password !== hashed) {
+      errEl.textContent = 'Invalid username or password.'; return;
+    }
+  }
+
+  state.currentUser = user;
+  saveState();
+  enterApp();
+}
+
+function enterApp() {
+  document.getElementById('auth-screen').classList.add('hidden');
+  document.getElementById('app').classList.add('active');
+  document.getElementById('user-name-display').textContent = state.currentUser;
+  renderSidebarLinks();
+  loadChatHistory();
+  updateClock();
+  setInterval(updateClock, 1000);
+  document.getElementById('chat-input').focus();
+}
+
+function doLogout() {
+  showConfirm('Are you sure you want to log out?', () => {
+    state.currentUser = null;
+    saveState();
+    document.getElementById('app').classList.remove('active');
+    document.getElementById('auth-screen').classList.remove('hidden');
+    document.getElementById('auth-user').value = '';
+    document.getElementById('auth-pass').value = '';
+    document.getElementById('auth-error').textContent = '';
+    // Clear chat
+    document.getElementById('messages').innerHTML = '';
+    document.getElementById('welcome').classList.remove('hidden');
+  });
+}
+
+// Handle Enter on auth fields
+document.getElementById('auth-pass').addEventListener('keydown', e => { if (e.key === 'Enter') submitAuth(); });
+document.getElementById('auth-user').addEventListener('keydown', e => { if (e.key === 'Enter') document.getElementById('auth-pass').focus(); });
+
+/* ================================================================
+   CLOCK
+   ================================================================ */
+async function fetchTime() {
+  try {
+    const resp = await fetch('https://worldtimeapi.org/api/timezone/Etc/UTC');
+    const data = await resp.json();
+    return { dt: new Date(data.datetime), tz: 'UTC' };
+  } catch(e) { return null; }
+}
+
+let cachedTime = null;
+async function updateClock() {
+  const el = document.getElementById('clock');
+  // Use local time as base, try network time occasionally
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  el.textContent = `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ampm}`;
+}
+
+function fmtTime() {
+  const now = new Date();
+  let h = now.getHours(), m = now.getMinutes(), s = now.getSeconds();
+  const ampm = h >= 12 ? 'PM' : 'AM';
+  h = h % 12 || 12;
+  return `${String(h).padStart(2,'0')}:${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')} ${ampm}`;
+}
+
+function fmtDate() {
+  const now = new Date();
+  const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+  const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  return `${days[now.getDay()]}, ${months[now.getMonth()]} ${now.getDate()}, ${now.getFullYear()}`;
+}
+
+/* ================================================================
+   CHAT FUNCTIONS
+   ================================================================ */
+function addMessage(text, type) {
+  const container = document.getElementById('messages');
+  document.getElementById('welcome').classList.add('hidden');
+
+  const wrapper = document.createElement('div');
+  wrapper.className = 'message';
+
+  const label = document.createElement('div');
+  label.className = `message-label ${type}-label`;
+  label.textContent = type === 'user' ? 'You' : 'MUFBOT';
+
+  const bubble = document.createElement('div');
+  bubble.className = 'message-text';
+  bubble.textContent = text;
+
+  wrapper.appendChild(label);
+  wrapper.appendChild(bubble);
+  container.appendChild(wrapper);
+
+  // Scroll to bottom
+  const chatArea = document.getElementById('chat-area');
+  chatArea.scrollTop = chatArea.scrollHeight;
+
+  // Save
+  state.history.push({ text, type, time: new Date().toISOString() });
+  saveState();
+}
+
+function loadChatHistory() {
+  const container = document.getElementById('messages');
+  container.innerHTML = '';
+  if (state.history.length === 0) {
+    document.getElementById('welcome').classList.remove('hidden');
+    return;
+  }
+  document.getElementById('welcome').classList.add('hidden');
+  state.history.forEach(msg => {
+    const wrapper = document.createElement('div');
+    wrapper.className = 'message';
+    wrapper.style.animation = 'none';
+    const label = document.createElement('div');
+    label.className = `message-label ${msg.type}-label`;
+    label.textContent = msg.type === 'user' ? 'You' : 'MUFBOT';
+    const bubble = document.createElement('div');
+    bubble.className = 'message-text';
+    bubble.textContent = msg.text;
+    wrapper.appendChild(label);
+    wrapper.appendChild(bubble);
+    container.appendChild(wrapper);
+  });
+  const chatArea = document.getElementById('chat-area');
+  chatArea.scrollTop = chatArea.scrollHeight;
+}
+
+function showTyping() { document.getElementById('typing-indicator').classList.add('active'); scrollChatBottom(); }
+function hideTyping() { document.getElementById('typing-indicator').classList.remove('active'); }
+function scrollChatBottom() {
+  const ca = document.getElementById('chat-area');
+  ca.scrollTop = ca.scrollHeight;
+}
+
+function clearChat() {
+  state.history = [];
+  saveState();
+  document.getElementById('messages').innerHTML = '';
+  document.getElementById('welcome').classList.remove('hidden');
+  document.getElementById('chat-input').focus();
+  closeSidebarMobile();
+}
+
+function send() {
+  const input = document.getElementById('chat-input');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+  input.focus();
+  processAndReply(text);
+}
+
+function quickSend(cmd) {
+  processAndReply(cmd);
+  closeSidebarMobile();
+}
+
+async function processAndReply(query) {
+  addMessage(query, 'user');
+  showTyping();
+
+  // Small delay for natural feel
+  await new Promise(r => setTimeout(r, 300 + Math.random() * 400));
+
+  const reply = await processCommand(query);
+  hideTyping();
+
+  if (reply === '__EXIT__') {
+    addMessage('Goodbye! See you next time.', 'bot');
+    return;
+  }
+  if (reply === '__LOGOUT__') {
+    doLogout();
+    return;
+  }
+
+  addMessage(reply, 'bot');
+  speak(reply);
+}
+
+// Enter key to send
+document.getElementById('chat-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); send(); }
+});
+
+/* ================================================================
+   CONTENT DATA
+   ================================================================ */
+const JOKES = [
+  "Why do programmers prefer dark mode? Because light attracts bugs.",
+  "Debugging: being the detective and the criminal at the same time.",
+  "There are 10 types of people: those who understand binary and those who don't.",
+  "I would tell you a UDP joke, but you might not get it.",
+  "Why do Java developers wear glasses? Because they can't C#.",
+  "A SQL query walks into a bar, sees two tables and asks: 'Can I join you?'"
+];
+const QUOTES = [
+  "Keep learning. The world doesn't stop for anyone.",
+  "Consistency beats talent when talent doesn't show up.",
+  "Every expert was once a beginner.",
+  "Code is like humor. When you have to explain it, it's bad.",
+  "The only way to do great work is to love what you do.",
+  "Simplicity is the ultimate sophistication."
+];
+const GREETS = ["Hello!", "Hi there!", "Hey!", "Welcome back!", "Good to see you!"];
+
+/* ================================================================
+   SAFE MATH EVAL
+   ================================================================ */
+function safeEval(expr) {
+  let safe = expr
+    .replace(/\^/g, '**')
+    .replace(/\bsin\b/g, 'Math.sin')
+    .replace(/\bcos\b/g, 'Math.cos')
+    .replace(/\btan\b/g, 'Math.tan')
+    .replace(/\blog\b/g, 'Math.log')
+    .replace(/\bsqrt\b/g, 'Math.sqrt')
+    .replace(/\bpi\b/g, 'Math.PI')
+    .replace(/\be\b/g, 'Math.E');
+
+  // Validate: after removing Math.xxx, only safe chars remain
+  const cleaned = safe.replace(/Math\.(sin|cos|tan|log|sqrt|PI|E)/g, '');
+  if (/[^0-9+\-*/().%\s,]/.test(cleaned)) throw new Error('Invalid expression');
+
+  const result = new Function('return ' + safe)();
+  if (typeof result !== 'number' || !isFinite(result)) throw new Error('Invalid result');
+  return result;
+}
+
+/* ================================================================
+   NETWORK FUNCTIONS
+   ================================================================ */
+const CORS_PROXY = 'https://api.allorigins.win/raw?url=';
+
+async function getWeather(city) {
+  // Try wttr.in JSON directly (supports CORS with origin=*)
+  try {
+    const resp = await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`, { signal: AbortSignal.timeout(8000) });
+    if (resp.ok) {
+      const data = await resp.json();
+      const c = data.current_condition[0];
+      const desc = c.weatherDesc[0].value;
+      const temp = c.temp_C;
+      const humidity = c.humidity;
+      const wind = c.windspeedKmph;
+      const feels = c.FeelsLikeC;
+      return `Weather in ${city}: ${desc}, ${temp}\u00B0C (feels like ${feels}\u00B0C), Humidity: ${humidity}%, Wind: ${wind} km/h`;
+    }
+  } catch(e) {}
+  // Fallback via proxy with text format
+  try {
+    const url = `https://wttr.in/${encodeURIComponent(city)}?format=3`;
+    const resp = await fetch(CORS_PROXY + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
+    if (resp.ok) return (await resp.text()).trim();
+  } catch(e) {}
+  return 'Could not fetch weather data. Please check the city name and try again.';
+}
+
+async function getNews(topic, n = 5) {
+  try {
+    const url = `https://news.google.com/rss/search?q=${encodeURIComponent(topic)}&hl=en`;
+    const resp = await fetch(CORS_PROXY + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
+    if (!resp.ok) throw new Error('Fetch failed');
+    const xml = await resp.text();
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(xml, 'text/xml');
+    const titles = Array.from(doc.querySelectorAll('item title')).map(el => el.textContent);
+    if (titles.length > 0) return titles.slice(0, n).map(t => `\u2022 ${t}`).join('\n');
+    return 'No news found for this topic.';
+  } catch(e) {
+    return `News fetch error: ${e.message}`;
+  }
+}
+
+async function translateText(text, to) {
+  try {
+    const url = `https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=${to}&dt=t&q=${encodeURIComponent(text)}`;
+    // Try direct first
+    try {
+      const resp = await fetch(url, { signal: AbortSignal.timeout(8000) });
+      if (resp.ok) {
+        const data = await resp.json();
+        return data[0].map(seg => seg[0]).join('');
+      }
+    } catch(e) {}
+    // Fallback via proxy
+    const resp = await fetch(CORS_PROXY + encodeURIComponent(url), { signal: AbortSignal.timeout(8000) });
+    if (resp.ok) {
+      const data = await resp.json();
+      return data[0].map(seg => seg[0]).join('');
+    }
+    throw new Error('Translate failed');
+  } catch(e) {
+    return `Translate error: ${e.message}`;
+  }
+}
+
+async function wikiSearch(topic) {
+  try {
+    // Search Wikipedia
+    const searchUrl = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(topic)}&limit=1&format=json&origin=*`;
+    const searchResp = await fetch(searchUrl, { signal: AbortSignal.timeout(8000) });
+    const searchData = await searchResp.json();
+    if (!searchData[1] || searchData[1].length === 0) return 'No Wikipedia results found.';
+    const title = searchData[1][0];
+    // Get summary
+    const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+    const summaryResp = await fetch(summaryUrl, { signal: AbortSignal.timeout(8000) });
+    const summaryData = await summaryResp.json();
+    return summaryData.extract || 'No summary available.';
+  } catch(e) {
+    return `Wikipedia error: ${e.message}`;
+  }
+}
+
+async function aiReply(text) {
+  // Try DuckDuckGo instant answer via proxy
+  try {
+    const url = `https://api.duckduckgo.com/?q=${encodeURIComponent(text)}&format=json&no_html=1`;
+    const resp = await fetch(CORS_PROXY + encodeURIComponent(url), { signal: AbortSignal.timeout(6000) });
+    if (resp.ok) {
+      const data = await resp.json();
+      if (data.AbstractText) return data.AbstractText;
+      if (data.Answer) return data.Answer;
+      if (data.Definition) return data.Definition;
+      if (data.RelatedTopics && data.RelatedTopics.length > 0) {
+        const first = data.RelatedTopics.find(t => t.Text);
+        if (first) return first.Text;
+      }
+    }
+  } catch(e) {}
+  // Fallback to Wikipedia
+  try {
+    const wikiResult = await wikiSearch(text);
+    if (wikiResult && !wikiResult.startsWith('No Wikipedia')) return wikiResult;
+  } catch(e) {}
+  return "I'm not sure about that, but I'm learning every day! Try rephrasing your question or use 'wiki <topic>' for Wikipedia results.";
+}
+
+/* ================================================================
+   PASSWORD GENERATOR
+   ================================================================ */
+function genPassword(length = 16, symbols = true) {
+  const lowers = 'abcdefghijklmnopqrstuvwxyz';
+  const uppers = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  const digits = '0123456789';
+  const syms = '!@#$%^&*()_+-=[]{}|;:,.<>?';
+  let chars = lowers + uppers + digits;
+  if (symbols) chars += syms;
+  // Use crypto for better randomness
+  const array = new Uint32Array(length);
+  crypto.getRandomValues(array);
+  return Array.from(array, v => chars[v % chars.length]).join('');
+}
+
+/* ================================================================
+   COMMAND PROCESSOR
+   ================================================================ */
+async function processCommand(query) {
+  const q = query.toLowerCase().trim();
+  if (!q) return 'Please type something.';
+  if (['exit','quit','bye'].includes(q)) return '__EXIT__';
+  if (['logout','log out','sign out'].includes(q)) return '__LOGOUT__';
+
+  if (q === 'help') {
+    return `Commands:
+  hello \u00B7 time \u00B7 date \u00B7 joke \u00B7 motivate \u00B7 random
+  calc <expr> or just 'calc' (opens calculator)
+  weather <city> \u00B7 news <topic>
+  translate <lang>: <text>
+  todo (opens workspace) \u00B7 notes (opens workspace)
+  note add <text> (quick save)
+  remind <min> <msg>
+  password [len]
+  youtube \u00B7 google \u00B7 instagram \u00B7 wiki <topic> \u00B7 ai <question>
+  links (manage custom links)`;
+  }
+
+  if (/^(hello|hi|hey)/.test(q)) {
+    const name = state.currentUser || '';
+    return `${GREETS[Math.floor(Math.random() * GREETS.length)]} ${name}!`.trim();
+  }
+
+  if ('what is my name' === q) {
+    return state.currentUser ? `Your name is ${state.currentUser}.` : "I don't know your name yet.";
+  }
+
+  if (q === 'time') return `\u{1F550} ${fmtTime()}`;
+  if (q === 'date') return `\u{1F4C5} ${fmtDate()}`;
+
+  if (q.includes('joke')) return JOKES[Math.floor(Math.random() * JOKES.length)];
+  if (q.includes('motivate')) return `\u{1F4A1} ${QUOTES[Math.floor(Math.random() * QUOTES.length)]}`;
+  if (q.startsWith('random')) return String(Math.floor(Math.random() * 100) + 1);
+
+  // Calculator
+  if (q === 'calc' || q.startsWith('calc ')) {
+    const inlineExpr = query.slice(5).trim();
+    if (!inlineExpr) {
+      openModal('calc-modal');
+      return 'Opening Calculator...';
+    }
+    try {
+      const fixed = inlineExpr.replace(/([a-z]+)(\d+)/g, '$1($2)');
+      return `\u{1F9EE} ${safeEval(fixed)}`;
+    } catch(e) {
+      openModal('calc-modal');
+      return `Couldn't parse '${inlineExpr}'. Opening Calculator...`;
+    }
+  }
+
+  // Weather
+  if (q.startsWith('weather')) {
+    const city = query.slice(7).trim().replace(/^[:\s]+/, '') || 'London';
+    return `\u{1F324}\uFE0F ${await getWeather(city)}`;
+  }
+
+  // News
+  if (q.startsWith('news')) {
+    const topic = query.slice(4).trim().replace(/^[:\s]+/, '') || 'world';
+    return `\u{1F4F0} News:\n${await getNews(topic)}`;
+  }
+
+  // Translate
+  if (q.startsWith('translate')) {
+    const body = query.slice(9).trim().replace(/^[:\s]+/, '');
+    const m = body.match(/^(\w{2,5})\s*:\s*(.+)$/);
+    if (m) return `\u{1F310} ${await translateText(m[2], m[1])}`;
+    return 'Usage: translate es: Hello world';
+  }
+
+  // Todo
+  if (['todo','todo list','tasks'].includes(q)) {
+    openModal('todo-modal'); renderTodos();
+    return 'Opening Todo Workspace...';
+  }
+
+  // Notes
+  if (['note','notes','note list'].includes(q)) {
+    openModal('notes-modal'); renderNotes();
+    return 'Opening Notes Workspace...';
+  }
+
+  // Links
+  if (q === 'links') {
+    openModal('links-modal'); renderLinksList();
+    return 'Opening Links Manager...';
+  }
+
+  // Todo add
+  if (q.startsWith('todo add')) {
+    const parts = query.split(' ');
+    if (parts.length >= 3) {
+      const task = parts.slice(2).join(' ');
+      state.todos.push({ task, done: false });
+      saveState();
+      return `\u2705 Added to Todo: ${task}`;
+    }
+    return 'Usage: todo add <task description>';
+  }
+
+  // Note add
+  if (q.startsWith('note add')) {
+    const parts = query.split(' ');
+    if (parts.length >= 3) {
+      const text = parts.slice(2).join(' ');
+      state.notes.push({ text, time: new Date().toISOString() });
+      saveState();
+      return `\u{1F4DD} Note saved: ${text}`;
+    }
+    return 'Usage: note add <note text>';
+  }
+
+  // Remind
+  if (q.startsWith('remind')) {
+    const m = query.match(/^remind\s+(\d+)\s+(.+)$/i);
+    if (!m) return 'Usage: remind <minutes> <message>';
+    const mins = parseInt(m[1]);
+    const msg = m[2];
+    setTimeout(() => {
+      showToast(`\u23F0 ${msg}`, 'reminder');
+      speak('Reminder: ' + msg);
+    }, mins * 60 * 1000);
+    return `\u23F0 Reminder set for ${mins} min: ${msg}`;
+  }
+
+  // Password
+  if (q.startsWith('password')) {
+    const parts = q.split(' ');
+    let length = 16;
+    if (parts.length > 1 && /^\d+$/.test(parts[1])) length = parseInt(parts[1]);
+    if (length < 4) length = 4;
+    if (length > 128) length = 128;
+    return `\u{1F511} ${genPassword(length)}`;
+  }
+
+  // Quick links
+  if (q === 'youtube') { window.open('https://youtube.com','_blank'); return 'Opening YouTube...'; }
+  if (q === 'google') { window.open('https://google.com','_blank'); return 'Opening Google...'; }
+  if (['insta','instagram'].includes(q)) { window.open('https://instagram.com','_blank'); return 'Opening Instagram...'; }
+
+  // Wikipedia
+  if (q.startsWith('wiki ')) {
+    const topic = query.slice(5).trim();
+    if (!topic) return 'Usage: wiki <topic>';
+    return await wikiSearch(topic);
+  }
+
+  // AI
+  if (q.startsWith('ai ')) {
+    return await aiReply(query.slice(3));
+  }
+
+  // Default: try AI reply
+  return await aiReply(query);
+}
+
+/* ================================================================
+   CALCULATOR
+   ================================================================ */
+let calcExpr = '';
+
+function calcInput(val) {
+  calcExpr += val;
+  document.getElementById('calc-display').textContent = calcExpr || '0';
+}
+
+function calcClear() {
+  calcExpr = '';
+  document.getElementById('calc-display').textContent = '0';
+}
+
+function calcBackspace() {
+  calcExpr = calcExpr.slice(0, -1);
+  document.getElementById('calc-display').textContent = calcExpr || '0';
+}
+
+function calcEvaluate() {
+  try {
+    let result = safeEval(calcExpr);
+    if (Number.isInteger(result)) result = result;
+    calcExpr = String(result);
+    document.getElementById('calc-display').textContent = calcExpr;
+  } catch(e) {
+    document.getElementById('calc-display').textContent = 'Syntax Error';
+    calcExpr = '';
+  }
+}
+
+function calcSend() {
+  const expr = calcExpr;
+  if (!expr || expr === 'Syntax Error') return;
+  closeModal('calc-modal');
+  quickSend('calc ' + expr);
+  calcExpr = '';
+  document.getElementById('calc-display').textContent = '0';
+}
+
+/* ================================================================
+   NOTES CRUD
+   ================================================================ */
+let selectedNoteIdx = -1;
+
+function renderNotes() {
+  const list = document.getElementById('notes-list');
+  list.innerHTML = '';
+  if (state.notes.length === 0) {
+    list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">No notes yet. Add one below.</div>';
+    return;
+  }
+  state.notes.forEach((n, i) => {
+    const item = document.createElement('div');
+    item.className = 'list-item' + (i === selectedNoteIdx ? ' selected' : '');
+    item.innerHTML = `<span class="item-text">${i+1}. ${escHtml(n.text)}</span>`;
+    item.addEventListener('click', () => { selectedNoteIdx = i; renderNotes(); });
+    list.appendChild(item);
+  });
+}
+
+function saveNote() {
+  const input = document.getElementById('note-input');
+  const text = input.value.trim();
+  if (!text) return;
+  state.notes.push({ text, time: new Date().toISOString() });
+  saveState();
+  input.value = '';
+  renderNotes();
+  botSay('Note saved.');
+}
+
+function deleteSelectedNote() {
+  if (selectedNoteIdx < 0 || selectedNoteIdx >= state.notes.length) {
+    showToast('Select a note to delete', 'error'); return;
+  }
+  state.notes.splice(selectedNoteIdx, 1);
+  selectedNoteIdx = -1;
+  saveState();
+  renderNotes();
+}
+
+/* ================================================================
+   TODO CRUD
+   ================================================================ */
+let selectedTodoIdx = -1;
+
+function renderTodos() {
+  const list = document.getElementById('todo-list');
+  list.innerHTML = '';
+  if (state.todos.length === 0) {
+    list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">No tasks yet. Add one below.</div>';
+    return;
+  }
+  state.todos.forEach((t, i) => {
+    const item = document.createElement('div');
+    item.className = 'list-item' + (i === selectedTodoIdx ? ' selected' : '') + (t.done ? ' done' : '');
+    item.innerHTML = `
+      <span class="item-check" onclick="event.stopPropagation();toggleTodoByIndex(${i})">${t.done ? '\u2714' : '\u2B1C'}</span>
+      <span class="item-text">${escHtml(t.task)}</span>`;
+    item.addEventListener('click', () => { selectedTodoIdx = i; renderTodos(); });
+    list.appendChild(item);
+  });
+}
+
+function saveTodo() {
+  const input = document.getElementById('todo-input');
+  const text = input.value.trim();
+  if (!text) return;
+  state.todos.push({ task: text, done: false });
+  saveState();
+  input.value = '';
+  renderTodos();
+  botSay('Task added.');
+}
+
+function toggleSelectedTodo() {
+  if (selectedTodoIdx < 0 || selectedTodoIdx >= state.todos.length) {
+    showToast('Select a task to toggle', 'error'); return;
+  }
+  toggleTodoByIndex(selectedTodoIdx);
+}
+
+function toggleTodoByIndex(i) {
+  state.todos[i].done = !state.todos[i].done;
+  saveState();
+  renderTodos();
+}
+
+function deleteSelectedTodo() {
+  if (selectedTodoIdx < 0 || selectedTodoIdx >= state.todos.length) {
+    showToast('Select a task to delete', 'error'); return;
+  }
+  state.todos.splice(selectedTodoIdx, 1);
+  selectedTodoIdx = -1;
+  saveState();
+  renderTodos();
+}
+
+/* ================================================================
+   LINKS CRUD
+   ================================================================ */
+let selectedLinkIdx = -1;
+
+function renderSidebarLinks() {
+  const container = document.getElementById('sidebar-links');
+  container.innerHTML = '';
+  state.customLinks.forEach((link, i) => {
+    const btn = document.createElement('button');
+    btn.className = 'sidebar-item';
+    btn.innerHTML = `<i class="fas fa-link"></i> ${escHtml(link.name)}`;
+    btn.onclick = () => window.open(link.url, '_blank');
+    container.appendChild(btn);
+  });
+}
+
+function renderLinksList() {
+  const list = document.getElementById('links-list');
+  list.innerHTML = '';
+  if (state.customLinks.length === 0) {
+    list.innerHTML = '<div style="padding:30px;text-align:center;color:var(--muted)">No custom links yet.</div>';
+    return;
+  }
+  state.customLinks.forEach((link, i) => {
+    const item = document.createElement('div');
+    item.className = 'list-item' + (i === selectedLinkIdx ? ' selected' : '');
+    item.innerHTML = `
+      <span class="item-text"><i class="fas fa-link" style="color:var(--accent);margin-right:6px"></i>${escHtml(link.name)}</span>
+      <span class="item-url">${escHtml(link.url)}</span>`;
+    item.addEventListener('click', () => { selectedLinkIdx = i; renderLinksList(); });
+    list.appendChild(item);
+  });
+}
+
+function saveLink() {
+  if (state.customLinks.length >= 10) {
+    showToast('Maximum 10 custom links allowed.', 'error'); return;
+  }
+  const name = document.getElementById('link-name-input').value.trim();
+  let url = document.getElementById('link-url-input').value.trim();
+  if (!name || !url) { showToast('Please fill all fields.', 'error'); return; }
+  if (!url.startsWith('http')) url = 'https://' + url;
+  state.customLinks.push({ name, url });
+  saveState();
+  document.getElementById('link-name-input').value = '';
+  document.getElementById('link-url-input').value = '';
+  renderSidebarLinks();
+  renderLinksList();
+  closeModal('add-link-modal');
+  botSay(`Link added: ${name}`);
+}
+
+function openSelectedLink() {
+  if (selectedLinkIdx < 0 || selectedLinkIdx >= state.customLinks.length) {
+    showToast('Select a link to open', 'error'); return;
+  }
+  window.open(state.customLinks[selectedLinkIdx].url, '_blank');
+}
+
+function deleteSelectedLink() {
+  if (selectedLinkIdx < 0 || selectedLinkIdx >= state.customLinks.length) {
+    showToast('Select a link to delete', 'error'); return;
+  }
+  const name = state.customLinks[selectedLinkIdx].name;
+  showConfirm(`Remove '${name}' from your links?`, () => {
+    state.customLinks.splice(selectedLinkIdx, 1);
+    selectedLinkIdx = -1;
+    saveState();
+    renderSidebarLinks();
+    renderLinksList();
+  });
+}
+
+/* ================================================================
+   VOICE (TTS / STT)
+   ================================================================ */
+function speak(text) {
+  if (!state.config.tts) return;
+  // Strip emoji and special chars for cleaner speech
+  const clean = text.replace(/[\u{1F300}-\u{1F9FF}\u{2600}-\u{26FF}\u{2700}-\u{27BF}\u{FE00}-\u{FEFF}\u2022\u2705\u2709\u{1F4DD}\u{1F4A1}\u{1F4C5}\u{1F4F0}\u{1F511}\u{1F550}\u{1F9EE}\u{1F310}\u{1F324}\uFE0F\u23F0]/gu, '').trim();
+  if (!clean) return;
+  const utterance = new SpeechSynthesisUtterance(clean);
+  utterance.rate = 1;
+  utterance.pitch = 1;
+  speechSynthesis.cancel();
+  speechSynthesis.speak(utterance);
+}
+
+function toggleTTS() {
+  state.config.tts = !state.config.tts;
+  saveState();
+  const btn = document.getElementById('voice-toggle');
+  const icon = btn.querySelector('i');
+  if (state.config.tts) {
+    icon.className = 'fas fa-volume-up';
+    btn.classList.remove('active-voice');
+    showToast('Voice enabled', 'success');
+  } else {
+    icon.className = 'fas fa-volume-mute';
+    btn.classList.add('active-voice');
+    showToast('Voice muted', 'info');
+  }
+}
+
+// Initialize voice toggle state
+function initVoiceToggle() {
+  const btn = document.getElementById('voice-toggle');
+  const icon = btn.querySelector('i');
+  if (!state.config.tts) {
+    icon.className = 'fas fa-volume-mute';
+    btn.classList.add('active-voice');
+  }
+}
+
+let recognition = null;
+function startListening() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    showToast('Speech recognition not supported in this browser.', 'error');
+    return;
+  }
+  if (recognition) { recognition.abort(); }
+
+  recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  const micBtn = document.getElementById('mic-btn');
+  micBtn.classList.add('listening');
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById('chat-input').value = transcript;
+    micBtn.classList.remove('listening');
+    send();
+  };
+
+  recognition.onerror = (event) => {
+    micBtn.classList.remove('listening');
+    if (event.error !== 'aborted') showToast('Could not recognize speech: ' + event.error, 'error');
+  };
+
+  recognition.onend = () => {
+    micBtn.classList.remove('listening');
+  };
+
+  recognition.start();
+  showToast('Listening... speak now', 'info');
+}
+
+/* ================================================================
+   MODAL HELPERS
+   ================================================================ */
+function openModal(id) {
+  document.getElementById(id).classList.add('active');
+  // Focus first input if exists
+  const input = document.getElementById(id).querySelector('input');
+  if (input) setTimeout(() => input.focus(), 100);
+}
+
+function closeModal(id) {
+  document.getElementById(id).classList.remove('active');
+}
+
+// Close modal on overlay click
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', (e) => {
+    if (e.target === overlay) overlay.classList.remove('active');
+  });
+});
+
+// Close modal on Escape
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape') {
+    document.querySelectorAll('.modal-overlay.active').forEach(m => m.classList.remove('active'));
+  }
+});
+
+/* ================================================================
+   CONFIRM DIALOG
+   ================================================================ */
+function showConfirm(message, onConfirm) {
+  document.getElementById('confirm-message').textContent = message;
+  const yesBtn = document.getElementById('confirm-yes-btn');
+  // Clone to remove old listeners
+  const newBtn = yesBtn.cloneNode(true);
+  yesBtn.parentNode.replaceChild(newBtn, yesBtn);
+  newBtn.id = 'confirm-yes-btn';
+  newBtn.addEventListener('click', () => {
+    closeModal('confirm-modal');
+    onConfirm();
+  });
+  openModal('confirm-modal');
+}
+
+/* ================================================================
+   TOAST NOTIFICATIONS
+   ================================================================ */
+function showToast(message, type = 'info') {
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  requestAnimationFrame(() => toast.classList.add('show'));
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 4000);
+}
+
+/* ================================================================
+   SIDEBAR MOBILE
+   ================================================================ */
+function toggleSidebar() {
+  const sidebar = document.getElementById('sidebar');
+  const overlay = document.getElementById('sidebar-overlay');
+  sidebar.classList.toggle('open');
+  overlay.classList.toggle('active');
+}
+
+function closeSidebarMobile() {
+  if (window.innerWidth <= 768) {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('active');
+  }
+}
+
+/* ================================================================
+   UTILITY
+   ================================================================ */
+function escHtml(str) {
+  const div = document.createElement('div');
+  div.textContent = str;
+  return div.innerHTML;
+}
+
+function botSay(text) {
+  // Add bot message without user message (for internal actions)
+  showTyping();
+  setTimeout(() => {
+    hideTyping();
+    addMessage(text, 'bot');
+    speak(text);
+  }, 300);
+}
+
+/* ================================================================
+   INITIALIZATION
+   ================================================================ */
+loadState();
+
+if (state.currentUser && state.users[state.currentUser]) {
+  enterApp();
+  initVoiceToggle();
+} else {
+  state.currentUser = null;
+  // Focus username field
+  setTimeout(() => document.getElementById('auth-user').focus(), 200);
+}
+</script>
+</body>
+</html>
