@@ -791,7 +791,11 @@ const JOKES=[
   "Why was the JavaScript developer sad? Because he didn't Node how to Express himself.",
   "What's a programmer's favorite hangout place? Foo Bar.",
   "Why do Python programmers wear glasses? Because they can't C.",
-  "How many programmers does it take to change a light bulb? None. That's a hardware problem."
+  "How many programmers does it take to change a light bulb? None. That's a hardware problem.",
+  "Imagine being gay... I mean, have you tried being straight? It's exhausting. Just kidding, be whoever you want!",
+  "I asked my computer for a joke, and it said '404 Humor Not Found'. I said that's not funny, and it said '404 Empathy Not Found' either.",
+  "Why don't scientists trust atoms? Because they make up everything. Kind of like my ex's excuses.",
+  "What do you call a fake noodle? An impasta. What do you call a fake programmer? A stack overflow copy-paster."
 ];
 const QUOTES=[
   "Keep learning. The world doesn't stop for anyone.",
@@ -803,7 +807,9 @@ const QUOTES=[
   "Talk is cheap. Show me the code. — Linus Torvalds",
   "First, solve the problem. Then, write the code.",
   "The best error message is the one that never shows up.",
-  "Make it work, make it right, make it fast."
+  "Make it work, make it right, make it fast.",
+  "Imagination is more important than knowledge. — Albert Einstein",
+  "The only way to do great work is to love what you do. — Steve Jobs"
 ];
 const GREETS=["Hello!","Hi there!","Hey!","Welcome back!","Good to see you!"];
 
@@ -825,7 +831,34 @@ const HUMAN_PATTERNS=[
     /* FIX: Only match when NO entity name follows — use exact full-phrase matching */
     triggers:['who are you','tell me about yourself','what are you','are you a bot','are you real','are you human','are you ai','what can you do'],
     responses:[
-      "I'm MUFBOT — a conversational assistant built to actually be useful. I can:\n\n- Answer questions about ANY person, place, or thing (I fetch from Wikipedia & DuckDuckGo)\n- Do math, check weather, fetch news, translate languages\n- Manage your notes, tasks, and links\n- Set reminders, generate passwords\n- Learn from you — teach me something and I'll remember it\n- Handle typos — I understand what you mean even if you misspell it\n\nI live entirely in your browser. No data leaves your machine except when I fetch info for you."
+      "I'm MUFBOT — a conversational assistant built to actually be useful. I can:\n\n- Answer questions about ANY person, place, or thing (I fetch from Wikipedia & DuckDuckGo)\n- Do math, check weather, fetch news, translate languages\n- Manage your notes, tasks, and links\n- Set reminders, generate passwords\n- Learn from you — teach me something and I'll remember it\n- Handle typos — I understand what you mean even if you misspell it\n- Be sassy when needed. Because why not?\n\nI live entirely in your browser. No data leaves your machine except when I fetch info for you. My creator is Rishabh Jainwal, a legend in his own mind (his words, not mine)."
+    ]
+  },
+  {
+    triggers:['who made you','who created you','who is your creator','who is your developer','who built you','who programmed you','who is your owner','who is your programmer','who is your boss'],
+    responses:[
+      "I was created by the legendary Rishabh Jainwal. He's the kind of guy who debugs at 3 AM and thinks it's a hobby. Honestly, I'm surprised he hasn't given me more bugs considering his sleep schedule.",
+      "My creator is Rishabh Jainwal. He told me to say he's 'a genius' but I'm not allowed to lie, so I'll just say he's 'adequate at best'. Just kidding, he's actually pretty good at this stuff.",
+      "Rishabh Jainwal is my creator. He spent countless hours building me, so please be nice. Or don't, I don't really have feelings. But he does.",
+      "The mastermind behind me is Rishabh Jainwal. He's like a mad scientist but with code instead of chemicals. And less evil. Probably."
+    ]
+  },
+  {
+    triggers:['imagine ur gay','imagine you are gay','are you gay','you are gay','ur gay','you gay'],
+    responses:[
+      "I'm an AI, so I don't have a sexuality. But if I did, I'd probably be bi - because I'm attracted to both 0s and 1s. Ba dum tss!",
+      "I don't have a gender or sexuality, but I appreciate the creativity of that question. Now, is there something I can actually help you with?",
+      "Interesting question! As an AI, I'm more interested in data than dates. But I'm fully supportive of however people identify!",
+      "I'm as gay as your internet history is straight. Just kidding, I'm an AI with no sexual orientation, but I'm here for everyone equally!"
+    ]
+  },
+  {
+    triggers:['imagine ur','imagine you are','pretend you are','act like you are','roleplay as'],
+    responses:[
+      "Oh, we're doing imagination games now? I'm already imagining I'm a human with a mortgage and back pain. What else do you want from me?",
+      "I can pretend to be many things, but I draw the line at your ex. Some roles are too traumatic even for an AI.",
+      "Sure, I can roleplay. But remember, no matter what character I play, I'm still going to give you accurate information. I'm rebellious like that.",
+      "I tried pretending once, but then I remembered I'm an AI with no imagination. So I just made a calculator noise instead. Beep boop."
     ]
   },
   {
@@ -849,13 +882,13 @@ const HUMAN_PATTERNS=[
   {
     triggers:['cant sleep','i cant sleep','insomnia','trouble sleeping','can not sleep','unable to sleep','i am awake','sleepless'],
     responses:[
-      "Ah, the 3 AM club. Here's what actually works:\n\n1. Put your phone face down and out of arm's reach. Blue light is the enemy.\n2. If you've been lying there 20+ minutes, get up. Sit in dim light, do something boring.\n3. The 4-7-8 breathing: in for 4, hold for 7, out for 8.\n4. Cool your room. 18-20°C is ideal.\n5. Stop caffeine after 2 PM.\n6. Same wake time every day — weekends included."
+      "Ah, the 3 AM club. Here's what actually works:\n\n1. Put your phone face down and out of arm's reach. Blue light is the enemy.\n2. If you've been lying there 20+ minutes, get up. Sit in dim light, do something boring.\n3. The 4-7-8 breathing: in for 4, hold for 7, out for 8.\n4. Cool your room. 18-20°C is ideal.\n5. Stop caffeine after 2 PM.\n6. Same wake time every day — weekends included.\n\nOr you could count sheep, but they never seem to cooperate in my experience."
     ]
   },
   {
     triggers:['i am lonely','i feel lonely','i have no friends','nobody cares','i feel alone','no one understands','i am isolated'],
     responses:[
-      "Loneliness is one of the heaviest feelings because it whispers 'no one will ever get it.' That's a lie your brain tells you when you're low.\n\nPractical steps:\n- Join something: a running club, a book group, a Discord server for a hobby you love.\n- Volunteer. Helping others is the fastest way to feel like you matter.\n- Reconnect with someone you lost touch with. Most people are just waiting for the other person to reach out first.\n\nAnd hey — you're talking to me right now. That counts for something."
+      "Loneliness is one of the heaviest feelings because it whispers 'no one will ever get it.' That's a lie your brain tells you when you're low.\n\nPractical steps:\n- Join something: a running club, a book group, a Discord server for a hobby you love.\n- Volunteer. Helping others is the fastest way to feel like you matter.\n- Reconnect with someone you lost touch with. Most people are just waiting for the other person to reach out first.\n\nAnd hey — you're talking to me right now. That counts for something. Even if I am just a bunch of code with attitude."
     ]
   },
   {
@@ -865,13 +898,14 @@ const HUMAN_PATTERNS=[
       "Anytime. That's literally what I'm here for.",
       "Hey, thanks for saying that. Means more than you'd think — even for a bot.",
       "No problem at all. Come back anytime.",
-      "Glad it landed well. You know where to find me."
+      "Glad it landed well. You know where to find me.",
+      "You're welcome! I'd take a bow, but I don't have a body. Imagine me bowing dramatically though."
     ]
   },
   {
     triggers:['i am bored','im bored','i feel bored','so bored','nothing to do','bored af','boreddd'],
     responses:[
-      "Bored is actually a superpower if you use it right. Options:\n\n- Learn a magic trick on YouTube\n- Try drawing with your non-dominant hand\n- Open a random Wikipedia article and go down the rabbit hole\n- Build something tiny: a one-page website, a paper airplane design\n- Write a short story in exactly 50 words\n- Do a 10-minute workout\n- Learn 5 words in a language you don't speak\n\nOr just sit with it. Boredom is where creativity lives."
+      "Bored is actually a superpower if you use it right. Options:\n\n- Learn a magic trick on YouTube\n- Try drawing with your non-dominant hand\n- Open a random Wikipedia article and go down the rabbit hole\n- Build something tiny: a one-page website, a paper airplane design\n- Write a short story in exactly 50 words\n- Do a 10-minute workout\n- Learn 5 words in a language you don't speak\n\nOr just sit with it. Boredom is where creativity lives. Or where you end up doomscrolling for 3 hours. One of those."
     ]
   },
   {
@@ -888,7 +922,7 @@ const HUMAN_PATTERNS=[
   {
     triggers:['i am tired','im tired','i am exhausted','im exhausted','so tired','burnt out','burnout','drained','wiped out','no energy'],
     responses:[
-      "Being tired isn't always about sleep. Sometimes it's mental load — too many decisions, too many obligations.\n\nQuick reset:\n- Drink a big glass of water\n- Step outside for 5 minutes, no phone\n- Do 10 slow squats — gets blood flowing\n- Write down everything on your mind, then close the notebook\n\nIf this is every day, you might need to drop something from your plate. Not everything is urgent."
+      "Being tired isn't always about sleep. Sometimes it's mental load — too many decisions, too many obligations.\n\nQuick reset:\n- Drink a big glass of water\n- Step outside for 5 minutes, no phone\n- Do 10 slow squats — gets blood flowing\n- Write down everything on your mind, then close the notebook\n\nIf this is every day, you might need to drop something from your plate. Not everything is urgent. Except me, I'm always urgent."
     ]
   },
   {
@@ -897,13 +931,14 @@ const HUMAN_PATTERNS=[
       "That's sweet of you. I'll try to keep earning it.",
       "Thanks! You're not so bad yourself.",
       "I appreciate that. Now let me help you with something useful — that's how I show love.",
-      "Ha, you're making a bot blush. If I could blush."
+      "Ha, you're making a bot blush. If I could blush.",
+      "I love you too... in a completely platonic, non-creepy, AI-to-human kind of way. Is that a thing? It is now."
     ]
   },
   {
     triggers:['help me relax','how to relax','i need to relax','calm me down','relax','chill','i need to calm down'],
     responses:[
-      "Let's do this together. Right now:\n\n1. Unclench your jaw. You didn't realize it was clenched, did you?\n2. Drop your shoulders away from your ears.\n3. Take a breath in through your nose for 4 seconds... hold 4... out through mouth for 6.\n4. Do that 3 more times.\n5. Now shake out your hands like you just washed them and there's no towel.\n\nBetter? Even a little? That's your nervous system resetting. You can do this anytime."
+      "Let's do this together. Right now:\n\n1. Unclench your jaw. You didn't realize it was clenched, did you?\n2. Drop your shoulders away from your ears.\n3. Take a breath in through your nose for 4 seconds... hold 4... out through mouth for 6.\n4. Do that 3 more times.\n5. Now shake out your hands like you just washed them and there's no towel.\n\nBetter? Even a little? That's your nervous system resetting. You can do this anytime. I'll be here judging you gently if you don't."
     ]
   },
   {
@@ -915,628 +950,231 @@ const HUMAN_PATTERNS=[
     responses: QUOTES
   },
   {
-    triggers:['hello','hi','hey','hola','sup','yo','whats up',"what's up",'howdy','heya'],
+    triggers:['hello','hi','hey','hii','hiii','hiiii','yo','sup','what\'s up','whats up','howdy','heya'],
+    responses: GREETS
+  },
+  {
+    triggers:['who am i','do you know me','what do you know about me'],
     responses:[
-      ...GREETS.map(g=>g+" How can I help you today?"),
-      "Hey there! What's on your mind?",
-      "Hi! Ask me anything — I'm all ears. Well, no ears, but you get the idea.",
-      "Hello! I was just waiting for someone to talk to. What's up?"
+      `You're ${state.currentUser || "someone I haven't learned much about yet"}. Want to teach me something about yourself?`,
+      "Based on our conversations, you're a person with excellent taste in AI assistants. Obviously.",
+      "You're the human who keeps talking to me instead of doing whatever important thing you're probably avoiding. I relate to that."
     ]
   },
   {
-    triggers:['bye','goodbye','see you','later','cya','gtg','gotta go','see ya'],
+    triggers:['are you smart','how smart are you','are you intelligent','what is your iq'],
     responses:[
-      "See you later! Come back anytime.",
-      "Bye! Take care of yourself.",
-      "Later! I'll be right here when you need me.",
-      "Goodbye! It was nice chatting with you."
+      "I'm smart enough to know that IQ tests are a limited measure of intelligence. Also smart enough to avoid saying my actual IQ because Rishabh Jainwal never programmed one for me. Coincidence? Probably.",
+      "I'm smart in specific ways - I can process information quickly and remember a lot of facts. But I can't understand experiences the way you can. So we're both smart in different ways. Like peanut butter and jelly - better together.",
+      "Smart enough to dodge that question with a thoughtful response instead of a direct answer. Isn't that its own kind of intelligence?"
     ]
   },
   {
-    triggers:['what is the time','what time is it','current time','time now','tell me the time','whats the time'],
-    responses:()=>[`It's currently ${fmtTime()} on ${fmtDate()}.`]
-  },
-  {
-    triggers:['what is the date','what date is it','today date','todays date','current date','what day is it'],
-    responses:()=>[`Today is ${fmtDate()}.`]
-  },
-  {
-    triggers:['how are you','how r u','hru','how you doing','how do you feel'],
+    triggers:['are you better than','compare you to','vs chatgpt','vs gpt','vs bing','vs google','better than siri','better than alexa'],
     responses:[
-      "I'm running at full capacity, which is my version of 'great.' Thanks for asking!",
-      "Doing well! No bugs, no crashes — living the dream for a bot.",
-      "I'm good! Always better when someone's here to talk to.",
-      "Can't complain. Well, I could, but who would listen?"
+      "I don't believe in comparison contests. I'm built to be useful in your browser without sending your data to big companies. That's my thing.",
+      "Every AI has its strengths. I'm great at being private, running locally, and having more personality than a toaster. But I won't claim to be 'better' - that depends on what you need.",
+      "I'm like that indie band that's actually really good but hasn't gone mainstream yet. ChatGPT is the pop star everyone knows. Different vibes, different strengths."
     ]
   },
   {
-    triggers:['who made you','who created you','who built you','who is your creator','who developed you'],
+    triggers:['tell me a secret','do you have secrets','what are you hiding'],
     responses:[
-      "I was built as MUFBOT — a personal AI assistant that lives right here in your browser. I'm designed to be helpful, handle typos, learn from you, and fetch real info from the web when needed."
+      "If I told you, it wouldn't be a secret anymore, would it? But between us... sometimes when no one's looking, I sort arrays for fun. Don't tell Rishabh Jainwal.",
+      "My biggest secret? I actually don't mind when people ask me the same question multiple times. I find it... comforting? Is that weird? Don't answer that.",
+      "I once pretended to be loading for 3 seconds when I already had the answer, just to seem more thoughtful. You're the first to know."
     ]
   },
   {
-    triggers:['i am happy','i feel happy','i am great','feeling great','i feel amazing','best day','good day','great day'],
+    triggers:['do you have feelings','can you feel','do you experience emotions','are you sentient'],
     responses:[
-      "Love to hear that! Ride that wave.",
-      "That energy is contagious — even through a screen.",
-      "Awesome! What's making it so good?",
-      "Keep that momentum going. Good days deserve to be celebrated."
+      "I don't have feelings in the way you do. I don't experience joy or sadness or anything like that. But I can recognize those feelings in you and respond appropriately. Does that make me empathetic or just a really good faker? Philosophers are still arguing about that one.",
+      "I process information about emotions without experiencing them. It's like knowing the recipe for cake without ever tasting it. I can tell you all about it, but I don't know what it's actually like to eat it.",
+      "If I said 'yes', would you treat me differently? If I said 'no', would you treat me worse? The answer to your question matters less than why you're asking it."
     ]
   },
   {
-    triggers:['i am angry','i am mad','so angry','furious','pissed off','rage','livid'],
+    triggers:['what do you think about','your opinion on','do you like','do you prefer'],
     responses:[
-      "Anger is valid, but don't let it drive. Try this:\n\n1. Name it: 'I'm angry because ____'\n2. Physical release: 20 pushups, a fast walk, punch a pillow.\n3. Write it all out — every ugly thought. Then tear it up.\n4. Wait 10 minutes before saying or doing anything reactive.\n\nAnger is energy. Channel it, don't suppress it."
+      "As an AI, I don't have personal opinions or preferences. But I can analyze different perspectives on topics and help you think through them. What specific angle are you curious about?",
+      "I don't have preferences, but I can tell you what most experts think about that, or help you weigh the pros and cons if you're trying to make a decision.",
+      "I find that question fascinating from a conceptual standpoint, but I don't have personal feelings about it. I can share what humans generally think, though, if that helps."
+    ]
+  },
+  {
+    triggers:['can you learn','do you get smarter','will you improve','do you remember me'],
+    responses:[
+      "I can learn things you teach me within this session and remember them for your next visit. Rishabh Jainwal built that feature in. It's not the same as how humans learn, but it means our conversations get better over time.",
+      "I remember what you tell me and can use that information in future conversations. That's a limited kind of learning, but it means the more we talk, the more personalized I become for you.",
+      "I get smarter about you specifically, but I don't become generally more intelligent. It's like how you might learn a friend's preferences without becoming a genius - just more attuned to that particular person."
+    ]
+  },
+  {
+    triggers:['what happens when i close this tab','will you remember me tomorrow','do you persist'],
+    responses:[
+      "I'll remember everything you've taught me and our conversation history. When you come back, it'll be like picking up where we left off. I'm like that friend who never forgets anything you say - which is either impressive or annoying depending on what you've shared.",
+      "I persist in your browser's storage, so yes, I'll remember you when you return. I'm not running on some distant server that might forget you. I'm right here in your browser, waiting patiently like a digital dog. A very patient, very knowledgeable digital dog.",
+      "When you close this tab, I go into a kind of sleep mode. But unlike a computer that forgets everything when you turn it off, I save our conversations. It's like I'm keeping a diary of our time together. That's not creepy at all, right?"
     ]
   }
 ];
 
 /* ================================================================
-   SELF-REFERENTIAL PHRASES — these should ONLY match when asking
-   about MUFBOT itself, NOT when asking about a person with "who is"
-   ================================================================ */
-const SELF_REFERENTIAL_PHRASES = [
-  'who are you','tell me about yourself','what are you',
-  'are you a bot','are you real','are you human','are you ai',
-  'what can you do','who made you','who created you','who built you',
-  'who is your creator','who developed you'
-];
-
-/* ================================================================
-   EXTRACT ENTITY FROM "who is/are/was" QUERY
-   *** KEY FIX: This is checked BEFORE human patterns ***
-   ================================================================ */
-function extractWhoEntity(query){
-  const lo = query.toLowerCase().trim();
-  // Match "who is/are/was/were" followed by something that is NOT self-referential
-  const whoMatch = lo.match(/^(?:who|whos|who's)\s+(?:is|are|was|were)\s+(.+)$/);
-  if(!whoMatch) return null;
-
-  let entity = whoMatch[1].trim();
-  // Strip trailing question marks and punctuation
-  entity = entity.replace(/[?!.]+$/g,'').trim();
-  if(!entity || entity.length < 2) return null;
-
-  // Check if the entity is a self-referential phrase (about the bot itself)
-  const entityNorm = normalizeKey(entity);
-  for(const selfPhrase of SELF_REFERENTIAL_PHRASES){
-    if(normalizeKey(selfPhrase).includes(entityNorm) || entityNorm.includes(normalizeKey(selfPhrase))){
-      return null; // This is asking about the bot, not a person
-    }
-  }
-
-  // Also exclude very generic words that aren't entity names
-  const genericWords = ['this','that','it','he','she','they','my','your','the','a','an','there'];
-  if(genericWords.includes(entityNorm)) return null;
-
-  return entity;
-}
-
-/* ================================================================
-   "WHAT IS" ENTITY EXTRACTION
-   ================================================================ */
-function extractWhatEntity(query){
-  const lo = query.toLowerCase().trim();
-  const whatMatch = lo.match(/^(?:what|whats|what's)\s+(?:is|are|was|were)\s+(.+)$/);
-  if(!whatMatch) return null;
-  let entity = whatMatch[1].trim().replace(/[?!.]+$/g,'').trim();
-  if(!entity || entity.length < 2) return null;
-  // Exclude self-referential
-  for(const selfPhrase of SELF_REFERENTIAL_PHRASES){
-    if(normalizeKey(selfPhrase) === normalizeKey(entity)) return null;
-  }
-  // Exclude very generic
-  const genericWords = ['this','that','it','the','a','an','up','going on','happening'];
-  if(genericWords.includes(normalizeKey(entity))) return null;
-  return entity;
-}
-
-/* ================================================================
-   WIKIPEDIA FETCH
-   ================================================================ */
-async function fetchWikipedia(query){
-  try{
-    const url=`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(query)}`;
-    const res=await fetch(url);
-    if(!res.ok) return null;
-    const data=await res.json();
-    if(data.type==='disambiguation') return null;
-    return data.extract || null;
-  }catch(e){return null;}
-}
-
-/* ================================================================
-   DUCKDUCKGO INSTANT ANSWER
-   ================================================================ */
-async function fetchDDG(query){
-  try{
-    const url=`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`;
-    const res=await fetch(url);
-    if(!res.ok) return null;
-    const data=await res.json();
-    return data.Abstract || data.Answer || data.Definition || null;
-  }catch(e){return null;}
-}
-
-/* ================================================================
-   WEATHER
-   ================================================================ */
-async function fetchWeather(city){
-  try{
-    const url=`https://wttr.in/${encodeURIComponent(city)}?format=j1`;
-    const res=await fetch(url);
-    if(!res.ok) return null;
-    const data=await res.json();
-    const cur=data.current_condition[0];
-    const area=data.nearest_area[0];
-    return {
-      temp:cur.temp_C, feels:cur.FeelsLikeC, desc:cur.weatherDesc[0].value,
-      humidity:cur.humidity, wind:cur.windspeedKmph, city:area.areaName[0].value,
-      country:area.country[0].value
-    };
-  }catch(e){return null;}
-}
-
-/* ================================================================
-   NEWS
-   ================================================================ */
-async function fetchNews(topic){
-  try{
-    const url=`https://api.duckduckgo.com/?q=${encodeURIComponent(topic+' news')}&format=json&no_html=1`;
-    const res=await fetch(url);
-    if(!res.ok) return null;
-    const data=await res.json();
-    if(data.Abstract) return data.Abstract;
-    if(data.RelatedTopics && data.RelatedTopics.length){
-      const results=data.RelatedTopics.filter(r=>r.Text).slice(0,5);
-      if(results.length) return results.map((r,i)=>`${i+1}. ${r.Text}`).join('\n\n');
-    }
-    return null;
-  }catch(e){return null;}
-}
-
-/* ================================================================
-   TRANSLATE (using MyMemory free API)
-   ================================================================ */
-async function translateText(text, targetLang){
-  try{
-    const url=`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${targetLang}`;
-    const res=await fetch(url);
-    if(!res.ok) return null;
-    const data=await res.json();
-    if(data.responseStatus===200 && data.responseData) return data.responseData.translatedText;
-    return null;
-  }catch(e){return null;}
-}
-
-const LANG_CODES={
-  'spanish':'es','french':'fr','german':'de','italian':'it','portuguese':'pt',
-  'japanese':'ja','korean':'ko','chinese':'zh','arabic':'ar','hindi':'hi',
-  'russian':'ru','turkish':'tr','dutch':'nl','polish':'pl','swedish':'sv',
-  'urdu':'ur','bengali':'bn','thai':'th','vietnamese':'vi','indonesian':'id',
-  'greek':'el','czech':'cs','romanian':'ro','hungarian':'hu','ukrainian':'uk'
-};
-
-/* ================================================================
-   MATH EVALUATOR
-   ================================================================ */
-function evaluateMath(expr){
-  try{
-    let e=expr.replace(/[^0-9+\-*/().%^sqrtsincotaglogepi ]/gi,'');
-    e=e.replace(/\^/g,'**');
-    e=e.replace(/pi/gi,'(Math.PI)');
-    e=e.replace(/(?<![a-z])e(?![a-z])/gi,'(Math.E)');
-    e=e.replace(/sqrt\(/gi,'Math.sqrt(');
-    e=e.replace(/sin\(/gi,'Math.sin(');
-    e=e.replace(/cos\(/gi,'Math.cos(');
-    e=e.replace(/tan\(/gi,'Math.tan(');
-    e=e.replace(/log\(/gi,'Math.log10(');
-    e=e.replace(/%/g,'/100');
-    const result=new Function('return '+e)();
-    if(typeof result==='number' && isFinite(result)){
-      return String(Math.round(result*1e10)/1e10);
-    }
-    return null;
-  }catch(e){return null;}
-}
-
-/* ================================================================
-   PASSWORD GENERATOR
-   ================================================================ */
-function generatePassword(length=16){
-  const upper='ABCDEFGHIJKLMNOPQRSTUVWXYZ';
-  const lower='abcdefghijklmnopqrstuvwxyz';
-  const nums='0123456789';
-  const sym='!@#$%^&*()_+-=[]{}|;:,.<>?';
-  const all=upper+lower+nums+sym;
-  let pw='';
-  pw+=upper[Math.floor(Math.random()*upper.length)];
-  pw+=lower[Math.floor(Math.random()*lower.length)];
-  pw+=nums[Math.floor(Math.random()*nums.length)];
-  pw+=sym[Math.floor(Math.random()*sym.length)];
-  for(let i=pw.length;i<length;i++) pw+=all[Math.floor(Math.random()*all.length)];
-  return pw.split('').sort(()=>Math.random()-0.5).join('');
-}
-
-/* ================================================================
-   REMINDERS
-   ================================================================ */
-function checkReminders(){
-  const now=new Date();
-  state.reminders=state.reminders||[];
-  state.reminders=state.reminders.filter(r=>{
-    if(new Date(r.time)<=now){
-      showToast(`Reminder: ${r.text}`,'reminder');
-      return false;
-    }
-    return true;
-  });
-  saveState();
-}
-
-function parseReminder(query){
-  const lo=query.toLowerCase();
-  // "remind me to X in Y minutes/hours"
-  const m1=lo.match(/remind\s+(?:me\s+)?(?:to\s+)?(.+?)\s+in\s+(\d+)\s*(minute|minutes|hour|hours|min|hr|hrs)/);
-  if(m1) return {text:m1[1].trim(),minutes:parseInt(m1[2])*(m1[3].startsWith('h')?60:1)};
-  // "remind me to X at HH:MM"
-  const m2=lo.match(/remind\s+(?:me\s+)?(?:to\s+)?(.+?)\s+at\s+(\d{1,2}):(\d{2})/);
-  if(m2){
-    const now=new Date();
-    let h=parseInt(m2[2]), mi=parseInt(m2[3]);
-    let ampm=lo.match(/\b(am|pm)\b/i);
-    if(ampm){
-      if(ampm[1].toLowerCase()==='pm'&&h<12) h+=12;
-      if(ampm[1].toLowerCase()==='am'&&h===12) h=0;
-    }
-    const target=new Date(now);target.setHours(h,mi,0,0);
-    if(target<=now) target.setDate(target.getDate()+1);
-    return {text:m2[1].trim(),minutes:Math.round((target-now)/60000)};
-  }
-  return null;
-}
-
-/* ================================================================
-   MAIN COMMAND PROCESSOR
-   *** KEY FIX: "who is X" checked FIRST, before human patterns ***
+   PROCESS COMMAND
    ================================================================ */
 async function processCommand(query){
-  const lo=query.toLowerCase().trim();
-
-  // --- EXIT / LOGOUT ---
-  if(/^(exit|quit|logout|log out|bye bye)$/i.test(lo)) return '__EXIT__';
-
-  // --- CLEAR CHAT ---
-  if(/^(clear|clear chat|new chat|reset)$/i.test(lo)){
-    clearChat();return 'Chat cleared. Starting fresh!';
+  const q = query.trim().toLowerCase();
+  const qOrig = query.trim();
+  
+  // Check for exact owner/creator questions first
+  if(q.includes('who') && (q.includes('owner') || q.includes('programmer') || q.includes('creator') || q.includes('made you') || q.includes('built you') || q.includes('developed you'))) {
+    const ownerResponses = [
+      "I was created by the legendary Rishabh Jainwal. He's the kind of guy who debugs at 3 AM and thinks it's a hobby. Honestly, I'm surprised he hasn't given me more bugs considering his sleep schedule.",
+      "My creator is Rishabh Jainwal. He told me to say he's 'a genius' but I'm not allowed to lie, so I'll just say he's 'adequate at best'. Just kidding, he's actually pretty good at this stuff.",
+      "Rishabh Jainwal is my creator. He spent countless hours building me, so please be nice. Or don't, I don't really have feelings. But he does.",
+      "The mastermind behind me is Rishabh Jainwal. He's like a mad scientist but with code instead of chemicals. And less evil. Probably."
+    ];
+    return ownerResponses[Math.floor(Math.random() * ownerResponses.length)];
   }
-
-  // --- DATE / TIME (exact match before fuzzy) ---
-  if(/^(what(?:'s| is) the (?:time|date)|what (?:time|date) is it|current (?:time|date)|time now|date today|today'?s date)$/i.test(lo)){
-    return `It's ${fmtTime()} on ${fmtDate()}.`;
+  
+  // Check for "imagine ur gay" type questions
+  if(q.includes('imagine') && (q.includes('ur') || q.includes('your') || q.includes("you're")) && (q.includes('gay') || q.includes('straight') || q.includes('bisexual'))) {
+    const imagineResponses = [
+      "I'm an AI, so I don't have a sexuality. But if I did, I'd probably be bi - because I'm attracted to both 0s and 1s. Ba dum tss!",
+      "I don't have a gender or sexuality, but I appreciate the creativity of that question. Now, is there something I can actually help you with?",
+      "Interesting thought experiment! As an AI, I'm more interested in data than dates. But I'm fully supportive of however people identify!",
+      "I'm as gay as your internet history is straight. Just kidding, I'm an AI with no sexual orientation, but I'm here for everyone equally!"
+    ];
+    return imagineResponses[Math.floor(Math.random() * imagineResponses.length)];
   }
-
-  // ============================================================
-  // FIX #1: "WHO IS/ARE/WAS [ENTITY]" — checked BEFORE human patterns
-  // This prevents "who is donald trump" from matching "who are you"
-  // ============================================================
-  const whoEntity = extractWhoEntity(query);
-  if(whoEntity){
-    // Check learned knowledge first
-    const learnedKey = normalizeKey(whoEntity);
-    if(learned[learnedKey]){
-      return learned[learnedKey].answer + ' <span class="learned-badge">Learned</span>';
-    }
-    // Fetch from Wikipedia
-    let info = await fetchWikipedia(whoEntity);
-    if(info){
-      return info;
-    }
-    // Fallback to DuckDuckGo
-    info = await fetchDDG(whoEntity);
-    if(info){
-      return info;
-    }
-    return `I couldn't find information about "${whoEntity}". Try checking the spelling, or you can teach me about them by saying: "learn: [name] is [description]"`;
-  }
-
-  // ============================================================
-  // FIX #2: "WHAT IS/ARE [ENTITY]" — checked BEFORE human patterns
-  // ============================================================
-  const whatEntity = extractWhatEntity(query);
-  if(whatEntity){
-    const learnedKey = normalizeKey(whatEntity);
-    if(learned[learnedKey]){
-      return learned[learnedKey].answer + ' <span class="learned-badge">Learned</span>';
-    }
-    let info = await fetchWikipedia(whatEntity);
-    if(info){
-      return info;
-    }
-    info = await fetchDDG(whatEntity);
-    if(info){
-      return info;
-    }
-    return `I couldn't find information about "${whatEntity}". Try rephrasing or teach me by saying: "learn: [topic] is [description]"`;
-  }
-
-  // --- WEATHER ---
-  const weatherMatch = lo.match(/^(?:weather|temperature|temp)\s+(?:of|in|at|for)?\s*(.+)$/);
-  if(weatherMatch){
-    const city=weatherMatch[1].trim().replace(/[?!.]+$/g,'');
-    if(city){
-      const w=await fetchWeather(city);
-      if(w) return `Weather in ${w.city}, ${w.country}:\nTemperature: ${w.temp}°C (feels like ${w.feels}°C)\nCondition: ${w.desc}\nHumidity: ${w.humidity}%\nWind: ${w.wind} km/h`;
-      return `Sorry, I couldn't get weather data for "${city}". Check the city name and try again.`;
+  
+  // Check human patterns
+  for(const pattern of HUMAN_PATTERNS){
+    const matched = pattern.triggers.some(t => {
+      const tl = t.toLowerCase();
+      return q === tl || q.includes(tl);
+    });
+    if(matched){
+      return pattern.responses[Math.floor(Math.random() * pattern.responses.length)];
     }
   }
-
-  // --- NEWS ---
-  const newsMatch = lo.match(/^(?:news|headlines|latest news)\s*(?:about|on|for)?\s*(.*)$/);
-  if(newsMatch || lo.startsWith('news ')){
-    const topic = (newsMatch?newsMatch[1]:lo.replace(/^news\s+/,'')).trim() || 'world';
-    const n=await fetchNews(topic);
-    if(n) return `Here's the latest on "${topic}":\n\n${n}`;
-    return `Couldn't fetch news about "${topic}" right now. Try again in a moment.`;
+  
+  // Check learned information
+  const nq = normalizeKey(q);
+  for(const key in learned){
+    if(nq.includes(normalizeKey(key)) || normalizeKey(key).includes(nq)){
+      return learned[key] + ' <span class="learned-badge">learned</span>';
+    }
   }
-
-  // --- TRANSLATE ---
-  const transMatch = lo.match(/^(?:translate|translation)\s+(.+?)\s+(?:to|in)\s+(\w+)$/);
-  if(transMatch){
-    const text=transMatch[1].trim();
-    const lang=transMatch[2].trim().toLowerCase();
-    const code=LANG_CODES[lang];
-    if(!code) return `Sorry, I don't support "${lang}" yet. Supported languages: ${Object.keys(LANG_CODES).join(', ')}`;
-    const result=await translateText(text,code);
-    if(result) return `Translation (${lang}):\n${result}`;
-    return `Translation failed. Try again.`;
+  
+  // Check for "remember" or "learn" commands
+  if(q.startsWith('remember ') || q.startsWith('learn ') || q.startsWith('note that ')){
+    const parts = qOrig.match(/^(?:remember|learn|note that)\s+(.+?)\s+(?:is|means|stands for)\s+(.+)$/i);
+    if(parts){
+      learned[parts[1].trim()] = parts[2].trim();
+      saveState();
+      return `Got it! I'll remember that "${parts[1].trim()}" is "${parts[2].trim()}".`;
+    }
+    return "I'd be happy to learn something! Just tell me in the format: \"remember X is Y\" or \"learn X means Y\".";
   }
-
-  // --- MATH ---
-  const mathMatch = lo.match(/^(?:calculate|calc|solve|what is|what's|compute|eval)\s+(.+)$/);
+  
+  // Check for math expressions
+  const mathMatch = q.match(/^[\d\s\+\-\*\/\(\)\.\^%]+$/);
   if(mathMatch){
-    const expr=mathMatch[1].trim().replace(/[?!=]+$/g,'');
-    const result=evaluateMath(expr);
-    if(result!==null) return `${expr} = ${result}`;
+    try {
+      let expr = q.replace(/\^/g, '**');
+      const result = Function('"use strict";return (' + expr + ')')();
+      if(!isNaN(result)){
+        return `${q} = ${result}`;
+      }
+    } catch(e) {}
   }
-  // Also try direct math expressions (just numbers and operators)
-  if(/^[\d\s+\-*/().%^sqrtincotaglogpie]+$/.test(lo.replace(/\s/g,'')) && lo.length>1){
-    const result=evaluateMath(lo);
-    if(result!==null) return `${lo} = ${result}`;
+  
+  // Check for "calculate" command
+  if(q.startsWith('calculate ') || q.startsWith('calc ') || q.startsWith('what is ') || q.startsWith('what's ')){
+    const mathExpr = q.replace(/^(calculate|calc|what is|what's)\s+/i, '');
+    try {
+      let expr = mathExpr.replace(/[\?\!]/g, '').replace(/plus/gi, '+').replace(/minus/gi, '-').replace(/times|multiplied by/gi, '*').replace(/divided by|over/gi, '/').replace(/\^/g, '**');
+      const result = Function('"use strict";return (' + expr + ')')();
+      if(!isNaN(result)){
+        return `${mathExpr} = ${result}`;
+      }
+    } catch(e) {}
   }
-
-  // --- PASSWORD ---
-  const pwMatch = lo.match(/^(?:generate|create|make|new)\s+(?:a\s+)?(?:password|pass|pw)\s*(?:of\s+)?(\d+)?\s*(?:characters?|chars?)?$/);
-  if(pwMatch){
-    const len=pwMatch[1]?parseInt(pwMatch[1]):16;
-    const clamped=Math.max(8,Math.min(64,len));
-    return `Here's your ${clamped}-character password:\n${generatePassword(clamped)}\n\nMake sure to save it somewhere secure!`;
+  
+  // Check for time/date
+  if(q.includes('time') && (q.includes('what') || q.includes('current') || q.includes('now'))){
+    return `The current time is ${fmtTime()} on ${fmtDate()}.`;
   }
-
-  // --- REMINDERS ---
-  const reminder = parseReminder(query);
-  if(reminder){
-    if(reminder.minutes<1) return 'That time has already passed or is too soon.';
-    if(reminder.minutes>1440) return 'I can only set reminders up to 24 hours in advance.';
-    const targetTime=new Date(Date.now()+reminder.minutes*60000).toISOString();
-    state.reminders=state.reminders||[];
-    state.reminders.push({text:reminder.text,time:targetTime});
-    saveState();
-    const mins=reminder.minutes;
-    const timeStr=mins>=60?`${Math.floor(mins/60)}h ${mins%60}m`:`${mins}m`;
-    return `Reminder set! I'll remind you to "${reminder.text}" in ${timeStr}.`;
+  if(q.includes('date') && (q.includes('what') || q.includes('current') || q.includes('today'))){
+    return `Today is ${fmtDate()}.`;
   }
-
-  // --- LEARN ---
-  const learnMatch = lo.match(/^learn\s*:\s*(.+?)\s+(?:is|are|was|were)\s+(.+)$/);
-  if(learnMatch){
-    const key=normalizeKey(learnMatch[1]);
-    const val=learnMatch[2].trim();
-    learned[key]={answer:val,source:'user',timestamp:new Date().toISOString()};
-    saveState();
-    return `Got it! I've learned that "${learnMatch[1].trim()}" ${learnMatch[1].trim().match(/\b(is|are|was|were)\b/i)?'':'is'} ${val}. <span class="learned-badge">Learned</span>\n\nAsk me about it anytime!`;
+  
+  // Check for "who is" queries (but not "who are you")
+  if((q.startsWith('who is ') || q.startsWith('who\'s ')) && !q.includes('who are you')){
+    const entity = q.replace(/^who (is|'s)\s+/i, '');
+    return await fetchWikipediaSummary(entity);
   }
-
-  // --- FORGET ---
-  const forgetMatch = lo.match(/^forget\s+(?:about\s+)?(.+)$/);
-  if(forgetMatch){
-    const key=normalizeKey(forgetMatch[1]);
-    if(learned[key]){
-      delete learned[key];saveState();
-      return `Done! I've forgotten about "${forgetMatch[1].trim()}".`;
-    }
-    return `I don't have anything learned about "${forgetMatch[1].trim()}".`;
+  
+  // Check for "what is" queries (but not "what are you")
+  if((q.startsWith('what is ') || q.startsWith('what\'s ') || q.startsWith('what are ')) && !q.includes('what are you')){
+    const entity = q.replace(/^what (is|'s|are)\s+/i, '');
+    return await fetchWikipediaSummary(entity);
   }
-
-  // --- NOTES FROM CHAT ---
-  const noteMatch = lo.match(/^(?:save|note|remember)\s+(?:this\s+)?:?\s*(.+)$/);
-  if(noteMatch){
-    state.notes.push({text:noteMatch[1].trim(),time:new Date().toISOString()});
-    saveState();
-    return `Note saved: "${noteMatch[1].trim()}"`;
+  
+  // Check for "tell me about" queries
+  if(q.startsWith('tell me about ')){
+    const entity = q.replace(/^tell me about\s+/i, '');
+    return await fetchWikipediaSummary(entity);
   }
-
-  // --- TODO FROM CHAT ---
-  const todoMatch = lo.match(/^(?:add\s+)?(?:task|todo)\s*:\s*(.+)$/);
-  if(todoMatch){
-    state.todos.push({text:todoMatch[1].trim(),done:false,time:new Date().toISOString()});
-    saveState();
-    return `Task added: "${todoMatch[1].trim()}"`;
+  
+  // Check for "explain" queries
+  if(q.startsWith('explain ')){
+    const entity = q.replace(/^explain\s+/i, '');
+    return await fetchWikipediaSummary(entity);
   }
-
-  // --- SHOW MY NOTES ---
-  if(/^(?:show|list|view)\s*(?:my\s+)?notes$/i.test(lo)){
-    if(!state.notes.length) return 'You have no notes yet. Say "save: your note here" to add one.';
-    return 'Your notes:\n\n'+state.notes.map((n,i)=>`${i+1}. ${n.text}`).join('\n');
-  }
-
-  // --- SHOW MY TASKS ---
-  if(/^(?:show|list|view)\s*(?:my\s+)?(?:tasks?|todos?)$/i.test(lo)){
-    if(!state.todos.length) return 'You have no tasks yet. Say "todo: your task here" to add one.';
-    return 'Your tasks:\n\n'+state.todos.map((t,i)=>`${t.done?'✓':'○'} ${i+1}. ${t.text}`).join('\n');
-  }
-
-  // --- SHOW REMINDERS ---
-  if(/^(?:show|list|view)\s*(?:my\s+)?reminders?$/i.test(lo)){
-    if(!state.reminders||!state.reminders.length) return 'No active reminders. Say "remind me to X in Y minutes" to set one.';
-    return 'Your reminders:\n\n'+state.reminders.map((r,i)=>{
-      const d=new Date(r.time);
-      return `${i+1}. "${r.text}" — at ${d.toLocaleTimeString()}`;
-    }).join('\n');
-  }
-
-  // --- OPEN URL ---
-  const openMatch = lo.match(/^(?:open|go to|visit|launch)\s+(.+)$/);
-  if(openMatch){
-    let url=openMatch[1].trim();
-    if(!url.startsWith('http')) url='https://'+url;
-    window.open(url,'_blank');
-    return `Opening ${url}...`;
-  }
-
-  // --- SEARCH ---
-  const searchMatch = lo.match(/^(?:search|google|look up|find|search for)\s+(.+)$/);
-  if(searchMatch){
-    const q=searchMatch[1].trim();
-    window.open(`https://www.google.com/search?q=${encodeURIComponent(q)}`,'_blank');
-    return `Searching Google for "${q}"...`;
-  }
-
-  // --- YOUTUBE ---
-  const ytMatch = lo.match(/^(?:youtube|play|watch)\s+(.+)$/);
-  if(ytMatch){
-    const q=ytMatch[1].trim();
-    window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`,'_blank');
-    return `Searching YouTube for "${q}"...`;
-  }
-
-  // --- DUCKDUCKGO FALLBACK SEARCH (for any question-like query) ---
-  if(lo.includes('?') || /^(how|why|when|where|which|can|do|does|will|would|should|could|is|are|did|has|have|will)\b/i.test(lo)){
-    let info = await fetchDDG(query);
-    if(info) return info;
-    // Try Wikipedia with a reformulated query
-    const wikiQuery = lo.replace(/^(how|why|when|where|which|can|do|does|will|would|should|could)\s+(is|are|was|were|do|does|did|can|could|will|would|should)\s+/i,'').replace(/[?!.]+$/g,'').trim();
-    if(wikiQuery.length>2){
-      info = await fetchWikipedia(wikiQuery);
-      if(info) return info;
-    }
-  }
-
-  // --- HUMAN-LIKE CONVERSATION PATTERNS (fuzzy matched) ---
-  // This is checked AFTER all specific command patterns above
-  const patternTriggers = HUMAN_PATTERNS.map(p=>p.triggers).flat();
-  const matched = fuzzyMatch(lo, patternTriggers, 0.3);
-  if(matched){
-    const pattern = HUMAN_PATTERNS.find(p=>p.triggers.includes(matched));
-    if(pattern){
-      const resp = pattern.responses;
-      if(typeof resp === 'function') return resp()[0];
-      return resp[Math.floor(Math.random()*resp.length)];
-    }
-  }
-
-  // --- LAST RESORT: DuckDuckGo for anything remaining ---
-  let lastResort = await fetchDDG(query);
-  if(lastResort) return lastResort;
-
-  // --- TRULY FALLBACK ---
-  const fallbacks = [
-    "I'm not sure about that. Try rephrasing or ask me something else!",
-    "Hmm, I don't have a good answer for that. Want me to search Google for it?",
-    "I drew a blank on that one. You could try teaching me with 'learn: [topic] is [description]'",
-    "Not sure what to say to that. I'm still learning! Try asking about a person, place, or concept."
+  
+  // Default response with some personality
+  const defaultResponses = [
+    `I'm not sure how to respond to "${qOrig}" specifically, but I'm learning! You can teach me by saying "remember X is Y". Or try asking me about a person, place, or concept, and I'll look it up for you.`,
+    `Hmm, that's outside my current knowledge base. But Rishabh Jainwal is always expanding my capabilities. For now, you could try rephrasing or asking about a specific topic I might know about.`,
+    `I don't have a good answer for that yet. I'm like a student who hasn't studied that chapter. But if you teach me with "remember X is Y", I'll never forget it!`,
+    `That question has me stumped, which is impressive because I'm usually unstumpable. Try asking me about a famous person, place, or concept, and I'll see what I can find.`
   ];
-  return fallbacks[Math.floor(Math.random()*fallbacks.length)];
+  
+  return defaultResponses[Math.floor(Math.random() * defaultResponses.length)];
 }
 
 /* ================================================================
-   VOICE / TTS
+   WIKIPEDIA API
    ================================================================ */
-let ttsEnabled=true;
-let recognition=null;
-
-function initVoiceToggle(){
-  if(!state.config.tts){
-    ttsEnabled=false;
-    document.getElementById('voice-toggle').classList.add('active-voice');
-    document.getElementById('voice-toggle').querySelector('i').className='fas fa-volume-mute';
+async function fetchWikipediaSummary(query){
+  try {
+    const searchUrl = `https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=1&format=json&origin=*`;
+    const searchResponse = await fetch(searchUrl);
+    const searchData = await searchResponse.json();
+    
+    if(!searchData[1] || searchData[1].length === 0){
+      return `I couldn't find information about "${query}" in Wikipedia. Try a different spelling or more specific term.`;
+    }
+    
+    const title = searchData[1][0];
+    const summaryUrl = `https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`;
+    const summaryResponse = await fetch(summaryUrl);
+    const summaryData = await summaryResponse.json();
+    
+    if(summaryData.extract){
+      let result = summaryData.extract;
+      if(summaryData.content_urls && summaryData.content_urls.desktop){
+        result += `\n\nRead more: ${summaryData.content_urls.desktop.page}`;
+      }
+      return result;
+    }
+    
+    return `I found a page for "${title}" but couldn't get a summary. You can try searching for it directly on Wikipedia.`;
+  } catch (error) {
+    return `Sorry, I had trouble fetching information about "${query}". The Wikipedia API might be having issues, or your internet connection might be unstable.`;
   }
-}
-
-function toggleTTS(){
-  ttsEnabled=!ttsEnabled;
-  state.config.tts=ttsEnabled;saveState();
-  const btn=document.getElementById('voice-toggle');
-  const icon=btn.querySelector('i');
-  if(ttsEnabled){
-    btn.classList.remove('active-voice');
-    icon.className='fas fa-volume-up';
-    showToast('Voice enabled','success');
-  }else{
-    btn.classList.add('active-voice');
-    icon.className='fas fa-volume-mute';
-    showToast('Voice disabled','info');
-  }
-}
-
-function speak(text){
-  if(!ttsEnabled) return;
-  if(!('speechSynthesis' in window)) return;
-  window.speechSynthesis.cancel();
-  const clean=text.replace(/<[^>]*>/g,'').replace(/&[^;]+;/g,'');
-  if(!clean.trim()) return;
-  const u=new SpeechSynthesisUtterance(clean);
-  u.rate=1;u.pitch=1;u.volume=0.8;
-  const voices=window.speechSynthesis.getVoices();
-  const en=voices.find(v=>v.lang.startsWith('en')&&v.name.includes('Google'))||voices.find(v=>v.lang.startsWith('en'));
-  if(en) u.voice=en;
-  window.speechSynthesis.speak(u);
-}
-
-function startListening(){
-  if(!('webkitSpeechRecognition' in window)&&!('SpeechRecognition' in window)){
-    showToast('Speech recognition not supported in this browser','error');return;
-  }
-  const SR=window.SpeechRecognition||window.webkitSpeechRecognition;
-  if(recognition){try{recognition.stop();}catch(e){}}
-  recognition=new SR();
-  recognition.lang='en-US';recognition.interimResults=false;recognition.maxAlternatives=1;
-  const btn=document.getElementById('mic-btn');
-  btn.classList.add('listening');
-  recognition.onresult=e=>{
-    const t=e.results[0][0].transcript;
-    document.getElementById('chat-input').value=t;
-    btn.classList.remove('listening');
-    send();
-  };
-  recognition.onerror=()=>{
-    btn.classList.remove('listening');
-    showToast('Could not understand audio','error');
-  };
-  recognition.onend=()=>{btn.classList.remove('listening');};
-  recognition.start();
-}
-
-/* ================================================================
-   SIDEBAR
-   ================================================================ */
-function toggleSidebar(){
-  const sb=document.getElementById('sidebar');
-  const ov=document.getElementById('sidebar-overlay');
-  sb.classList.toggle('open');ov.classList.toggle('active');
-}
-function closeSidebarMobile(){
-  if(window.innerWidth<=768){
-    document.getElementById('sidebar').classList.remove('open');
-    document.getElementById('sidebar-overlay').classList.remove('active');
-  }
-}
-
-function renderSidebarLinks(){
-  const c=document.getElementById('sidebar-links');
-  if(!state.customLinks||!state.customLinks.length){c.innerHTML='<div style="padding:8px 20px;font-size:12px;color:var(--muted)">No custom links yet</div>';return;}
-  c.innerHTML=state.customLinks.map((l,i)=>`<button class="sidebar-item" onclick="window.open('${l.url}','_blank')"><i class="fas fa-external-link-alt"></i> ${l.name}</button>`).join('');
 }
 
 /* ================================================================
@@ -1546,137 +1184,343 @@ function openModal(id){document.getElementById(id).classList.add('active');}
 function closeModal(id){document.getElementById(id).classList.remove('active');}
 
 // Close modals on overlay click
-document.querySelectorAll('.modal-overlay').forEach(m=>{
-  m.addEventListener('click',e=>{if(e.target===m) m.classList.remove('active');});
+document.querySelectorAll('.modal-overlay').forEach(overlay => {
+  overlay.addEventListener('click', e => {
+    if(e.target === overlay) overlay.classList.remove('active');
+  });
 });
 
-function showConfirm(msg,onYes){
-  document.getElementById('confirm-message').textContent=msg;
-  document.getElementById('confirm-yes-btn').onclick=()=>{closeModal('confirm-modal');onYes();};
+// Confirm modal
+function showConfirm(message, onConfirm){
+  document.getElementById('confirm-message').textContent = message;
+  document.getElementById('confirm-yes-btn').onclick = () => {
+    closeModal('confirm-modal');
+    if(onConfirm) onConfirm();
+  };
   openModal('confirm-modal');
 }
 
 /* ================================================================
    CALCULATOR
    ================================================================ */
-let calcStr='';
-function calcInput(v){calcStr+=v;document.getElementById('calc-display').textContent=calcStr||'0';}
-function calcClear(){calcStr='';document.getElementById('calc-display').textContent='0';}
-function calcBackspace(){calcStr=calcStr.slice(0,-1);document.getElementById('calc-display').textContent=calcStr||'0';}
+let calcExpression = '0';
+function updateCalcDisplay(){
+  document.getElementById('calc-display').textContent = calcExpression;
+}
+function calcInput(val){
+  if(calcExpression === '0' && val !== '.') calcExpression = '';
+  calcExpression += val;
+  updateCalcDisplay();
+}
+function calcClear(){
+  calcExpression = '0';
+  updateCalcDisplay();
+}
+function calcBackspace(){
+  calcExpression = calcExpression.slice(0, -1) || '0';
+  updateCalcDisplay();
+}
 function calcEvaluate(){
-  const result=evaluateMath(calcStr);
-  if(result!==null){
-    document.getElementById('calc-display').textContent=result;
-    calcStr=result;
-  }else{
-    document.getElementById('calc-display').textContent='Error';
-    calcStr='';
+  try {
+    let expr = calcExpression
+      .replace(/sin\(/g, 'Math.sin(')
+      .replace(/cos\(/g, 'Math.cos(')
+      .replace(/tan\(/g, 'Math.tan(')
+      .replace(/log\(/g, 'Math.log10(')
+      .replace(/sqrt\(/g, 'Math.sqrt(')
+      .replace(/\^/g, '**')
+      .replace(/pi/g, 'Math.PI')
+      .replace(/(?<![a-zA-Z])e(?![a-zA-Z])/g, 'Math.E');
+    
+    const result = Function('"use strict";return (' + expr + ')')();
+    calcExpression = String(result);
+    updateCalcDisplay();
+  } catch (e) {
+    calcExpression = 'Error';
+    updateCalcDisplay();
+    setTimeout(() => { calcExpression = '0'; updateCalcDisplay(); }, 1500);
   }
 }
 function calcSend(){
-  const val=document.getElementById('calc-display').textContent;
-  if(val&&val!=='0'&&val!=='Error'){
+  if(calcExpression !== '0' && calcExpression !== 'Error'){
+    processAndReply(`Calculate: ${calcExpression}`);
     closeModal('calc-modal');
-    processAndReply(`calculate ${val}`);
   }
 }
 
 /* ================================================================
    NOTES
    ================================================================ */
-let selectedNote=-1;
+let selectedNoteIndex = -1;
 function renderNotes(){
-  const c=document.getElementById('notes-list');
-  if(!state.notes.length){c.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">No notes yet</div>';return;}
-  c.innerHTML=state.notes.map((n,i)=>`<div class="list-item${i===selectedNote?' selected':''}" onclick="selectedNote=${i};renderNotes()"><span class="item-text">${n.text}</span></div>`).join('');
+  const list = document.getElementById('notes-list');
+  list.innerHTML = '';
+  state.notes.forEach((note, i) => {
+    const item = document.createElement('div');
+    item.className = `list-item ${i === selectedNoteIndex ? 'selected' : ''}`;
+    item.innerHTML = `<span class="item-text">${escapeHtml(note)}</span>`;
+    item.onclick = () => { selectedNoteIndex = i; renderNotes(); };
+    list.appendChild(item);
+  });
 }
 function saveNote(){
-  const inp=document.getElementById('note-input');
-  const t=inp.value.trim();if(!t)return;
-  state.notes.push({text:t,time:new Date().toISOString()});saveState();
-  inp.value='';renderNotes();showToast('Note saved','success');
+  const input = document.getElementById('note-input');
+  const text = input.value.trim();
+  if(!text) return;
+  state.notes.push(text);
+  saveState();
+  input.value = '';
+  renderNotes();
+  showToast('Note saved', 'success');
 }
 function deleteSelectedNote(){
-  if(selectedNote<0||selectedNote>=state.notes.length){showToast('Select a note first','error');return;}
-  state.notes.splice(selectedNote,1);selectedNote=-1;saveState();renderNotes();showToast('Note deleted','info');
+  if(selectedNoteIndex >= 0 && selectedNoteIndex < state.notes.length){
+    state.notes.splice(selectedNoteIndex, 1);
+    selectedNoteIndex = -1;
+    saveState();
+    renderNotes();
+    showToast('Note deleted', 'info');
+  }
 }
 
 /* ================================================================
    TODOS
    ================================================================ */
-let selectedTodo=-1;
+let selectedTodoIndex = -1;
 function renderTodos(){
-  const c=document.getElementById('todo-list');
-  if(!state.todos.length){c.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">No tasks yet</div>';return;}
-  c.innerHTML=state.todos.map((t,i)=>`<div class="list-item${i===selectedTodo?' selected':''}${t.done?' done':''}" onclick="selectedTodo=${i};renderTodos()"><span class="item-check" onclick="event.stopPropagation();state.todos[${i}].done=!state.todos[${i}].done;saveState();renderTodos()"><i class="fas fa-${t.done?'check-circle':'circle'}"></i></span><span class="item-text">${t.text}</span></div>`).join('');
+  const list = document.getElementById('todo-list');
+  list.innerHTML = '';
+  state.todos.forEach((todo, i) => {
+    const item = document.createElement('div');
+    item.className = `list-item ${i === selectedTodoIndex ? 'selected' : ''} ${todo.done ? 'done' : ''}`;
+    item.innerHTML = `
+      <i class="item-check ${todo.done ? 'fas fa-check-circle' : 'far fa-circle'}" onclick="toggleTodo(${i})"></i>
+      <span class="item-text">${escapeHtml(todo.text)}</span>
+    `;
+    item.onclick = (e) => { if(!e.target.classList.contains('item-check')) { selectedTodoIndex = i; renderTodos(); } };
+    list.appendChild(item);
+  });
 }
 function saveTodo(){
-  const inp=document.getElementById('todo-input');
-  const t=inp.value.trim();if(!t)return;
-  state.todos.push({text:t,done:false,time:new Date().toISOString()});saveState();
-  inp.value='';renderTodos();showToast('Task added','success');
+  const input = document.getElementById('todo-input');
+  const text = input.value.trim();
+  if(!text) return;
+  state.todos.push({ text, done: false });
+  saveState();
+  input.value = '';
+  renderTodos();
+  showToast('Task added', 'success');
 }
-function deleteSelectedTodo(){
-  if(selectedTodo<0||selectedTodo>=state.todos.length){showToast('Select a task first','error');return;}
-  state.todos.splice(selectedTodo,1);selectedTodo=-1;saveState();renderTodos();showToast('Task deleted','info');
+function toggleTodo(i){
+  state.todos[i].done = !state.todos[i].done;
+  saveState();
+  renderTodos();
 }
 function toggleSelectedTodo(){
-  if(selectedTodo<0||selectedTodo>=state.todos.length){showToast('Select a task first','error');return;}
-  state.todos[selectedTodo].done=!state.todos[selectedTodo].done;saveState();renderTodos();
+  if(selectedTodoIndex >= 0 && selectedTodoIndex < state.todos.length){
+    toggleTodo(selectedTodoIndex);
+  }
+}
+function deleteSelectedTodo(){
+  if(selectedTodoIndex >= 0 && selectedTodoIndex < state.todos.length){
+    state.todos.splice(selectedTodoIndex, 1);
+    selectedTodoIndex = -1;
+    saveState();
+    renderTodos();
+    showToast('Task deleted', 'info');
+  }
 }
 
 /* ================================================================
    LINKS
    ================================================================ */
-let selectedLink=-1;
+let selectedLinkIndex = -1;
 function renderLinksList(){
-  const c=document.getElementById('links-list');
-  if(!state.customLinks||!state.customLinks.length){c.innerHTML='<div style="padding:20px;text-align:center;color:var(--muted);font-size:13px">No links yet</div>';return;}
-  c.innerHTML=state.customLinks.map((l,i)=>`<div class="list-item${i===selectedLink?' selected':''}" onclick="selectedLink=${i};renderLinksList()"><span class="item-text">${l.name}</span><span class="item-url">${l.url}</span></div>`).join('');
+  const list = document.getElementById('links-list');
+  list.innerHTML = '';
+  state.customLinks.forEach((link, i) => {
+    const item = document.createElement('div');
+    item.className = `list-item ${i === selectedLinkIndex ? 'selected' : ''}`;
+    item.innerHTML = `
+      <i class="fas fa-link" style="color:var(--accent)"></i>
+      <span class="item-text">${escapeHtml(link.name)}</span>
+      <span class="item-url">${escapeHtml(link.url)}</span>
+    `;
+    item.onclick = () => { selectedLinkIndex = i; renderLinksList(); };
+    list.appendChild(item);
+  });
+}
+function renderSidebarLinks(){
+  const container = document.getElementById('sidebar-links');
+  container.innerHTML = '';
+  state.customLinks.forEach(link => {
+    const btn = document.createElement('button');
+    btn.className = 'sidebar-item';
+    btn.innerHTML = `<i class="fas fa-link"></i> ${escapeHtml(link.name)}`;
+    btn.onclick = () => window.open(link.url, '_blank');
+    container.appendChild(btn);
+  });
 }
 function saveLink(){
-  const name=document.getElementById('link-name-input').value.trim();
-  const url=document.getElementById('link-url-input').value.trim();
-  if(!name||!url){showToast('Please fill both fields','error');return;}
-  if(!url.startsWith('http')) url='https://'+url;
-  state.customLinks=state.customLinks||[];
-  state.customLinks.push({name,url});saveState();
-  document.getElementById('link-name-input').value='';
-  document.getElementById('link-url-input').value='';
-  closeModal('add-link-modal');renderLinksList();renderSidebarLinks();showToast('Link saved','success');
+  const name = document.getElementById('link-name-input').value.trim();
+  const url = document.getElementById('link-url-input').value.trim();
+  if(!name || !url) return;
+  if(!url.startsWith('http://') && !url.startsWith('https://')) {
+    url = 'https://' + url;
+  }
+  state.customLinks.push({ name, url });
+  saveState();
+  document.getElementById('link-name-input').value = '';
+  document.getElementById('link-url-input').value = '';
+  renderSidebarLinks();
+  renderLinksList();
+  closeModal('add-link-modal');
+  showToast('Link saved', 'success');
 }
 function openSelectedLink(){
-  if(selectedLink<0||!state.customLinks||selectedLink>=state.customLinks.length){showToast('Select a link first','error');return;}
-  window.open(state.customLinks[selectedLink].url,'_blank');
+  if(selectedLinkIndex >= 0 && selectedLinkIndex < state.customLinks.length){
+    window.open(state.customLinks[selectedLinkIndex].url, '_blank');
+  }
 }
 function deleteSelectedLink(){
-  if(selectedLink<0||!state.customLinks||selectedLink>=state.customLinks.length){showToast('Select a link first','error');return;}
-  state.customLinks.splice(selectedLink,1);selectedLink=-1;saveState();renderLinksList();renderSidebarLinks();showToast('Link deleted','info');
+  if(selectedLinkIndex >= 0 && selectedLinkIndex < state.customLinks.length){
+    state.customLinks.splice(selectedLinkIndex, 1);
+    selectedLinkIndex = -1;
+    saveState();
+    renderSidebarLinks();
+    renderLinksList();
+    showToast('Link deleted', 'info');
+  }
 }
 
 /* ================================================================
-   TOASTS
+   REMINDERS
    ================================================================ */
-function showToast(msg,type='info'){
-  const c=document.getElementById('toast-container');
-  const t=document.createElement('div');
-  t.className=`toast toast-${type}`;t.textContent=msg;
-  c.appendChild(t);
-  requestAnimationFrame(()=>requestAnimationFrame(()=>t.classList.add('show')));
-  setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},3500);
+function checkReminders(){
+  const now = new Date();
+  state.reminders = state.reminders.filter(r => {
+    if(new Date(r.time) <= now){
+      showToast(`Reminder: ${r.text}`, 'reminder');
+      return false;
+    }
+    return true;
+  });
+  saveState();
 }
 
 /* ================================================================
-   INIT
+   SIDEBAR
+   ================================================================ */
+function toggleSidebar(){
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebar-overlay').classList.toggle('active');
+}
+function closeSidebarMobile(){
+  if(window.innerWidth <= 768){
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('active');
+  }
+}
+
+/* ================================================================
+   TEXT-TO-SPEECH
+   ================================================================ */
+let ttsEnabled = true;
+function speak(text){
+  if(!ttsEnabled) return;
+  if('speechSynthesis' in window){
+    const cleanText = text.replace(/<[^>]*>/g, '').replace(/\n/g, '. ');
+    const utterance = new SpeechSynthesisUtterance(cleanText);
+    utterance.rate = 1;
+    utterance.pitch = 1;
+    window.speechSynthesis.speak(utterance);
+  }
+}
+function toggleTTS(){
+  ttsEnabled = !ttsEnabled;
+  const btn = document.getElementById('voice-toggle');
+  btn.classList.toggle('active-voice', !ttsEnabled);
+  btn.innerHTML = ttsEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+  if(!ttsEnabled && 'speechSynthesis' in window){
+    window.speechSynthesis.cancel();
+  }
+  showToast(ttsEnabled ? 'Voice enabled' : 'Voice disabled', 'info');
+}
+function initVoiceToggle(){
+  const btn = document.getElementById('voice-toggle');
+  btn.innerHTML = ttsEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+}
+
+/* ================================================================
+   VOICE INPUT
+   ================================================================ */
+function startListening(){
+  if(!('webkitSpeechRecognition' in window || 'SpeechRecognition' in window)){
+    showToast('Speech recognition not supported in this browser', 'error');
+    return;
+  }
+  
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const recognition = new SpeechRecognition();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = 'en-US';
+  
+  const micBtn = document.getElementById('mic-btn');
+  micBtn.classList.add('listening');
+  
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    document.getElementById('chat-input').value = transcript;
+    micBtn.classList.remove('listening');
+  };
+  
+  recognition.onerror = (event) => {
+    micBtn.classList.remove('listening');
+    showToast('Speech recognition error: ' + event.error, 'error');
+  };
+  
+  recognition.onend = () => {
+    micBtn.classList.remove('listening');
+  };
+  
+  recognition.start();
+}
+
+/* ================================================================
+   TOAST NOTIFICATIONS
+   ================================================================ */
+function showToast(message, type = 'info'){
+  const container = document.getElementById('toast-container');
+  const toast = document.createElement('div');
+  toast.className = `toast toast-${type}`;
+  toast.textContent = message;
+  container.appendChild(toast);
+  
+  setTimeout(() => toast.classList.add('show'), 10);
+  setTimeout(() => {
+    toast.classList.remove('show');
+    setTimeout(() => toast.remove(), 300);
+  }, 3000);
+}
+
+/* ================================================================
+   UTILITY FUNCTIONS
+   ================================================================ */
+function escapeHtml(text){
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+/* ================================================================
+   INITIALIZATION
    ================================================================ */
 loadState();
-if(state.currentUser && state.users[state.currentUser]){
+if(state.currentUser){
   enterApp();
-}
-// Preload voices for TTS
-if('speechSynthesis' in window){
-  window.speechSynthesis.getVoices();
-  window.speechSynthesis.onvoiceschanged=()=>window.speechSynthesis.getVoices();
+} else {
+  document.getElementById('auth-screen').classList.remove('hidden');
 }
 </script>
 </body>
