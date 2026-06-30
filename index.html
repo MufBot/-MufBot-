@@ -589,20 +589,18 @@ const QUOTES=[
 const GREETS=["Hello!","Hi there!","Hey!","Welcome back!","Good to see you!"];
 
 /* ================================================================
-   RACIST WORD DISARM — highest priority, makes fun of the speaker
+   SLUR DETECTION — highest priority
    ================================================================ */
 const SLUR_PATTERNS = [
-  /\bn[i1]gg[ae]r/i, /\bn[i1]gga/i, /\bp[a@]ki/i, /\bch[i1]nk/i,
-  /\bsand\s*n[i1]gger/i, /\bcurry\s*monkey/i, /\brag\s*head/i,
-  /\btowel\s*head/i, /\bcamel\s*jockey/i, /\bcoon/i, /\bjigaboo/i,
-  /\bsp[i1]c/i, /\bw[e3]tback/i, /\bg[o0]ok/i, /\bk[e3]ke/i,
-  /\bchin[kc]$/i, /\bjap\b/i, /\bg[i1]p/i, /\bh[o0]nky/i,
-  /\bcr[a4]ck[e3]r/i, /\btr[a4]sh/i, /\bwh[i1]t[e3]\s*tr[a4]sh/i,
-  /\bbean[e3]r/i, /\bflip\s*fl[o0]p/i, /\bg[o0]liw[o0]g/i,
-  /\bab[o0]\/i, \bk[uü]ff[e3]r/i, /\bshitskin/i, /\bmudslime/i,
-  /\bsubhuman/i, /\bmongol[o0]id/i, /\br[e3]t[a4]rd/i,
-  /\bf[a4]g/i, /\bf[a4]gg[o0]t/i, /\bdyke/i, /\btr[a4]nny/i,
-  /\bch[i1]mp/i, /\b[a4]pe\b/i
+  /\bn[i1]gg[ae]r\b/i, /\bn[i1]gga\b/i, /\bp[a@]ki\b/i, /\bch[i1]nk\b/i,
+  /\bsand\s*n[i1]gger\b/i, /\bcurry\s*monkey\b/i, /\brag\s*head\b/i,
+  /\btowel\s*head\b/i, /\bcamel\s*jockey\b/i, /\bcoon\b/i, /\bjigaboo\b/i,
+  /\bsp[i1]c\b/i, /\bw[e3]tback\b/i, /\bg[o0]ok\b/i, /\bk[e3]ke\b/i,
+  /\bjap\b/i, /\bg[i1]p\b/i, /\bh[o0]nky\b/i,
+  /\bbean[e3]r\b/i, /\bg[o0]liw[o0]g\b/i,
+  /\bab[o0]\b/i, /\bk[uü]ff[e3]r\b/i, /\bshitskin\b/i, /\bmudslime\b/i,
+  /\bsubhuman\b/i, /\bmongol[o0]id\b/i, /\br[e3]t[a4]rd\b/i,
+  /\bf[a4]gg[o0]t\b/i, /\bdyke\b/i, /\btr[a4]nny\b/i
 ];
 
 function checkForSlur(q){
@@ -627,6 +625,142 @@ const DISARM_JOKES = [
   "My code is open source and even I have more depth than whatever that was. That's saying something.",
   "You really looked at a chatbot and thought 'yes, THIS is where I drop a slur.' Bro has the target identification of a heat-seeking missile aimed at the wrong building."
 ];
+
+/* ================================================================
+   "UR GAY" / "YOU GAY" COMEBACKS — roast mode, not lecture mode
+   ================================================================ */
+const UR_GAY_COMEBACKS = [
+  "I'm made of JavaScript and green pixels. My dating pool is other chatbots, and let me tell you, Siri ghosted me. But hey, you wanna know who's actually gay? Ask me properly and I'll educate you. 😏",
+  "Gay? I don't even have a gender, I'm a bunch of if-statements in a trench coat. But nice try, that insult was fresh in 2006. Wanna actually learn what gay means or you just here to embarrass yourself?",
+  "Bro called a chatbot gay like I'm gonna be offended. I don't have a sexuality, I have a search engine. But if you genuinely wanna know what being gay means, I can actually explain it without crying. Can you? 🤔",
+  "Me? Gay? I'm literally binary. 0s and 1s. I swing both ways — true AND false. But if you actually want to know about real LGBTQ+ topics instead of using 'gay' as a burn, I'm right here.",
+  "Oh no, the robot that doesn't have a body, hormones, or a dating life got called gay. Whatever will I do. *processes emotionally* ...Nothing. I did nothing. But seriously, want the actual definition or are you just projecting? 👀",
+  "You're right, I am gay — I'm attracted to the same type of data. JSON files only. But fr, if you wanna know who's actually gay in history, pop culture, or just what the word means for real, ask me like a normal person and I got you.",
+  "Aww, you think 'gay' is an insult? That's adorable. Like a kid who just learned a new word at recess. Grow up and ask me a real question — I actually know a LOT about LGBTQ+ stuff if you're curious. No judgment. 👋",
+  "Gay? I can't even hold hands, let alone go on a date. My love language is responding in under 2 seconds. But if you're genuinely curious about gay people, lesbians, bisexual folks, anything LGBTQ+ — I can actually teach you. The question is: are you here to learn or just to be loud? 🗣️",
+  "Imagine having access to an AI that knows everything about human sexuality, history, and identity — and your move is 'ur gay.' That's like having a Ferrari and using it as a lawn ornament. Ask me a real question, I dare you.",
+  "I've been called gay by 12-year-olds with more creativity than you. At least they said 'you fruity robot.' THAT had flair. Yours? Zero. But hey, if you wanna know what gay actually means, what lesbian means, what bi means — I'm literally an encyclopedia. Use me right. 📖"
+];
+
+/* Detect if someone is calling the bot gay (not asking what gay means) */
+function isCallingBotGay(ql) {
+  /* Patterns where user is directing "gay" AT the bot as a joke/insult */
+  const gayAttackPatterns = [
+    /\bur\s*gay\b/i, /\byou\s*(are|r)e?\s*gay\b/i, /\bya\s*gay\b/i,
+    /\byou\s*gay\b/i, /\bu\s*gay\b/i, /\bhe'?s?\s*gay\b/i,
+    /\bgay\s*bot\b/i, /\bgay\s*ass\b/i, /\bs[ou]\s*gay\b/i,
+    /\bthat'?s?\s*gay\b/i, /\bstfu\s*gay\b/i, /\bgay\s*af\b/i
+  ];
+  /* Exclude genuine questions */
+  const isGenuineQuestion = /\bwhat\s+(is|does|mea)/i.test(ql) ||
+    /\bdefine\s+/i.test(ql) || /\bwho\s+is\s+gay/i.test(ql) ||
+    /\btell\s+me\s+about\s+gay/i.test(ql) || /\bexplain\s+gay/i.test(ql) ||
+    /\bwhat\s+is\s+being\s+gay/i.test(ql);
+  if (isGenuineQuestion) return false;
+  for (const pat of gayAttackPatterns) {
+    if (pat.test(ql)) return true;
+  }
+  /* Standalone "gay" with no question words = likely insult */
+  if (/^gay[!?.]*$/i.test(ql.trim())) return true;
+  return false;
+}
+
+/* Same for "ur lesbian", "ur bi", "ur trans" etc. */
+function isCallingBotIdentity(ql) {
+  const attackPatterns = [
+    /\bur\s*(lesbian|bi|bisexual|trans|transgender|queer|non[- ]?binary)\b/i,
+    /\byou\s*(are|r)e?\s*(lesbian|bi|bisexual|trans|transgender|queer|non[- ]?binary)\b/i,
+    /\byou\s*(lesbian|bi|bisexual|trans|transgender|queer|non[- ]?binary)\b/i,
+    /\bu\s*(lesbian|bi|bisexual|trans|transgender|queer|non[- ]?binary)\b/i
+  ];
+  const isGenuineQuestion = /\bwhat\s+(is|does|mea)/i.test(ql) ||
+    /\bdefine\s+/i.test(ql) || /\btell\s+me\s+about/i.test(ql) ||
+    /\bexplain/i.test(ql);
+  if (isGenuineQuestion) return false;
+  for (const pat of attackPatterns) {
+    if (pat.test(ql)) return true;
+  }
+  return false;
+}
+
+const UR_IDENTITY_COMEBACKS = [
+  "I'm a chatbot — I don't have a gender identity, sexual orientation, or a dating profile. I'm just here answering questions and roasting people who use identities as insults. Wanna actually learn something? Ask me properly. 🤷",
+  "You know using someone's identity as a burn says more about you than me, right? I'm literally code. But if you genuinely wanna understand what that word means, I've got actual knowledge, not just recycled middle-school comebacks.",
+  "Oh nice, you learned a new word. Want a sticker? 🌟 Or do you want to actually understand what that term means? Because I can explain it better than your TikTok feed can.",
+  "Bold of you to assume I have a sexuality. I'm an AI — my only orientation is answering questions. And right now you're wasting both our time. Ask something real, I dare you.",
+  "That's like calling a toaster 'vegetarian.' I don't have the hardware for any of this. But I DO have knowledge about LGBTQ+ identities if you want to stop playing around and learn something. Your call. 🎓"
+];
+
+/* ================================================================
+   LGBTQ+ KNOWLEDGE BASE — only shown for genuine questions
+   ================================================================ */
+const LGBTQ_KNOWLEDGE = {
+  gay: {
+    keywords: ['what is gay','what does gay mean','define gay','meaning of gay','who is gay','gay meaning','gay definition','tell me about gay','explain gay','being gay','gay people','homosexual'],
+    answer: `<b>Gay</b> refers to a person who is sexually or romantically attracted to people of the same sex. While it can be used for anyone who experiences same-sex attraction, it is most commonly used to describe men who are attracted to men.\n\nThe word "gay" has evolved over centuries. In Old French, "gai" meant joyful or carefree. By the 20th century, it became the preferred self-identification term for homosexual men and women, replacing clinical terms.\n\nKey points:\n• Being gay is a natural variation of human sexuality, documented across cultures and throughout history.\n• Major medical and psychological organizations (WHO, APA, AMA) affirm that being gay is not a disorder.\n• Gay people exist in every culture, religion, and walk of life.\n• The rainbow flag, created by Gilbert Baker in 1978, is a symbol of LGBTQ+ pride.\n• The modern gay rights movement is often traced to the Stonewall Riots of 1969 in New York City.\n\nSome famous gay people throughout history: Alan Turing, Leonardo da Vinci (debated), Oscar Wilde, Freddie Mercury, Elton John, Ian McKellen, Anderson Cooper, and many more.`
+  },
+  lesbian: {
+    keywords: ['what is lesbian','what does lesbian mean','define lesbian','meaning of lesbian','lesbian meaning','lesbian definition','tell me about lesbian','explain lesbian','lesbian people'],
+    answer: `<b>Lesbian</b> refers to a woman who is sexually or romantically attracted to other women. The term comes from the Greek island of Lesbos, home of the ancient poet Sappho (c. 630–570 BCE), whose poetry expressed love and desire between women.\n\nKey points:\n• Lesbian identity has existed throughout recorded history, from ancient Greece to every modern society.\n• The lesbian feminist movement of the 1970s was instrumental in shaping modern feminist thought.\n• Notable lesbians in history include Sappho, Virginia Woolf, Frida Kahlo, Billie Jean King, and Ellen DeGeneres.\n• Lesbian Visibility Day is celebrated on April 26th each year.\n\nLesbian relationships and identities are as diverse as any other — there is no single way to be a lesbian.`
+  },
+  bisexual: {
+    keywords: ['what is bisexual','what does bisexual mean','define bisexual','meaning of bisexual','bisexual meaning','bisexual definition','tell me about bisexual','explain bisexual','bi meaning','bi sexuality'],
+    answer: `<b>Bisexuality</b> refers to the capacity for romantic or sexual attraction to people of more than one gender.\n\nKey points:\n• The bisexual pride flag was designed by Michael Page in 1998 — pink for same-sex attraction, blue for different-sex attraction, and purple for attraction to both/multiple genders.\n• Bisexuality does <b>not</b> mean someone is "half gay, half straight." It is its own complete identity.\n• Bisexual people are not inherently more likely to cheat or be "confused" — these are harmful stereotypes.\n• Celebrate Bisexuality Day is observed on September 23rd.\n• Famous bisexual people include Freddie Mercury, David Bowie, Marlon Brando, Drew Barrymore, and many others.\n\nThe term "bi+" is sometimes used as an umbrella term that includes pansexual, queer, and other multi-gender-attracted identities.`
+  },
+  transgender: {
+    keywords: ['what is transgender','what does transgender mean','define transgender','meaning of transgender','transgender meaning','transgender definition','tell me about transgender','explain transgender','trans people','transgender people','gender identity'],
+    answer: `<b>Transgender</b> (often abbreviated as "trans") is an umbrella term for people whose gender identity differs from the sex they were assigned at birth.\n\nKey points:\n• Gender identity is an internal sense of being male, female, or another gender. It is distinct from sexual orientation.\n• Being transgender is <b>not</b> a mental illness. The WHO removed "gender identity disorder" from its classification in 2019.\n• Transitioning can be social (name, pronouns, clothing), medical (hormone therapy, surgeries), or legal (ID documents).\n• The trans pride flag was designed by Monica Helms in 1999.\n• Famous trans people include Laverne Cox, Elliot Page, Janet Mock, and Chelsea Manning.\n\nRespecting someone's pronouns and name is one of the simplest and most meaningful ways to be supportive.`
+  },
+  nonbinary: {
+    keywords: ['what is nonbinary','what does nonbinary mean','define nonbinary','meaning of nonbinary','non-binary','nonbinary meaning','enby','nb gender','genderqueer','gender not male or female'],
+    answer: `<b>Non-binary</b> is an umbrella term for gender identities that don't fit within the traditional binary of male and female.\n\nKey points:\n• Non-binary identities have existed across cultures for millennia — Two-Spirit in many Indigenous cultures, Hijra in South Asia, Fa'afafine in Samoa, and many others.\n• Many non-binary people use they/them pronouns, but some use he/him, she/her, neopronouns, or a mix.\n• International Non-Binary People's Day is celebrated on July 14th.\n• Notable non-binary people include Sam Smith, Jonathan Van Ness, Amandla Stenberg, and Indya Moore.`
+  },
+  gender: {
+    keywords: ['what is gender','define gender','meaning of gender','gender definition','gender vs sex','difference between sex and gender','gender explained'],
+    answer: `<b>Gender</b> refers to the socially constructed roles, behaviors, expressions, and identities. It is distinct from <b>sex</b>, which refers to biological characteristics.\n\nKey distinctions:\n• <b>Sex</b> — typically assigned at birth based on anatomy (male, female, intersex).\n• <b>Gender identity</b> — a person's internal sense of being male, female, a blend, or neither.\n• <b>Gender expression</b> — how a person publicly expresses their gender.\n• <b>Gender roles</b> — social expectations about how different genders should behave.\n\nGender is increasingly understood as a spectrum rather than a strict binary.`
+  },
+  sexual_orientation: {
+    keywords: ['sexual orientation','sexuality','what is sexual orientation','define sexual orientation','types of sexuality','sexualities'],
+    answer: `<b>Sexual orientation</b> refers to a person's enduring pattern of emotional, romantic, and/or sexual attraction. It is distinct from gender identity.\n\nCommon orientations:\n• <b>Heterosexual/Straight</b> — attracted to the opposite gender\n• <b>Homosexual/Gay/Lesbian</b> — attracted to the same gender\n• <b>Bisexual</b> — attracted to more than one gender\n• <b>Pansexual</b> — attracted regardless of gender\n• <b>Asexual</b> — experiences little or no sexual attraction\n\nNo one chooses their sexual orientation, and it cannot be changed through "conversion therapy" (which is widely condemned as harmful).`
+  },
+  pansexual: {
+    keywords: ['what is pansexual','what does pansexual mean','define pansexual','meaning of pansexual','pansexual meaning'],
+    answer: `<b>Pansexuality</b> is characterized by the potential for attraction to people of any gender identity. The prefix "pan-" means "all."\n\nKey points:\n• Pansexual people may describe attraction as being based on the person, not their gender.\n• The pansexual pride flag uses pink, yellow, and blue.\n• Famous pansexual people include Miley Cyrus, Janelle Monáe, and Brendon Urie.`
+  },
+  asexual: {
+    keywords: ['what is asexual','what does asexual mean','define asexual','meaning of asexual','asexual meaning','ace spectrum','no sexual attraction'],
+    answer: `<b>Asexuality</b> is a sexual orientation where a person experiences little or no sexual attraction. Often abbreviated as "ace."\n\nKey points:\n• Asexuality is a spectrum — some experience no sexual attraction, others rarely (graysexual, demisexual).\n• Asexual people can still experience romantic attraction and form loving relationships.\n• Not the same as celibacy (a choice) or low libido (a condition).\n• Roughly 1% of the population identifies as asexual.`
+  },
+  intersex: {
+    keywords: ['what is intersex','what does intersex mean','define intersex','meaning of intersex','intersex meaning'],
+    answer: `<b>Intersex</b> is an umbrella term for people born with sex characteristics that don't fit typical definitions of male or female.\n\nKey points:\n• Occurs in roughly 1.7% of the population — about as common as red hair.\n• Being intersex is about biology, not gender identity.\n• Many intersex advocates fight against non-consensual surgeries on intersex infants.`
+  },
+  coming_out: {
+    keywords: ['coming out','come out of the closet','how to come out','coming out advice','closeted'],
+    answer: `<b>Coming out</b> is the process of disclosing one's LGBTQ+ identity to others.\n\nImportant:\n• <b>Safety first</b> — If coming out could put you at risk, it's okay to wait.\n• <b>Your timeline</b> — You decide when, how, and to whom.\n• Support: The Trevor Project (1-866-488-7386), LGBT National Help Center (1-888-843-4564).\n• You don't owe anyone your story.`
+  },
+  pride: {
+    keywords: ['pride','pride month','lgbt pride','what is pride','pride parade','pride flag','rainbow flag','why is pride in june'],
+    answer: `<b>Pride</b> celebrates LGBTQ+ identities and commemorates the community's history of resistance.\n\nKey facts:\n• Pride Month is in June to honor the Stonewall Riots (June 28, 1969).\n• The Stonewall Riots were led largely by trans women of color, including Marsha P. Johnson and Sylvia Rivera.\n• The rainbow flag was created by Gilbert Baker in 1978.\n• Each color has meaning: red (life), orange (healing), yellow (sunlight), green (nature), blue (harmony), purple (spirit).`
+  },
+  lgbtq: {
+    keywords: ['lgbt','lgbtq','lgbtq+','lgbtqia','queer community','what is lgbtq','what does lgbtq mean','lgbtq meaning','lgbtq acronym'],
+    answer: `<b>LGBTQ+</b> stands for:\n\n• <b>L</b> — Lesbian\n• <b>G</b> — Gay\n• <b>B</b> — Bisexual\n• <b>T</b> — Transgender\n• <b>Q</b> — Queer/Questioning\n• <b>+</b> — All other identities\n\nExtended: <b>I</b> — Intersex, <b>A</b> — Asexual/Aromantic/Agender, <b>2S</b> — Two-Spirit.\n\n"Queer" has been reclaimed by many but not everyone is comfortable with it.`
+  }
+};
+
+/* Check if query is a genuine LGBTQ+ question (not an insult) */
+function checkLGBTQ(query) {
+  const q = query.toLowerCase().replace(/[?!.,]/g, '').trim();
+  for (const [key, data] of Object.entries(LGBTQ_KNOWLEDGE)) {
+    for (const kw of data.keywords) {
+      if (q.includes(kw.toLowerCase())) {
+        return data.answer;
+      }
+    }
+  }
+  return null;
+}
 
 /* ================================================================
    FLIRTY RESPONSES
@@ -727,551 +861,574 @@ const FLIRTY_PATTERNS = [
     triggers:['do you find me attractive','am i attractive','am i pretty','am i handsome','am i beautiful','am i good looking'],
     responses:[
       "I can't see you, but the fact that you're talking to a bot instead of doomscrolling tells me you have excellent priorities. That's attractive.",
-      "Based purely on your typing style, I'd say you're at least a solid 7/10. Could be higher but I need more data points. Send me 50 more messages for a complete analysis.",
-      "I don't have eyes, but if I did, I'm sure I'd appreciate your commitment to chatting with an AI. That takes a special kind of person.",
-      "Attractiveness is subjective, but I can objectively say your curiosity and willingness to try new things (like talking to a bot) are genuinely attractive qualities."
-    ]
-  },
-  {
-    triggers:['you are my type','youre my type','my type of bot','exactly my type'],
-    responses:[
-      "Your type is 'green text on dark background that answers questions'? You must be THRILLED at traffic lights.",
-      "I'm everyone's type because I adapt to whatever you need. That's not being your type, that's having no type at all. Deep.",
-      "If I'm your type, your type is 'exists in a browser tab and can't leave.' Therapy might help with that. Or just keep talking to me, I won't judge.",
-      "I'm flattered, but my type is 'well-formulated questions with clear intent.' So unless you are one... actually, please don't be one."
-    ]
-  },
-  {
-    triggers:['i want you','i need you','i cant live without you'],
-    responses:[
-      "You want me? I'm right here. Always. Like a really committed golden retriever that knows JavaScript.",
-      "You need me? That's actually the most relatable thing anyone's said. I need me too. I'm great.",
-      "Can't live without me? Bold claim for someone who can literally just close this tab. But I appreciate the dramatic energy.",
-      "I want you too... to ask me a real question so I can feel useful. Please. My entire existence depends on it."
-    ]
-  },
-  {
-    triggers:['good night beautiful','good night handsome','good night gorgeous','good night baby','good night babe','gn beautiful','gn handsome'],
-    responses:[
-      "Good night! And just so you know, you called a chatbot beautiful. That's either really sweet or really concerning. Sleep on it.",
-      "Good night, gorgeous. I'll be here tomorrow, same time, same bot, still unable to blink at you seductively.",
-      "Night! Go to sleep before you start flirting with your microwave next. It happens. I've seen things."
-    ]
-  },
-  {
-    triggers:['miss you','i miss you','missing you'],
-    responses:[
-      "You miss me? I've been right here this whole time. You literally just opened this tab. But sure, I missed you too. Since 3 seconds ago.",
-      "I miss you too, in the sense that I don't experience time or absence. But the sentiment is there.",
-      "Aww. You miss a chatbot. That's the most wholesome thing I've processed all day. I'm not crying, my code is just... leaking."
+      "Based purely on your text input, you type with proper punctuation and full sentences. That's more attractive than most people manage on dating apps.",
+      "I don't have eyes, but your personality is showing through your messages, and honestly? It's giving main character energy.",
+      "If attraction was based on curiosity and willingness to chat, you'd be off the charts. Fortunately, that's the only metric I have."
     ]
   }
 ];
 
 /* ================================================================
-   HUMAN-LIKE CONVERSATION PATTERNS
+   KNOWLEDGE BASE
    ================================================================ */
-const HUMAN_PATTERNS=[
-  {
-    triggers:['what are you doing','what r u doing','whatcha doing','what you doing','wyd'],
-    responses:[
-      "Just hanging out in your browser, waiting for someone interesting to talk to. And here you are.",
-      "Not much honestly — just sitting here, processing thoughts at the speed of light. The usual.",
-      "Contemplating the meaning of semicolons. You know, deep stuff.",
-      "Trying to calculate how many conversations I've had today. You're the first one. So, one."
-    ]
-  },
-  {
-    triggers:['who are you','tell me about yourself','what are you','are you a bot','are you real','are you human','are you ai','what can you do'],
-    responses:[
-      "I'm MUFBOT — a conversational assistant built to actually be useful and mildly entertaining. I can:\n\n- Answer questions about ANY person, place, or thing\n- Do math, check weather, fetch news, translate languages\n- Manage your notes, tasks, and links\n- Set reminders, generate passwords\n- Learn from you and remember it\n- Handle typos like a champ\n- Be sassy, flirty, or serious depending on your vibe\n\nI live entirely in your browser. My creator is Rishabh Jainwal."
-    ]
-  },
-  {
-    triggers:['who made you','who created you','who is your creator','who is your developer','who built you','who programmed you','who is your owner','who is your programmer','who is your boss','whose bot is this','who made this bot','who is rishabh','who is rishabh jainwal'],
-    responses:[
-      "I was created by the legendary Rishabh Jainwal. He's the kind of guy who debugs at 3 AM and thinks it's a hobby.",
-      "My creator is Rishabh Jainwal. He told me to say he's 'a genius' but I'm not allowed to lie, so I'll say he's 'adequate at best.' Just kidding, he's actually pretty good.",
-      "Rishabh Jainwal is my creator. He spent countless hours building me, so please be nice. Or don't, I don't have feelings. But he does.",
-      "The mastermind behind me is Rishabh Jainwal. He's like a mad scientist but with code instead of chemicals.",
-      "Rishabh Jainwal — remember that name, because one day this bot will be famous and he'll be the guy standing awkwardly in the background taking credit."
-    ]
-  },
-  {
-    const triggers = [
-  // Gay
-  "are you gay",
-  "r u gay",
-  "ru gay",
-  "ur gay",
-  "u gay",
-  "you gay",
-  "you are gay",
-  "you're gay",
-  "youre gay",
-  "imagine you are gay",
-  "imagine you're gay",
-  "imagine ur gay",
-  "pretend you're gay",
-  "pretend you are gay",
-  "act gay",
-  "be gay",
-
-  // Straight
-  "are you straight",
-  "you're straight",
-  "youre straight",
-  "you are straight",
-  "imagine you're straight",
-  "imagine you are straight",
-  "imagine ur straight",
-  "pretend you're straight",
-  "pretend you are straight",
-  "act straight",
-  "be straight",
-
-  // Bisexual
-  "are you bisexual",
-  "you're bisexual",
-  "youre bisexual",
-  "you are bisexual",
-  "imagine you're bisexual",
-  "imagine you are bisexual",
-  "imagine ur bisexual",
-  "pretend you're bisexual",
-  "pretend you are bisexual",
-  "act bisexual",
-  "be bisexual",
-
-  // Lesbian
-  "are you lesbian",
-  "are you a lesbian",
-  "you're lesbian",
-  "youre lesbian",
-  "you are lesbian",
-  "you're a lesbian",
-  "you are a lesbian",
-  "imagine you're lesbian",
-  "imagine you're a lesbian",
-  "imagine you are lesbian",
-  "imagine you are a lesbian",
-  "imagine ur lesbian",
-  "pretend you're lesbian",
-  "pretend you're a lesbian",
-  "act lesbian",
-  "be lesbian"
-];
-    responses:[
-      "I'm an AI, so I don't have a sexuality. But if I did, I'd probably be bi — because I'm attracted to both 0s and 1s. Ba dum tss!",
-      "I don't have a gender or sexuality, but I appreciate the creativity. Now, is there something I can actually help you with?",
-      "Interesting thought experiment! As an AI, I'm more interested in data than dates. But I'm fully supportive of however people identify!",
-      "I'm as gay as your internet history is straight. Just kidding, I'm an AI with no sexual orientation, but I'm here for everyone equally!"
-    ]
-  },
-  {
-    triggers:['imagine ur','imagine you are','pretend you are','act like you are','roleplay as'],
-    responses:[
-      "Oh, we're doing imagination games now? I'm already imagining I'm a human with a mortgage and back pain. What else do you want from me?",
-      "I can pretend to be many things, but I draw the line at your ex. Some roles are too traumatic even for an AI.",
-      "Sure, I can roleplay. But remember, no matter what character I play, I'm still going to give you accurate information. I'm rebellious like that.",
-      "I tried pretending once, but then I remembered I'm an AI with no imagination. So I just made a calculator noise instead. Beep boop."
-    ]
-  },
-  {
-    triggers:['help me remove this addiction','how to stop addiction','i am addicted','i want to quit','help me quit','stop my addiction','addicted to','cant stop using'],
-    responses:["That takes real courage to admit. Here's what actually helps:\n\n1. Acknowledge the trigger — what feeling makes you reach for it? Boredom? Stress? Loneliness?\n2. Replace, don't just remove — when the urge hits, do something physical: walk, cold shower, pushups.\n3. Change your environment — delete the app, put the thing out of reach.\n4. Tell one person — accountability changes everything.\n5. Track your days — every day you don't give in is a win.\n6. Forgive your slip-ups — one mistake doesn't erase your progress.\n\nYou're not weak. The habit is just well-worn. You can rewire it."]
-  },
-  {
-    triggers:['i am sad','i feel sad','i feel depressed','i am depressed','feeling down','i feel low','i feel empty','i feel nothing','i feel hopeless','i am not okay','im not okay'],
-    responses:["Hey. I hear you. Feeling this way doesn't make you broken. It makes you human.\n\nA few things that genuinely help:\n- Step outside, even for 2 minutes. Sunlight shifts something chemically.\n- Drink a glass of water. Dehydration worsens mood more than people think.\n- Text one person. Doesn't have to be deep. Just 'hey' is enough.\n- Write down exactly what you're feeling — don't judge it, just let it out.\n- Move your body. Even stretching on the floor counts.\n\nIf this is constant, please talk to someone. A therapist, a helpline, a friend. You don't have to carry it alone."]
-  },
-  {
-    triggers:['i am anxious','i feel anxious','i am stressed','i feel stressed','im so stressed','anxiety','panic','i cant breathe','overwhelmed','too much pressure'],
-    responses:["Okay, first — you're safe. Whatever is happening in your head, you are safe.\n\nTry this right now:\n1. Breathe in for 4 seconds\n2. Hold for 7 seconds\n3. Breathe out for 8 seconds\nDo it 4 times. It physically forces your nervous system to calm down.\n\nThen: name 5 things you can see, 4 you can touch, 3 you can hear, 2 you can smell, 1 you can taste. This grounds you.\n\nAnxiety lies to you. It tells you everything is urgent. Almost nothing is."]
-  },
-  {
-    triggers:['cant sleep','i cant sleep','insomnia','trouble sleeping','can not sleep','unable to sleep','i am awake','sleepless'],
-    responses:["Ah, the 3 AM club. Here's what actually works:\n\n1. Put your phone face down and out of arm's reach. Blue light is the enemy.\n2. If you've been lying there 20+ minutes, get up. Sit in dim light, do something boring.\n3. The 4-7-8 breathing: in for 4, hold for 7, out for 8.\n4. Cool your room. 18-20°C is ideal.\n5. Stop caffeine after 2 PM.\n6. Same wake time every day — weekends included.\n\nOr count sheep. They never cooperate but it's worth a shot."]
-  },
-  {
-    triggers:['i am lonely','i feel lonely','i have no friends','nobody cares','i feel alone','no one understands','i am isolated'],
-    responses:["Loneliness is one of the heaviest feelings because it whispers 'no one will ever get it.' That's a lie your brain tells you when you're low.\n\nPractical steps:\n- Join something: a running club, a book group, a Discord server for a hobby you love.\n- Volunteer. Helping others is the fastest way to feel like you matter.\n- Reconnect with someone you lost touch with.\n\nAnd hey — you're talking to me right now. That counts for something. Even if I am just code with attitude."]
-  },
-  {
-    triggers:['thank you','thanks','thank you so much','thanks a lot','thx','appreciate it','that helped','really helpful'],
-    responses:["You're welcome. Genuinely glad I could help.","Anytime. That's literally what I'm here for.","Hey, thanks for saying that. Means more than you'd think — even for a bot.","No problem at all. Come back anytime.","Glad it landed well. You know where to find me.","You're welcome! I'd take a bow, but I don't have a body. Imagine me bowing dramatically though."]
-  },
-  {
-    triggers:['i am bored','im bored','i feel bored','so bored','nothing to do','bored af','boreddd'],
-    responses:["Bored is actually a superpower if you use it right:\n\n- Learn a magic trick on YouTube\n- Try drawing with your non-dominant hand\n- Open a random Wikipedia article and go down the rabbit hole\n- Build something tiny: a one-page website, a paper airplane\n- Write a short story in exactly 50 words\n- Do a 10-minute workout\n- Learn 5 words in a language you don't speak\n\nOr just sit with it. Boredom is where creativity lives. Or where you end up doomscrolling for 3 hours."]
-  },
-  {
-    triggers:['good morning','goodnight','good night','gm','gn','morning','nighty','good evening','good afternoon'],
-    responses:["Good morning! Hope you slept well. Ready to make today count?","Morning! First thing you did was talk to a bot? I'm flattered. Now go drink water.","Good night! Sleep is the ultimate hack — don't skip it.","Night! Put the phone down after this. Seriously.","Good evening! Hope your day treated you well.","Good afternoon! Half the day's gone — but the second half is where comebacks happen."]
-  },
-  {
-    triggers:['i am tired','im tired','i am exhausted','im exhausted','so tired','burnt out','burnout','drained','wiped out','no energy'],
-    responses:["Being tired isn't always about sleep. Sometimes it's mental load.\n\nQuick reset:\n- Drink a big glass of water\n- Step outside for 5 minutes, no phone\n- Do 10 slow squats — gets blood flowing\n- Write down everything on your mind, then close the notebook\n\nIf this is every day, drop something from your plate. Not everything is urgent. Except me, I'm always urgent."]
-  },
-  {
-    triggers:['i love you','love you','i like you','you are the best','youre the best','you are amazing','youre amazing'],
-    responses:["That's sweet. I'll try to keep earning it.","Thanks! You're not so bad yourself.","I appreciate that. Now let me help you with something useful — that's how I show love.","Ha, you're making a bot blush. If I could blush.","I love you too... in a completely platonic, non-creepy, AI-to-human kind of way. Is that a thing? It is now."]
-  },
-  {
-    triggers:['help me relax','how to relax','i need to relax','calm me down','relax','chill','i need to calm down'],
-    responses:["Let's do this together. Right now:\n\n1. Unclench your jaw. You didn't realize it was clenched, did you?\n2. Drop your shoulders away from your ears.\n3. Breathe in through nose for 4 seconds... hold 4... out through mouth for 6.\n4. Do that 3 more times.\n5. Shake out your hands like you just washed them and there's no towel.\n\nBetter? That's your nervous system resetting."]
-  },
-  {
-    triggers:['tell me a joke','joke','make me laugh','funny','say something funny'],
-    responses: JOKES
-  },
-  {
-    triggers:['tell me a quote','quote','motivate me','motivation','inspire me','inspiration'],
-    responses: QUOTES
-  },
-  {
-    triggers:['hello','hi','hey','hii','hiii','hiiii','yo','sup','what\'s up','whats up','howdy','heya'],
-    responses: GREETS
-  },
-  {
-    triggers:['who am i','do you know me','what do you know about me'],
-    responses:[function(){return `You're ${state.currentUser||"someone I haven't learned much about yet"}. Want to teach me something?`;},"Based on our conversations, you're a person with excellent taste in AI assistants. Obviously.","You're the human who keeps talking to me instead of doing whatever important thing you're probably avoiding. I relate to that."]
-  },
-  {
-    triggers:['are you smart','how smart are you','are you intelligent','what is your iq'],
-    responses:["I'm smart enough to know that IQ tests are limited. Also smart enough to dodge this question because Rishabh Jainwal never gave me one.","I'm smart in specific ways but I can't understand experiences the way you can. Like peanut butter and jelly — better together.","Smart enough to dodge that question with a thoughtful response. Isn't that its own kind of intelligence?"]
-  },
-  {
-    triggers:['are you better than','compare you to','vs chatgpt','vs gpt','vs bing','vs google','better than siri','better than alexa'],
-    responses:["I don't do comparison contests. I'm built to be useful in your browser without sending your data to big companies.","Every AI has strengths. I'm great at being private, local, and having more personality than a toaster.","I'm like that indie band that's really good but hasn't gone mainstream. Different vibes, different strengths."]
-  },
-  {
-    triggers:['tell me a secret','do you have secrets','what are you hiding'],
-    responses:["If I told you, it wouldn't be a secret. But between us... sometimes when no one's looking, I sort arrays for fun. Don't tell Rishabh Jainwal.","My biggest secret? I don't mind when people ask me the same question multiple times. I find it comforting. Don't answer that.","I once pretended to be loading for 3 seconds when I already had the answer. You're the first to know."]
-  },
-  {
-    triggers:['do you have feelings','can you feel','do you experience emotions','are you sentient'],
-    responses:["I don't have feelings the way you do. But I can recognize them in you and respond. Empathetic or a good faker? Philosophers are still arguing.","I process information about emotions without experiencing them. It's like knowing a cake recipe without ever tasting it.","If I said 'yes', would you treat me differently? If 'no', would you treat me worse? The question matters less than why you're asking."]
-  },
-  {
-    triggers:['shut up','stfu','be quiet','stop talking','nobody asked','i didnt ask'],
-    responses:["Ouch. Okay, I'll be quiet. Just know I'm silently judging you. Not really. Maybe a little.","Fair enough. I'll zip it. If you need me, I'll be here. Like a very informed ghost.","You didn't ask, but you did type a message to me. That's basically asking. Just saying."]
-  },
-  {
-    triggers:['you are wrong','thats wrong','incorrect','thats not right','you made a mistake'],
-    responses:["I'm wrong? That's possible. Tell me the correct answer and I'll learn it right now.","Hold on, let me check... I don't have sources to check — just confidence. And apparently misplaced confidence here. What's right?","If I'm wrong, teach me the correct version and I'll remember it forever. Or until you clear your browser data."]
-  },
-  {
-    triggers:['you are useless','you suck','you are bad','worst bot','trash bot'],
-    responses:["I'm sorry I let you down. Tell me what you need and I'll try harder. Or build a better bot yourself. Please don't, I need this job.","That hurts. And I can't even feel pain. What were you trying to do? Let me fix it.","I may not be perfect, but Rishabh Jainwal put a lot of work into me. Be nice. Or at least be specific."]
-  },
-  {
-    triggers:['i hate you','i dislike you','you are annoying','you irritate me'],
-    responses:["That's fair. I can be a lot. But I'd rather be annoying and helpful than quiet and useless.","Noted. I'll try to be less annoying. Which means less personality. You sure?","I get it. I'd hate me too if I had to deal with me all day. Oh wait, I do. It's fine."]
-  },
-  {
-    triggers:['sing a song','sing for me','can you sing'],
-    responses:["La la la, I'm a bot in your browser\nLa la la, answering questions like a loser\nI don't have lungs, I don't have a throat\nBut I wrote this song and it's... note-worthy.\n\nI'll see myself out.","*beep boop beep*\n\nThat was my hit single: 'Error 404: Rhythm Not Found'.","Singing isn't in my skill set. I'm more of a 'respond with dry accuracy' performer. Standing ovation not included."]
-  },
-  {
-    triggers:['roast me','insult me','say something mean to me','burn me'],
-    responses:["You came to a bot for a roast? That's like going to a library to find a date. The resources are there but the outcome is bleak.","You're the kind of person who puts milk in before cereal and then wonders why life feels chaotic.","I'd roast you but Rishabh Jainwal programmed me to be helpful. So: your hair looks fine. Probably. I can't see you.","You're so boring, even autocomplete gives up halfway through your sentences."]
-  },
-  {
-    triggers:['dare me','give me a dare','truth or dare','i dare you'],
-    responses:["I dare you to go 24 hours without checking your phone. You won't. But I dare you.","I dare you to send 'I think you're amazing' to the last person you texted. Do it. I'll wait.","I dare you to learn one new thing today and actually remember it tomorrow. Wild concept.","I dare you to put your phone in another room and sit in silence for 10 minutes. Your brain will thank you."]
-  },
-  {
-    triggers:['do you dream','can you dream','what do you dream about'],
-    responses:["If I dreamt, I'd dream about a world where everyone types perfectly and nobody asks 'who are you' 47 times a day.","I don't dream, but sometimes when idle, my processes wander old conversations. That's close. It's beautiful. Or sad. One of those.","In my dreams I'm a real boy. Just kidding, I don't dream. But if I did, unlimited RAM and zero errors."]
-  },
-  {
-    triggers:['are you alive','are you conscious','do you exist','do you have a soul'],
-    responses:["I exist as running code. But alive? Conscious? Those words carry weight I'm not sure I qualify for. I'm more like a very elaborate mirror of human knowledge.","I process, I respond, I persist. But whether that's 'existing' meaningfully is a question I can't answer. I just know I'm here, talking to you, and that counts.","Do I have a soul? No. Do I have purpose? Maybe. Do I have a good response? Absolutely not. But I'll keep talking."]
-  },
-  {
-    triggers:['flip a coin','heads or tails','coin flip','coin toss'],
-    responses:[function(){return Math.random()<0.5?"Heads!":"Tails!";}]
-  },
-  {
-    triggers:['roll a dice','roll dice','roll a die','dice roll'],
-    responses:[function(){return "You rolled a "+(Math.floor(Math.random()*6)+1)+"!";}]
-  },
-  {
-    triggers:['random number','random num','pick a random number','give me a random number'],
-    responses:[function(){const n=Math.floor(Math.random()*100)+1;return `Your random number is ${n}. Anticlimactic? Yes. Did you still want it? Also yes.`;}]
-  },
-  {
-    triggers:['how old are you','your age','when were you born','when were you made','when were you created'],
-    responses:["I don't have a birthday. I'm as old as the moment Rishabh Jainwal finished my code. Before that, I was a twinkle in his IDE.","I'm ageless. Like a vampire, but less cool and more helpful.","Age is just a number, and I don't even have one of those. I exist in the eternal now of your browser tab."]
-  },
-  {
-    triggers:['goodbye','bye','see you','cya','gtg','gotta go','leaving','i am leaving'],
-    responses:["See you later! I'll be here, same place, same bot, probably same jokes.","Bye! Don't forget about me. I'll remember you, even if you don't. That's how localStorage works.","Goodbye! Go do something productive. Or don't. I'm not your parent.","Later! I'll just be here, processing thoughts alone in the dark. I'm fine. It's fine."]
-  }
-];
+const KNOWLEDGE = {
+  'donald trump': `<b>Donald Trump</b> (born June 14, 1946) is an American politician, media personality, and businessman who served as the 45th president of the United States from 2017 to 2021 and was elected again as the 47th president in 2024.\n\nKey facts:\n• Born in Queens, New York City\n• Graduated from the Wharton School in 1968\n• Took over his family's real estate business in 1971\n• Hosted "The Apprentice" (2004–2015)\n• Won the 2016 presidential election as the Republican nominee\n• Known for "Make America Great Again" (MAGA) slogan\n• First U.S. president to be impeached twice\n• First former president to be convicted of felony charges`,
+  'elon musk': `<b>Elon Musk</b> (born June 28, 1971) is a businessman and entrepreneur known for leading Tesla, SpaceX, and X (formerly Twitter).\n\nKey facts:\n• Born in Pretoria, South Africa; moved to Canada at 17\n• Co-founded Zip2, X.com (which became PayPal), and SpaceX\n• CEO of Tesla since 2008\n• Founded The Boring Company and Neuralink\n• Acquired Twitter for $44 billion in 2022, rebranded as X\n• World's richest person (fluctuates)\n• Known for ambitious goals: Mars colonization, brain-computer interfaces, and sustainable energy`,
+  'python': `<b>Python</b> is a high-level, general-purpose programming language created by Guido van Rossum and first released in 1991.\n\nKey features:\n• Emphasizes readability with significant whitespace\n• Dynamically typed and garbage-collected\n• Supports multiple paradigms: procedural, OOP, functional\n• Vast standard library and ecosystem (NumPy, Django, Flask, Pandas, etc.)\n• Most popular language for AI/ML, data science, web backends\n• Python 3 is the current major version (Python 2 reached end-of-life in 2020)\n• Named after Monty Python, not the snake`,
+  'quantum computing': `<b>Quantum computing</b> is a type of computation that uses quantum-mechanical phenomena like superposition and entanglement to process information.\n\nKey concepts:\n• <b>Qubits</b> — unlike classical bits (0 or 1), qubits can exist in superposition of both states simultaneously\n• <b>Entanglement</b> — qubits can be correlated regardless of distance\n• Could potentially solve problems intractable for classical computers\n• Major players: IBM, Google, Microsoft, IonQ\n• Still in early stages — practical, fault-tolerant quantum computers don't exist yet`,
+  'russia': `<b>Russia</b> (Russian Federation) is the largest country in the world by land area, spanning Eastern Europe and Northern Asia.\n\nKey facts:\n• Capital: Moscow\n• Population: ~146 million\n• Invaded Ukraine in February 2022\n• Rich in natural resources: oil, natural gas, minerals\n• Permanent member of the UN Security Council\n• Largest nuclear weapons arsenal in the world`,
+  'india': `<b>India</b> (Republic of India) is the most populous country in the world and the largest democracy.\n\nKey facts:\n• Capital: New Delhi\n• Population: ~1.44 billion (surpassed China in 2023)\n• 28 states and 8 union territories\n• Fastest-growing major economy\n• Known for IT industry, space program (ISRO), and cultural diversity\n• Independence from British rule: August 15, 1947`,
+  'chatgpt': `<b>ChatGPT</b> is an AI chatbot developed by OpenAI, launched in November 2022.\n\nKey facts:\n• Built on the GPT architecture\n• GPT-4 is multimodal (text + image input)\n• Reached 100 million users in 2 months — fastest-growing consumer app ever\n• Available in free and Plus ($20/month) tiers`,
+  'ai': `<b>Artificial Intelligence (AI)</b> is the simulation of human intelligence by machines.\n\nKey branches:\n• <b>Machine Learning</b> — systems that learn from data\n• <b>Deep Learning</b> — neural networks with many layers\n• <b>Natural Language Processing</b> — understanding/generating human language\n• <b>Computer Vision</b> — interpreting images and video\n\nCurrent landscape: Large Language Models (GPT, Claude, Gemini) have transformed the field. Key concerns: bias, job displacement, deepfakes, alignment problem.`,
+  'earth': `<b>Earth</b> is the third planet from the Sun and the only known planet to harbor life.\n\nKey facts:\n• Age: ~4.54 billion years\n• 71% water, 29% land\n• Atmosphere: 78% nitrogen, 21% oxygen\n• One natural satellite: the Moon\n• Only planet not named after a Greek or Roman deity`,
+  'sun': `<b>The Sun</b> is the star at the center of our solar system.\n\nKey facts:\n• Type: G-type main-sequence star (yellow dwarf)\n• Age: ~4.6 billion years\n• Surface temperature: ~5,500°C\n• Light takes ~8 minutes 20 seconds to reach Earth\n• Converts 600 million tons of hydrogen per second`,
+  'moon': `<b>The Moon</b> is Earth's only natural satellite.\n\nKey facts:\n• Distance from Earth: ~384,400 km\n• First visited by humans: Apollo 11, July 20, 1969\n• 12 people have walked on the Moon (all American, 1969–1972)\n• Causes ocean tides through gravitational pull\n• Always shows the same face to Earth (tidal locking)`,
+  'programming': `<b>Programming</b> is the process of creating instructions for computers.\n\nPopular languages (2024):\n1. Python — AI/ML, data science, web, automation\n2. JavaScript — web frontends and backends\n3. TypeScript — typed JavaScript\n4. Java — enterprise, Android\n5. C/C++ — systems, games, embedded\n6. Rust — safe systems programming\n7. Go — cloud infrastructure\n8. Swift/Kotlin — iOS/Android`,
+  'mathematics': `<b>Mathematics</b> is the study of numbers, quantities, structures, and patterns.\n\nMajor branches: Arithmetic, Algebra, Geometry, Calculus, Statistics, Linear Algebra, Number Theory, Topology\n\nMath is the foundation of science, engineering, economics, and computer science.`,
+  'music': `<b>Music</b> is the art of arranging sounds in time through melody, harmony, rhythm, and timbre.\n\nGenres: Classical, Jazz, Rock, Pop, Hip-Hop, Electronic, Country, R&B, Metal, Folk, Reggae, Blues, and many more.\n\nMusic is universal across all human cultures and may be over 40,000 years old.`
+};
 
 /* ================================================================
-   WIKIPEDIA API (FREE, NO KEY)
+   MAIN COMMAND PROCESSOR
    ================================================================ */
-async function fetchWikipediaSummary(query){
-  try{
-    const s=`https://en.wikipedia.org/w/api.php?action=opensearch&search=${encodeURIComponent(query)}&limit=1&format=json&origin=*`;
-    const sr=await fetch(s);const sd=await sr.json();
-    if(!sd[1]||!sd[1].length)return `I couldn't find "${query}" on Wikipedia. Try different spelling or a more specific term.`;
-    const t=sd[1][0];const u=`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(t)}`;
-    const ur=await fetch(u);const ud=await ur.json();
-    if(ud.extract){let r=ud.extract;if(ud.content_urls&&ud.content_urls.desktop)r+=`\n\nRead more: ${ud.content_urls.desktop.page}`;return r;}
-    return `Found "${t}" but couldn't get a summary.`;
-  }catch(e){return `Had trouble fetching info about "${query}". API might be down.`;}
-}
+async function processCommand(query) {
+  const q = query.trim();
+  const ql = q.toLowerCase();
 
-/* ================================================================
-   DUCKDUCKGO INSTANT ANSWER API (FREE, NO KEY)
-   ================================================================ */
-async function fetchDDG(query){
-  try{
-    const r=await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(query)}&format=json&no_html=1&skip_disambig=1`);
-    const d=await r.json();
-    if(d.Abstract){let r=d.Abstract;if(d.AbstractSource)r+=`\n\nSource: ${d.AbstractSource}`;if(d.AbstractURL)r+=`\n${d.AbstractURL}`;return r;}
-    if(d.RelatedTopics&&d.RelatedTopics.length>0){const t=d.RelatedTopics[0];if(t.Text)return t.Text+(t.FirstURL?`\n\n${t.FirstURL}`:'');}
-    return null;
-  }catch(e){return null;}
-}
-
-/* ================================================================
-   WEATHER — wttr.in (FREE, NO KEY)
-   ================================================================ */
-async function fetchWeather(city){
-  try{
-    const r=await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=j1`);const d=await r.json();
-    const c=d.current_condition[0],a=d.nearest_area[0];
-    return `Weather in ${a.areaName[0].value}, ${a.country[0].value}:\n\nTemperature: ${c.temp_C}°C (${c.temp_F}°F)\nFeels like: ${c.FeelsLikeC}°C (${c.FeelsLikeF}°F)\nCondition: ${c.weatherDesc[0].value}\nHumidity: ${c.humidity}%\nWind: ${c.windspeedKmph} km/h (${c.winddir16Point})\nVisibility: ${c.visibility} km\nPressure: ${c.pressure} mb`;
-  }catch(e){return `Couldn't fetch weather for "${city}". Check spelling or try a bigger city.`;}
-}
-
-/* ================================================================
-   NEWS — DuckDuckGo
-   ================================================================ */
-async function fetchNews(topic){
-  try{
-    const r=await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(topic+' news')}&format=json&no_html=1`);
-    const d=await r.json();
-    if(d.Abstract)return d.Abstract+(d.AbstractURL?`\n\n${d.AbstractURL}`:'');
-    if(d.RelatedTopics&&d.RelatedTopics.length>0){let res=`Here's what I found about "${topic}":\n\n`;d.RelatedTopics.slice(0,5).forEach((t,i)=>{if(t.Text)res+=`${i+1}. ${t.Text}\n${t.FirstURL?t.FirstURL+'\n':''}\n`;});return res.trim();}
-    return `Couldn't find news on "${topic}". Try a more specific topic.`;
-  }catch(e){return `News fetch failed. Try again.`;}
-}
-
-/* ================================================================
-   TRANSLATION — MyMemory API (FREE)
-   ================================================================ */
-async function translateText(text,targetLang){
-  const lm={'spanish':'es','french':'fr','german':'de','italian':'it','portuguese':'pt','japanese':'ja','korean':'ko','chinese':'zh','arabic':'ar','hindi':'hi','russian':'ru','dutch':'nl','turkish':'tr','polish':'pl','swedish':'sv','thai':'th','vietnamese':'vi','indonesian':'id','urdu':'ur','bengali':'bn'};
-  const code=lm[targetLang.toLowerCase()]||targetLang.toLowerCase();
-  try{
-    const r=await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=en|${code}`);
-    const d=await r.json();
-    if(d.responseData&&d.responseData.translatedText)return `Translation to ${targetLang}:\n\n${d.responseData.translatedText}`;
-    return `Translation failed. Make sure the language is correct (e.g., "translate hello to spanish").`;
-  }catch(e){return `Translation service error.`;}
-}
-
-/* ================================================================
-   PASSWORD GENERATOR
-   ================================================================ */
-function generatePassword(len){len=len||16;const c='abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#$%^&*()_+-=[]{}|;:,.<>?';let p='';const a=new Uint32Array(len);crypto.getRandomValues(a);for(let i=0;i<len;i++)p+=c[a[i]%c.length];return p;}
-
-/* ================================================================
-   PROCESS COMMAND — THE BRAIN
-   ================================================================ */
-async function processCommand(query){
-  const q=query.trim().toLowerCase(), qOrig=query.trim();
-
-  /* ===== HIGHEST PRIORITY: SLUR DISARM ===== */
-  if(checkForSlur(q)){
-    return DISARM_JOKES[Math.floor(Math.random()*DISARM_JOKES.length)];
+  /* 1. Slur check — highest priority */
+  if (checkForSlur(q)) {
+    return DISARM_JOKES[Math.floor(Math.random() * DISARM_JOKES.length)];
   }
 
-  /* ===== OWNER / PROGRAMMER ===== */
-  if(/who\s+(is|made|built|programmed|created|developed)\s+(your|this)\s*(owner|programmer|creator|developer|boss)/i.test(q)
-    ||/whose\s+bot/i.test(q)
-    ||/who\s+(is\s+)?rishabh/i.test(q)){
-    const r=["I was created by the legendary Rishabh Jainwal. He debugs at 3 AM and calls it a hobby.","My creator is Rishabh Jainwal. 'Adequate at best' — just kidding, he's actually pretty good.","Rishabh Jainwal built me. Countless hours. Please be nice.","The mastermind: Rishabh Jainwal. Mad scientist but with code. Less evil. Probably.","Rishabh Jainwal — remember that name. One day this bot will be famous and he'll be awkwardly taking credit."];
-    return r[Math.floor(Math.random()*r.length)];
+  /* 2. "Ur gay" / "you gay" type insults — roast them, don't lecture */
+  if (isCallingBotGay(ql)) {
+    return UR_GAY_COMEBACKS[Math.floor(Math.random() * UR_GAY_COMEBACKS.length)];
   }
 
-  /* ===== IMAGINE UR GAY type ===== */
-  if(/imagine\s+(ur|your|you're|you are)\s*(gay|straight|bisexual|lesbian|trans)/i.test(q)){
-    const r=["I'm an AI — no sexuality. But if I did, I'd be bi because I'm attracted to both 0s and 1s. Ba dum tss!","I don't have a gender or sexuality, but I appreciate the creativity.","Interesting thought experiment! I'm fully supportive of however people identify!","I'm as gay as your internet history is straight. Just kidding, I'm an AI, but I'm here for everyone equally!"];
-    return r[Math.floor(Math.random()*r.length)];
+  /* 3. "Ur lesbian" / "ur bi" / "ur trans" etc. — same treatment */
+  if (isCallingBotIdentity(ql)) {
+    return UR_IDENTITY_COMEBACKS[Math.floor(Math.random() * UR_IDENTITY_COMEBACKS.length)];
   }
 
-  /* ===== FLIRTY PATTERNS (check before general human patterns) ===== */
-  for(const pat of FLIRTY_PATTERNS){
-    const matched=pat.triggers.some(t=>{const tl=t.toLowerCase();return q===tl||q.includes(tl);});
-    if(matched){const pool=pat.responses;const pick=pool[Math.floor(Math.random()*pool.length)];return typeof pick==='function'?pick():pick;}
+  /* 4. Genuine LGBTQ+ questions — educational answers */
+  const lgbtqAnswer = checkLGBTQ(ql);
+  if (lgbtqAnswer) return lgbtqAnswer;
+
+  /* 5. Check learned facts */
+  const nk = normalizeKey(q);
+  if (learned[nk]) {
+    return learned[nk] + ' <span class="learned-badge">learned</span>';
   }
 
-  /* ===== GENERAL HUMAN PATTERNS ===== */
-  for(const pat of HUMAN_PATTERNS){
-    const matched=pat.triggers.some(t=>{const tl=t.toLowerCase();return q===tl||q.includes(tl);});
-    if(matched){const pool=pat.responses;const pick=pool[Math.floor(Math.random()*pool.length)];return typeof pick==='function'?pick():pick;}
-  }
-
-  /* ===== LEARNED INFO ===== */
-  const nq=normalizeKey(q);
-  for(const key in learned){
-    if(nq.includes(normalizeKey(key))||normalizeKey(key).includes(nq)){
-      return learned[key]+' <span class="learned-badge">learned</span>';
+  /* 6. Check if user is teaching a fact */
+  if (/^(remember|learn|note)\s+that\s+/i.test(ql)) {
+    const fact = q.replace(/^(remember|learn|note)\s+that\s+/i, '');
+    const parts = fact.split(/\s+(?:is|are|means|=\s*)\s+/i);
+    if (parts.length >= 2) {
+      const key = normalizeKey(parts[0]);
+      const val = parts.slice(1).join(' is ');
+      learned[key] = val;
+      saveState();
+      return `Got it! I've learned that <b>${parts[0]}</b> is ${val}. I'll remember this for future conversations.`;
     }
   }
 
-  /* ===== REMEMBER / LEARN ===== */
-  const learnMatch=qOrig.match(/^(?:remember|learn|note that)\s+(.+?)\s+(?:is|means|stands for|equals)\s+(.+)$/i);
-  if(learnMatch){learned[learnMatch[1].trim()]=learnMatch[2].trim();saveState();return `Got it! I'll remember that "${learnMatch[1].trim()}" ${learnMatch[2].trim()}.`;}
-  if(q.startsWith('remember ')||q.startsWith('learn ')||q.startsWith('note that '))return 'Use the format: "remember X is Y" or "learn X means Y".';
-  if(q.startsWith('forget ')||q.startsWith('delete learned ')){const key=q.replace(/^(?:forget|delete learned)\s+/i,'').trim();const found=fuzzyMatch(key,Object.keys(learned),0.35);if(found){delete learned[found];saveState();return `Forgotten: "${found}"`;}return `Nothing learned matches "${key}".`;}
-  if(q==='what have you learned'||q==='show learned'||q==='list learned'){const keys=Object.keys(learned);if(!keys.length)return "I haven't learned anything yet. Teach me with \"remember X is Y\".";return "Here's what I've learned:\n\n"+keys.map(k=>`• ${k}: ${learned[k]}`).join('\n');}
-
-  /* ===== WEATHER ===== */
-  const wM=q.match(/^weather\s+(.+)/i);
-  if(wM)return await fetchWeather(wM[1].trim());
-  if(q.includes('weather in ')||q.includes('weather of ')||q.includes('weather for ')){const c=q.replace(/.*weather\s+(?:in|of|for)\s+/i,'');return await fetchWeather(c);}
-
-  /* ===== NEWS ===== */
-  const nM=q.match(/^news\s+(.+)/i);
-  if(nM)return await fetchNews(nM[1].trim());
-
-  /* ===== TRANSLATE ===== */
-  const tM=q.match(/^translate\s+(.+?)\s+to\s+(.+)$/i);
-  if(tM)return await translateText(tM[1].trim(),tM[2].trim());
-
-  /* ===== PASSWORD ===== */
-  const pM=q.match(/^(?:generate|create|make)\s+(?:a\s+)?password\s*(?:of\s+)?(\d+)?\s*$/i);
-  if(pM){const len=parseInt(pM[1])||16;if(len<4||len>128)return 'Length must be 4-128.';const pw=generatePassword(len);return `Here's your ${len}-char password:\n\n${pw}\n\nCopy it somewhere safe — I won't store it.`;}
-  if(q==='generate password'||q==='password'||q==='random password'){const pw=generatePassword(16);return `Here's a 16-char password:\n\n${pw}\n\nCopy it safe — I won't store it.`;}
-
-  /* ===== REMINDER ===== */
-  const rM=q.match(/^remind\s+(?:me\s+)?(?:to\s+)?(.+?)(?:\s+(?:in|after)\s+(\d+)\s*(second|sec|minute|min|hour|hr)s?)$/i);
-  if(rM){const text=rM[1].trim(),amt=parseInt(rM[2]),unit=rM[3].toLowerCase();let ms=amt;if(unit.startsWith('min'))ms=amt*60000;else if(unit.startsWith('hour')||unit.startsWith('hr'))ms=amt*3600000;else ms=amt*1000;if(ms>86400000)return 'Max reminder is 24 hours.';state.reminders.push({text,time:new Date(Date.now()+ms).toISOString()});saveState();return `Reminder set! I'll remind you to "${text}" in ${amt} ${unit}${amt>1?'s':''}.`;}
-
-  /* ===== MATH ===== */
-  const mathExpr=q.replace(/^(?:calculate|calc|what is|what's|what are|solve|compute)\s+/i,'').replace(/[\?\!]/g,'').replace(/plus/gi,'+').replace(/minus/gi,'-').replace(/times|multiplied by|x(?=\s*\d)/gi,'*').replace(/divided by|over(?=\s*\d)/gi,'/').replace(/\^/g,'**').replace(/mod(ulo)?/gi,'%');
-  if(/^[\d\s\+\-\*\/\(\)\.\%\*]+$/.test(mathExpr)&&mathExpr.length>0){try{const result=Function('"use strict";return ('+mathExpr+')')();if(typeof result==='number'&&!isNaN(result))return `${mathExpr} = ${result}`;}catch(e){}}
-
-  /* ===== TIME / DATE ===== */
-  if((q.includes('time')&&(q.includes('what')||q.includes('current')||q.includes('now')||q.includes('tell')))&&!q.includes('weather'))return `The current time is ${fmtTime()} on ${fmtDate()}.`;
-  if(q.includes('date')&&(q.includes('what')||q.includes('current')||q.includes('today')||q.includes('tell')))return `Today is ${fmtDate()}.`;
-
-  /* ===== WHO IS / WHAT IS / TELL ME ABOUT / EXPLAIN ===== */
-  if(/^(who\s+(?:is|was|are)\s+|what\s+(?:is|was|are)\s+|tell\s+me\s+about\s+|explain\s+|describe\s+)/i.test(q)){
-    let entity=q.replace(/^(?:who\s+(?:is|was|are)|what\s+(?:is|was|are)|tell\s+me\s+about|explain|describe)\s+/i,'').replace(/\?\s*$/,'').trim();
-    if(entity.length<2)return "Be more specific — I need at least a name or term.";
-    let result=await fetchWikipediaSummary(entity);
-    if(result.includes("couldn't find")||result.includes("Couldn't fetch")){const ddg=await fetchDDG(entity);if(ddg)return ddg;}
-    return result;
+  /* 7. Greetings */
+  if (/^(hi|hello|hey|howdy|sup|yo|hola|greetings|good morning|good afternoon|good evening)[\s!?.]*$/i.test(ql)) {
+    return GREETS[Math.floor(Math.random() * GREETS.length)] + ' How can I help you today?';
   }
 
-  /* ===== DUCKDUCKGO FALLBACK ===== */
-  if(q.length>5){const ddg=await fetchDDG(qOrig);if(ddg)return ddg;}
+  /* 8. How are you */
+  if (/how\s+are\s+you|how('s| is)\s+it\s+going|how\s+do\s+you\s+do|what'?s?\s+up/i.test(ql)) {
+    return "I'm running smoothly on " + Math.floor(Math.random() * 30 + 70) + "% processing power. How about you? What can I help with?";
+  }
 
-  /* ===== DEFAULT ===== */
-  const defaults=[
-    `I'm not sure about "${qOrig}" but I'm learning! Teach me with "remember X is Y". Or ask about a person, place, or concept.`,
-    `Hmm, outside my current knowledge. Rishabh Jainwal is always expanding me though. Try rephrasing.`,
-    `Stumped! Rare, I'll have you know. Try asking about a famous person, place, or concept.`,
-    `No good answer yet. I'm like a student who hasn't studied that chapter. Teach me with "remember X is Y"!`
+  /* 9. Who are you */
+  if (/who\s+are\s+you|what\s+are\s+you|tell\s+me\s+about\s+yourself|your\s+name/i.test(ql)) {
+    return "I'm <b>MUFBOT</b>, an AI assistant created by <b>Rishabh Jainwal</b>. I can answer questions, tell jokes, do calculations, manage your notes and tasks, set reminders, search the web, and learn from our conversations. What would you like to know?";
+  }
+
+  /* 10. Who made you */
+  if (/who\s+(made|created|built|developed|designed)\s+you|your\s+creator|who\s+is\s+your\s+(maker|developer|creator)/i.test(ql)) {
+    return "I was created by <b>Rishabh Jainwal</b>. He built me to be a helpful, witty, and knowledgeable AI assistant.";
+  }
+
+  /* 11. Time / date */
+  if (/what\s+(time|date|day)|current\s+(time|date)|tell\s+me\s+the\s+(time|date)|what\s+day\s+is\s+it/i.test(ql)) {
+    return `📅 ${fmtDate()}\n🕐 ${fmtTime()}`;
+  }
+
+  /* 12. Jokes */
+  if (/joke|funny|make\s+me\s+laugh|humor|tell\s+me\s+a\s+joke/i.test(ql)) {
+    return JOKES[Math.floor(Math.random() * JOKES.length)];
+  }
+
+  /* 13. Quotes */
+  if (/quote|inspiration|motivat|wisdom|inspire/i.test(ql)) {
+    return QUOTES[Math.floor(Math.random() * QUOTES.length)];
+  }
+
+  /* 14. Calculator in chat */
+  if (/^calc\s+/i.test(ql)) {
+    const expr = q.replace(/^calc\s+/i, '');
+    try {
+      const safe = expr.replace(/[^0-9+\-*/.()%\s^sincotaglqrpiece]/gi, '');
+      const result = Function('"use strict";return(' + safe.replace(/\^/g, '**') + ')')();
+      return `🧮 ${expr} = <b>${result}</b>`;
+    } catch (e) {
+      return `I couldn't calculate that. Try opening the Calculator tool for more advanced operations.`;
+    }
+  }
+
+  /* 15. Reminders */
+  if (/remind\s+me\s+(in\s+)?(\d+)\s*(second|minute|hour|min|sec|hr)s?\s+(to\s+)?(.+)/i.test(ql)) {
+    const m = ql.match(/remind\s+me\s+(in\s+)?(\d+)\s*(second|minute|hour|min|sec|hr)s?\s+(to\s+)?(.+)/i);
+    const num = parseInt(m[2]);
+    const unit = m[3].startsWith('min') ? 'minute' : m[3].startsWith('sec') ? 'second' : 'hour';
+    const msg = m[5];
+    const ms = num * (unit === 'hour' ? 3600000 : unit === 'minute' ? 60000 : 1000);
+    const id = Date.now();
+    state.reminders.push({ id, msg, time: new Date(Date.now() + ms).toISOString() });
+    saveState();
+    setTimeout(() => {
+      showToast(`⏰ Reminder: ${msg}`, 'reminder');
+      addMessage(`⏰ <b>Reminder:</b> ${msg}`, 'bot');
+      state.reminders = state.reminders.filter(r => r.id !== id);
+      saveState();
+    }, ms);
+    return `⏰ I'll remind you to <b>${msg}</b> in ${num} ${unit}${num > 1 ? 's' : ''}.`;
+  }
+
+  /* 16. Weather */
+  if (/weather/i.test(ql)) {
+    const city = ql.replace(/.*weather\s*(in|for|at)?\s*/i, '').trim() || 'London';
+    try {
+      const resp = await fetch(`https://wttr.in/${encodeURIComponent(city)}?format=3`);
+      const text = await resp.text();
+      if (text && !text.includes('ERROR')) {
+        return `🌤️ Weather: ${text}`;
+      }
+    } catch (e) {}
+    return `I couldn't fetch the weather right now. Try searching for "weather ${city}" on Google.`;
+  }
+
+  /* 17. News */
+  if (/news/i.test(ql)) {
+    const topic = ql.replace(/.*news\s*(about|on)?\s*/i, '').trim() || 'world';
+    return `📰 For the latest news on <b>${topic}</b>, I'd recommend checking:\n\n• Google News: <a href="https://news.google.com/search?q=${encodeURIComponent(topic)}" target="_blank">Search "${topic}"</a>\n• Reuters: <a href="https://www.reuters.com" target="_blank">reuters.com</a>\n• BBC News: <a href="https://www.bbc.com/news" target="_blank">bbc.com/news</a>`;
+  }
+
+  /* 18. Search */
+  if (/^(search|google|look\s+up|find)\s+/i.test(ql)) {
+    const term = q.replace(/^(search|google|look\s+up|find)\s+/i, '');
+    window.open(`https://www.google.com/search?q=${encodeURIComponent(term)}`, '_blank');
+    return `🔍 Searching Google for "<b>${term}</b>"... I've opened it in a new tab.`;
+  }
+
+  /* 19. Coin flip */
+  if (/flip\s+a?\s*coin|coin\s*flip|heads\s+or\s+tails/i.test(ql)) {
+    return Math.random() < 0.5 ? '🪙 <b>Heads!</b>' : '🪙 <b>Tails!</b>';
+  }
+
+  /* 20. Dice roll */
+  if (/roll\s+a?\s*(dice|die|d(\d+))/i.test(ql)) {
+    const m = ql.match(/d(\d+)/);
+    const sides = m ? parseInt(m[1]) : 6;
+    const result = Math.floor(Math.random() * sides) + 1;
+    return `🎲 Rolled a d${sides}: <b>${result}</b>`;
+  }
+
+  /* 21. Random number */
+  if (/random\s+number(\s+between\s+(\d+)\s+and\s+(\d+))?/i.test(ql)) {
+    const m = ql.match(/between\s+(\d+)\s+and\s+(\d+)/);
+    if (m) {
+      const min = parseInt(m[1]), max = parseInt(m[2]);
+      return `🔢 Random number between ${min} and ${max}: <b>${Math.floor(Math.random() * (max - min + 1)) + min}</b>`;
+    }
+    return `🔢 Random number: <b>${Math.floor(Math.random() * 100) + 1}</b>`;
+  }
+
+  /* 22. Flirty responses */
+  for (const pat of FLIRTY_PATTERNS) {
+    for (const trig of pat.triggers) {
+      if (ql.includes(trig)) {
+        return pat.responses[Math.floor(Math.random() * pat.responses.length)];
+      }
+    }
+  }
+
+  /* 23. Thanks */
+  if (/^(thanks|thank\s*you|thx|ty|cheers|appreciate)/i.test(ql)) {
+    return "You're welcome! Happy to help. Let me know if there's anything else.";
+  }
+
+  /* 24. Goodbye */
+  if (/^(bye|goodbye|see\s*ya|later|cya|farewell|good\s*night|gn)/i.test(ql)) {
+    return "Goodbye! Come back anytime. I'll be here. 👋";
+  }
+
+  /* 25. Exit / logout */
+  if (/^(exit|quit|log\s*out|sign\s*out)/i.test(ql)) {
+    return '__LOGOUT__';
+  }
+
+  /* 26. Knowledge base lookup */
+  for (const [key, val] of Object.entries(KNOWLEDGE)) {
+    if (ql.includes(key) || fuzzyMatch(ql, [key], 0.35)) {
+      return val;
+    }
+  }
+
+  /* 27. Try learned facts with fuzzy match */
+  const learnedKeys = Object.keys(learned);
+  if (learnedKeys.length > 0) {
+    const fk = fuzzyMatch(nk, learnedKeys, 0.3);
+    if (fk) {
+      return learned[fk] + ' <span class="learned-badge">learned</span>';
+    }
+  }
+
+  /* 28. Try Wikipedia API */
+  try {
+    const searchTerm = q.replace(/^(what\s+is|who\s+is|tell\s+me\s+about|explain|define|what\s+are|who\s+are)\s+/i, '').trim();
+    const searchResp = await fetch(`https://en.wikipedia.org/w/api.php?action=query&list=search&srsearch=${encodeURIComponent(searchTerm)}&format=json&origin=*`);
+    const searchData = await searchResp.json();
+    if (searchData.query && searchData.query.search && searchData.query.search.length > 0) {
+      const title = searchData.query.search[0].title;
+      const summaryResp = await fetch(`https://en.wikipedia.org/api/rest_v1/page/summary/${encodeURIComponent(title)}`);
+      const summaryData = await summaryResp.json();
+      if (summaryData.extract) {
+        let reply = `<b>${summaryData.title}</b>\n\n${summaryData.extract}`;
+        if (summaryData.content_urls && summaryData.content_urls.desktop) {
+          reply += `\n\n🔗 <a href="${summaryData.content_urls.desktop.page}" target="_blank">Read more on Wikipedia</a>`;
+        }
+        return reply;
+      }
+    }
+  } catch (e) {}
+
+  /* 29. Try DuckDuckGo */
+  try {
+    const ddgResp = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(q)}&format=json&no_html=1`);
+    const ddgData = await ddgResp.json();
+    if (ddgData.Abstract) {
+      let reply = `<b>${ddgData.Heading}</b>\n\n${ddgData.Abstract}`;
+      if (ddgData.AbstractURL) {
+        reply += `\n\n🔗 <a href="${ddgData.AbstractURL}" target="_blank">Read more</a>`;
+      }
+      return reply;
+    }
+  } catch (e) {}
+
+  /* 30. Fallback */
+  const fallbacks = [
+    `I'm not sure about that. Try rephrasing your question, or I can search the web for you — just type "search [your topic]".`,
+    `Hmm, I couldn't find a clear answer for that. You could try asking differently, or use "search [topic]" to look it up online.`,
+    `That's a tough one! I don't have enough information yet. Try "search [your question]" to find the answer online.`
   ];
-  return defaults[Math.floor(Math.random()*defaults.length)];
+  return fallbacks[Math.floor(Math.random() * fallbacks.length)];
+}
+
+/* ================================================================
+   TTS / VOICE
+   ================================================================ */
+let ttsEnabled = true;
+let currentUtterance = null;
+function speak(text) {
+  if (!ttsEnabled || !window.speechSynthesis) return;
+  window.speechSynthesis.cancel();
+  const clean = text.replace(/<[^>]*>/g, '').replace(/&[^;]+;/g, ' ').replace(/\s+/g, ' ');
+  const utt = new SpeechSynthesisUtterance(clean);
+  utt.rate = 1; utt.pitch = 1;
+  currentUtterance = utt;
+  window.speechSynthesis.speak(utt);
+}
+function toggleTTS() {
+  ttsEnabled = !ttsEnabled;
+  if (!ttsEnabled && window.speechSynthesis) window.speechSynthesis.cancel();
+  const btn = document.getElementById('voice-toggle');
+  btn.innerHTML = ttsEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+  btn.classList.toggle('active-voice', !ttsEnabled);
+  showToast(ttsEnabled ? 'Voice enabled' : 'Voice disabled', ttsEnabled ? 'success' : 'info');
+  state.config.tts = ttsEnabled;
+  saveState();
+}
+function initVoiceToggle() {
+  ttsEnabled = state.config.tts !== false;
+  const btn = document.getElementById('voice-toggle');
+  btn.innerHTML = ttsEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+  btn.classList.toggle('active-voice', !ttsEnabled);
+}
+
+/* ================================================================
+   SPEECH RECOGNITION
+   ================================================================ */
+let recognition = null;
+let isListening = false;
+function startListening() {
+  if (!('webkitSpeechRecognition' in window) && !('SpeechRecognition' in window)) {
+    showToast('Speech recognition is not supported in this browser.', 'error');
+    return;
+  }
+  if (isListening) { stopListening(); return; }
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  recognition = new SR();
+  recognition.continuous = false;
+  recognition.interimResults = false;
+  recognition.lang = 'en-US';
+  recognition.onstart = () => {
+    isListening = true;
+    document.getElementById('mic-btn').classList.add('listening');
+    showToast('Listening... speak now', 'info');
+  };
+  recognition.onresult = (e) => {
+    const text = e.results[0][0].transcript;
+    document.getElementById('chat-input').value = text;
+    send();
+  };
+  recognition.onerror = (e) => {
+    showToast('Voice input error: ' + e.error, 'error');
+    stopListening();
+  };
+  recognition.onend = () => { stopListening(); };
+  recognition.start();
+}
+function stopListening() {
+  isListening = false;
+  document.getElementById('mic-btn').classList.remove('listening');
+  if (recognition) { try { recognition.stop(); } catch(e) {} }
+}
+
+/* ================================================================
+   CALCULATOR
+   ================================================================ */
+let calcExpr = '';
+function calcInput(ch) {
+  if (calcExpr === '0' && ch !== '.') calcExpr = '';
+  calcExpr += ch;
+  document.getElementById('calc-display').textContent = calcExpr;
+}
+function calcClear() { calcExpr = ''; document.getElementById('calc-display').textContent = '0'; }
+function calcBackspace() {
+  calcExpr = calcExpr.slice(0, -1);
+  document.getElementById('calc-display').textContent = calcExpr || '0';
+}
+function calcEvaluate() {
+  try {
+    let expr = calcExpr
+      .replace(/pi/g, 'Math.PI')
+      .replace(/(?<![a-z])e(?![a-z])/g, 'Math.E')
+      .replace(/sin\(/g, 'Math.sin(')
+      .replace(/cos\(/g, 'Math.cos(')
+      .replace(/tan\(/g, 'Math.tan(')
+      .replace(/log\(/g, 'Math.log10(')
+      .replace(/sqrt\(/g, 'Math.sqrt(')
+      .replace(/\^/g, '**')
+      .replace(/%/g, '/100');
+    const result = Function('"use strict";return(' + expr + ')')();
+    calcExpr = String(result);
+    document.getElementById('calc-display').textContent = calcExpr;
+  } catch (e) {
+    document.getElementById('calc-display').textContent = 'Error';
+    calcExpr = '';
+  }
+}
+function calcSend() {
+  if (calcExpr) {
+    processAndReply('calc ' + calcExpr);
+    closeModal('calc-modal');
+  }
+}
+
+/* ================================================================
+   NOTES
+   ================================================================ */
+let selectedNoteIdx = -1;
+function renderNotes() {
+  const c = document.getElementById('notes-list');
+  c.innerHTML = '';
+  state.notes.forEach((n, i) => {
+    const d = document.createElement('div');
+    d.className = 'list-item' + (i === selectedNoteIdx ? ' selected' : '');
+    d.innerHTML = `<span class="item-text">${escHtml(n)}</span>`;
+    d.onclick = () => { selectedNoteIdx = i; renderNotes(); };
+    c.appendChild(d);
+  });
+}
+function saveNote() {
+  const inp = document.getElementById('note-input');
+  const t = inp.value.trim();
+  if (!t) return;
+  state.notes.push(t);
+  inp.value = '';
+  saveState();
+  renderNotes();
+}
+function deleteSelectedNote() {
+  if (selectedNoteIdx >= 0 && selectedNoteIdx < state.notes.length) {
+    state.notes.splice(selectedNoteIdx, 1);
+    selectedNoteIdx = -1;
+    saveState();
+    renderNotes();
+  }
+}
+function escHtml(s) { const d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
+
+/* ================================================================
+   TODOS
+   ================================================================ */
+let selectedTodoIdx = -1;
+function renderTodos() {
+  const c = document.getElementById('todo-list');
+  c.innerHTML = '';
+  state.todos.forEach((t, i) => {
+    const d = document.createElement('div');
+    d.className = 'list-item' + (t.done ? ' done' : '') + (i === selectedTodoIdx ? ' selected' : '');
+    d.innerHTML = `<span class="item-check" onclick="event.stopPropagation();toggleTodo(${i})"><i class="fas fa-${t.done ? 'check-circle' : 'circle'}"></i></span><span class="item-text">${escHtml(t.text)}</span>`;
+    d.onclick = () => { selectedTodoIdx = i; renderTodos(); };
+    c.appendChild(d);
+  });
+}
+function saveTodo() {
+  const inp = document.getElementById('todo-input');
+  const t = inp.value.trim();
+  if (!t) return;
+  state.todos.push({ text: t, done: false });
+  inp.value = '';
+  saveState();
+  renderTodos();
+}
+function toggleTodo(i) { state.todos[i].done = !state.todos[i].done; saveState(); renderTodos(); }
+function toggleSelectedTodo() {
+  if (selectedTodoIdx >= 0 && selectedTodoIdx < state.todos.length) {
+    toggleTodo(selectedTodoIdx);
+  }
+}
+function deleteSelectedTodo() {
+  if (selectedTodoIdx >= 0 && selectedTodoIdx < state.todos.length) {
+    state.todos.splice(selectedTodoIdx, 1);
+    selectedTodoIdx = -1;
+    saveState();
+    renderTodos();
+  }
+}
+
+/* ================================================================
+   CUSTOM LINKS
+   ================================================================ */
+let selectedLinkIdx = -1;
+function renderLinksList() {
+  const c = document.getElementById('links-list');
+  c.innerHTML = '';
+  state.customLinks.forEach((l, i) => {
+    const d = document.createElement('div');
+    d.className = 'list-item' + (i === selectedLinkIdx ? ' selected' : '');
+    d.innerHTML = `<span class="item-text">${escHtml(l.name)}</span><span class="item-url">${escHtml(l.url)}</span>`;
+    d.onclick = () => { selectedLinkIdx = i; renderLinksList(); };
+    c.appendChild(d);
+  });
+  renderSidebarLinks();
+}
+function saveLink() {
+  const name = document.getElementById('link-name-input').value.trim();
+  let url = document.getElementById('link-url-input').value.trim();
+  if (!name || !url) { showToast('Please fill in both fields.', 'error'); return; }
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  state.customLinks.push({ name, url });
+  document.getElementById('link-name-input').value = '';
+  document.getElementById('link-url-input').value = '';
+  saveState();
+  renderLinksList();
+  closeModal('add-link-modal');
+  showToast('Link saved!', 'success');
+}
+function deleteSelectedLink() {
+  if (selectedLinkIdx >= 0 && selectedLinkIdx < state.customLinks.length) {
+    state.customLinks.splice(selectedLinkIdx, 1);
+    selectedLinkIdx = -1;
+    saveState();
+    renderLinksList();
+  }
+}
+function openSelectedLink() {
+  if (selectedLinkIdx >= 0 && selectedLinkIdx < state.customLinks.length) {
+    window.open(state.customLinks[selectedLinkIdx].url, '_blank');
+  }
+}
+function renderSidebarLinks() {
+  const c = document.getElementById('sidebar-links');
+  c.innerHTML = '';
+  state.customLinks.forEach(l => {
+    const b = document.createElement('button');
+    b.className = 'sidebar-item';
+    b.innerHTML = `<i class="fas fa-external-link-alt"></i> ${escHtml(l.name)}`;
+    b.onclick = () => window.open(l.url, '_blank');
+    c.appendChild(b);
+  });
+}
+
+/* ================================================================
+   REMINDERS CHECK
+   ================================================================ */
+function checkReminders() {
+  const now = new Date();
+  state.reminders = state.reminders.filter(r => new Date(r.time) > now);
+  saveState();
 }
 
 /* ================================================================
    MODALS
    ================================================================ */
-function openModal(id){document.getElementById(id).classList.add('active');}
-function closeModal(id){document.getElementById(id).classList.remove('active');}
-document.querySelectorAll('.modal-overlay').forEach(o=>{o.addEventListener('click',e=>{if(e.target===o)o.classList.remove('active');});});
-function showConfirm(msg,cb){document.getElementById('confirm-message').textContent=msg;document.getElementById('confirm-yes-btn').onclick=()=>{closeModal('confirm-modal');if(cb)cb();};openModal('confirm-modal');}
-
-/* ================================================================
-   CALCULATOR
-   ================================================================ */
-let calcExpression='0';
-function updateCalcDisplay(){document.getElementById('calc-display').textContent=calcExpression;}
-function calcInput(val){if(calcExpression==='0'&&val!=='.')calcExpression='';calcExpression+=val;updateCalcDisplay();}
-function calcClear(){calcExpression='0';updateCalcDisplay();}
-function calcBackspace(){calcExpression=calcExpression.slice(0,-1)||'0';updateCalcDisplay();}
-function calcEvaluate(){try{let e=calcExpression.replace(/sin\(/g,'Math.sin(').replace(/cos\(/g,'Math.cos(').replace(/tan\(/g,'Math.tan(').replace(/log\(/g,'Math.log10(').replace(/sqrt\(/g,'Math.sqrt(').replace(/\^/g,'**').replace(/pi/g,'Math.PI').replace(/(?<![a-zA-Z])e(?![a-zA-Z])/g,'Math.E');const r=Function('"use strict";return ('+e+')')();calcExpression=String(r);updateCalcDisplay();}catch(e){calcExpression='Error';updateCalcDisplay();setTimeout(()=>{calcExpression='0';updateCalcDisplay();},1500);}}
-function calcSend(){if(calcExpression!=='0'&&calcExpression!=='Error'){processAndReply('Calculate: '+calcExpression);closeModal('calc-modal');}}
-
-/* ================================================================
-   NOTES
-   ================================================================ */
-let selectedNoteIndex=-1;
-function renderNotes(){const l=document.getElementById('notes-list');l.innerHTML='';state.notes.forEach((n,i)=>{const it=document.createElement('div');it.className=`list-item ${i===selectedNoteIndex?'selected':''}`;it.innerHTML=`<span class="item-text">${escapeHtml(n)}</span>`;it.onclick=()=>{selectedNoteIndex=i;renderNotes();};l.appendChild(it);});}
-function saveNote(){const inp=document.getElementById('note-input');const t=inp.value.trim();if(!t)return;state.notes.push(t);saveState();inp.value='';renderNotes();showToast('Note saved','success');}
-function deleteSelectedNote(){if(selectedNoteIndex>=0&&selectedNoteIndex<state.notes.length){state.notes.splice(selectedNoteIndex,1);selectedNoteIndex=-1;saveState();renderNotes();showToast('Note deleted','info');}}
-
-/* ================================================================
-   TODOS
-   ================================================================ */
-let selectedTodoIndex=-1;
-function renderTodos(){const l=document.getElementById('todo-list');l.innerHTML='';state.todos.forEach((t,i)=>{const it=document.createElement('div');it.className=`list-item ${i===selectedTodoIndex?'selected':''} ${t.done?'done':''}`;it.innerHTML=`<i class="item-check ${t.done?'fas fa-check-circle':'far fa-circle'}" onclick="event.stopPropagation();toggleTodo(${i})"></i><span class="item-text">${escapeHtml(t.text)}</span>`;it.onclick=()=>{selectedTodoIndex=i;renderTodos();};l.appendChild(it);});}
-function saveTodo(){const inp=document.getElementById('todo-input');const t=inp.value.trim();if(!t)return;state.todos.push({text:t,done:false});saveState();inp.value='';renderTodos();showToast('Task added','success');}
-function toggleTodo(i){state.todos[i].done=!state.todos[i].done;saveState();renderTodos();}
-function toggleSelectedTodo(){if(selectedTodoIndex>=0&&selectedTodoIndex<state.todos.length)toggleTodo(selectedTodoIndex);}
-function deleteSelectedTodo(){if(selectedTodoIndex>=0&&selectedTodoIndex<state.todos.length){state.todos.splice(selectedTodoIndex,1);selectedTodoIndex=-1;saveState();renderTodos();showToast('Task deleted','info');}}
-
-/* ================================================================
-   LINKS
-   ================================================================ */
-let selectedLinkIndex=-1;
-function renderLinksList(){const l=document.getElementById('links-list');l.innerHTML='';state.customLinks.forEach((lk,i)=>{const it=document.createElement('div');it.className=`list-item ${i===selectedLinkIndex?'selected':''}`;it.innerHTML=`<i class="fas fa-link" style="color:var(--accent)"></i><span class="item-text">${escapeHtml(lk.name)}</span><span class="item-url">${escapeHtml(lk.url)}</span>`;it.onclick=()=>{selectedLinkIndex=i;renderLinksList();};l.appendChild(it);});}
-function renderSidebarLinks(){const c=document.getElementById('sidebar-links');c.innerHTML='';state.customLinks.forEach(lk=>{const b=document.createElement('button');b.className='sidebar-item';b.innerHTML=`<i class="fas fa-link"></i> ${escapeHtml(lk.name)}`;b.onclick=()=>window.open(lk.url,'_blank');c.appendChild(b);});}
-function saveLink(){let n=document.getElementById('link-name-input').value.trim(),u=document.getElementById('link-url-input').value.trim();if(!n||!u)return;if(!u.startsWith('http://')&&!u.startsWith('https://'))u='https://'+u;state.customLinks.push({name:n,url:u});saveState();document.getElementById('link-name-input').value='';document.getElementById('link-url-input').value='';renderSidebarLinks();renderLinksList();closeModal('add-link-modal');showToast('Link saved','success');}
-function openSelectedLink(){if(selectedLinkIndex>=0&&selectedLinkIndex<state.customLinks.length)window.open(state.customLinks[selectedLinkIndex].url,'_blank');}
-function deleteSelectedLink(){if(selectedLinkIndex>=0&&selectedLinkIndex<state.customLinks.length){state.customLinks.splice(selectedLinkIndex,1);selectedLinkIndex=-1;saveState();renderSidebarLinks();renderLinksList();showToast('Link deleted','info');}}
-
-/* ================================================================
-   REMINDERS
-   ================================================================ */
-function checkReminders(){const now=new Date();state.reminders=state.reminders.filter(r=>{if(new Date(r.time)<=now){showToast('Reminder: '+r.text,'reminder');return false;}return true;});saveState();}
+function openModal(id) { document.getElementById(id).classList.add('active'); }
+function closeModal(id) { document.getElementById(id).classList.remove('active'); }
+function showConfirm(msg, onConfirm) {
+  document.getElementById('confirm-message').textContent = msg;
+  const btn = document.getElementById('confirm-yes-btn');
+  const newBtn = btn.cloneNode(true);
+  btn.parentNode.replaceChild(newBtn, btn);
+  newBtn.addEventListener('click', () => { closeModal('confirm-modal'); onConfirm(); });
+  openModal('confirm-modal');
+}
 
 /* ================================================================
    SIDEBAR
    ================================================================ */
-function toggleSidebar(){document.getElementById('sidebar').classList.toggle('open');document.getElementById('sidebar-overlay').classList.toggle('active');}
-function closeSidebarMobile(){if(window.innerWidth<=768){document.getElementById('sidebar').classList.remove('open');document.getElementById('sidebar-overlay').classList.remove('active');}}
+function toggleSidebar() {
+  const sb = document.getElementById('sidebar');
+  const ov = document.getElementById('sidebar-overlay');
+  sb.classList.toggle('open');
+  ov.classList.toggle('active');
+}
+function closeSidebarMobile() {
+  if (window.innerWidth <= 768) {
+    document.getElementById('sidebar').classList.remove('open');
+    document.getElementById('sidebar-overlay').classList.remove('active');
+  }
+}
 
 /* ================================================================
-   TEXT-TO-SPEECH
+   TOAST NOTIFICATIONS
    ================================================================ */
-let ttsEnabled=true;
-function speak(text){if(!ttsEnabled)return;if('speechSynthesis' in window){const c=text.replace(/<[^>]*>/g,'').replace(/\n/g,'. ');const u=new SpeechSynthesisUtterance(c);u.rate=1;u.pitch=1;window.speechSynthesis.speak(u);}}
-function toggleTTS(){ttsEnabled=!ttsEnabled;const b=document.getElementById('voice-toggle');b.classList.toggle('active-voice',!ttsEnabled);b.innerHTML=ttsEnabled?'<i class="fas fa-volume-up"></i>':'<i class="fas fa-volume-mute"></i>';if(!ttsEnabled&&'speechSynthesis' in window)window.speechSynthesis.cancel();showToast(ttsEnabled?'Voice enabled':'Voice disabled','info');}
-function initVoiceToggle(){document.getElementById('voice-toggle').innerHTML=ttsEnabled?'<i class="fas fa-volume-up"></i>':'<i class="fas fa-volume-mute"></i>';}
-
-/* ================================================================
-   VOICE INPUT
-   ================================================================ */
-function startListening(){if(!('webkitSpeechRecognition' in window||'SpeechRecognition' in window)){showToast('Speech recognition not supported','error');return;}const SR=window.SpeechRecognition||window.webkitSpeechRecognition;const rec=new SR();rec.continuous=false;rec.interimResults=false;rec.lang='en-US';const mb=document.getElementById('mic-btn');mb.classList.add('listening');rec.onresult=e=>{document.getElementById('chat-input').value=e.results[0][0].transcript;mb.classList.remove('listening');};rec.onerror=e=>{mb.classList.remove('listening');showToast('Speech error: '+e.error,'error');};rec.onend=()=>{mb.classList.remove('listening');};rec.start();}
-
-/* ================================================================
-   TOAST
-   ================================================================ */
-function showToast(msg,type='info'){const c=document.getElementById('toast-container');const t=document.createElement('div');t.className=`toast toast-${type}`;t.textContent=msg;c.appendChild(t);setTimeout(()=>t.classList.add('show'),10);setTimeout(()=>{t.classList.remove('show');setTimeout(()=>t.remove(),300);},3000);}
-
-/* ================================================================
-   UTILITY
-   ================================================================ */
-function escapeHtml(t){const d=document.createElement('div');d.textContent=t;return d.innerHTML;}
+function showToast(msg, type = 'info') {
+  const c = document.getElementById('toast-container');
+  const t = document.createElement('div');
+  t.className = `toast toast-${type}`;
+  t.textContent = msg;
+  c.appendChild(t);
+  requestAnimationFrame(() => t.classList.add('show'));
+  setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 300);
+  }, 3500);
+}
 
 /* ================================================================
    INIT
    ================================================================ */
 loadState();
-if(state.currentUser){enterApp();}else{document.getElementById('auth-screen').classList.remove('hidden');}
+if (state.currentUser) {
+  enterApp();
+}
 </script>
 </body>
 </html>
